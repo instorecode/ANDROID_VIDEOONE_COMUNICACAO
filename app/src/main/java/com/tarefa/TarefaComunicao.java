@@ -315,7 +315,7 @@ public class TarefaComunicao implements Runnable {
                     registrarLog.escrever(" Não foi possível baixar o arquivo " + file.getName() + ". A operação foi abortada por outro fator" + " " + e.getMessage());
                     continue;
                 }
-                /*asdsa*/
+
                 try {
                     Log.e("Log", file.getName());
                     ftp.rename(file.getName(), file.getName().concat(".@@@"));
