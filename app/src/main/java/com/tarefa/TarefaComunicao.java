@@ -66,14 +66,21 @@ public class TarefaComunicao implements Runnable {
     }
 
     private void informacoesConexao() {
+        Log.e("Log", "informacoesConexao");
         salvar_importes = caminho.concat(barraDoSistema).concat(ConfiguaracaoUtils.diretorio.getDiretorioImportacao());
+        Log.e("Log", "informacoesConexao Final 1");
         salvar_export = caminho.concat(barraDoSistema).concat(ConfiguaracaoUtils.diretorio.getDiretorioExportacao());
+        Log.e("Log", "informacoesConexao Final 2");
         arquivoZip = salvar_export.concat(barraDoSistema).concat("videoOne.zip");
+        Log.e("Log", "informacoesConexao Final 3");
         diretorioConfig = caminho.concat(barraDoSistema).concat("videoOne").concat(barraDoSistema).concat("config");
+        Log.e("Log", "informacoesConexao Final 4");
         diretorioLog = caminho.concat(barraDoSistema).concat(ConfiguaracaoUtils.diretorio.getDiretorioLog());
+        Log.e("Log", "informacoesConexao Final 5");
         diretorioDeVideos = caminho.concat(barraDoSistema).concat(ConfiguaracaoUtils.diretorio.getDiretorioVideo());
+        Log.e("Log", "informacoesConexao Final 6");
         diretorioVideoOne = caminho.concat(barraDoSistema).concat("videoOne");
-        Log.e("Log", "informacoesConexao Final");
+        Log.e("Log", "informacoesConexao Final 7");
     }
 
     private void conectarEnderecoFtp() {

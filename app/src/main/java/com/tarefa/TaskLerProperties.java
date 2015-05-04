@@ -2,6 +2,7 @@ package com.tarefa;
 
 import android.content.Context;
 import android.os.Environment;
+import android.util.Log;
 
 import com.br.instore.utils.ConfiguaracaoUtils;
 import com.utils.RegistrarLog;
@@ -28,6 +29,7 @@ public class TaskLerProperties implements Runnable {
             ConfiguaracaoUtils.lerProperties(caminho.concat(barraDoSistema).concat("videoOne").concat(barraDoSistema).concat("config").concat(barraDoSistema).concat("configuracoes.properties"));
         } else {
             registrarLog.escrever(" Properties não existe TaskLerProperties");
+            Log.e("Log","Properties não existe TaskLerProperties");
         }
     }
 }

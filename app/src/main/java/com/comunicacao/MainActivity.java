@@ -33,7 +33,7 @@ public class MainActivity extends Activity {
         ScheduledExecutorService thread3 = Executors.newScheduledThreadPool(1);
         thread1.scheduleAtFixedRate(new TaskLerProperties(context), 0, 10, TimeUnit.SECONDS);
         thread2.scheduleAtFixedRate(new TaskDiretorios(context), 500, 10000, TimeUnit.MILLISECONDS);
-        thread3.scheduleAtFixedRate(new TarefaComunicao(context), 2, 3600, TimeUnit.SECONDS);
+        thread3.scheduleAtFixedRate(new TarefaComunicao(context), 2, 60, TimeUnit.SECONDS);
 	}
 
 }

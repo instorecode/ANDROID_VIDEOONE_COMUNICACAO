@@ -2,6 +2,7 @@ package com.tarefa;
 
 import android.content.Context;
 import android.os.Environment;
+import android.util.Log;
 
 import com.br.instore.utils.Arquivo;
 import com.br.instore.utils.ConfiguaracaoUtils;
@@ -39,6 +40,7 @@ public class TaskDiretorios implements Runnable {
 
             Arquivo.criarDiretorio(new File(this.diretorioVideoPrimario));
             Arquivo.criarDiretorio(new File(this.diretorioPlaylist));
+            Log.e("Log", "Properties não existe TaskDiretorios");
             return;
         }
 
