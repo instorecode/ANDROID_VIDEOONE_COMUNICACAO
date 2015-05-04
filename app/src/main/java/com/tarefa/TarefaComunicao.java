@@ -8,6 +8,7 @@ import android.widget.Toast;
 import com.br.instore.utils.Arquivo;
 import com.br.instore.utils.ConfiguaracaoUtils;
 import com.br.instore.utils.ImprimirUtils;
+import com.br.instore.utils.Md5Utils;
 import com.comunicacao.TransferCustom;
 import com.syso.Imprimir;
 import com.utils.RegistrarLog;
@@ -42,11 +43,14 @@ public class TarefaComunicao implements Runnable {
     private String salvar_export = "";
     private String arquivoZip = "";
     private String diretorioConfig = "";
+    private String diretorioDeVideos = "";
     private String diretorioLog = "";
     private String diretorioVideoOne = "";
     private int maximoTentativas = 10;
     private int tentativasRealizadas = 0;
     private FTPFile[] listaArquivosFtp;
+    private Md5Utils md5Utils = new Md5Utils();
+    private Arquivo arquivoUtils = new Arquivo();
 
     public TarefaComunicao(Context context) {
         Toast.makeText(context, "CONSTRUTOR", Toast.LENGTH_LONG).show();
@@ -67,6 +71,7 @@ public class TarefaComunicao implements Runnable {
         arquivoZip = salvar_export.concat(barraDoSistema).concat("videoOne.zip");
         diretorioConfig = caminho.concat(barraDoSistema).concat("videoOne").concat(barraDoSistema).concat("config");
         diretorioLog = caminho.concat(barraDoSistema).concat(ConfiguaracaoUtils.diretorio.getDiretorioLog());
+        diretorioDeVideos = caminho.concat(barraDoSistema).concat(ConfiguaracaoUtils.diretorio.getDiretorioVideo());
         diretorioVideoOne = caminho.concat(barraDoSistema).concat("videoOne");
         Log.e("Log", "informacoesConexao Final");
     }
@@ -291,6 +296,7 @@ public class TarefaComunicao implements Runnable {
         for (FTPFile file : arquivos) {
             if (file.getName().contains(".mov") || file.getName().contains(".md5") || file.getName().contains(".db") || file.getName().contains(".exp")) {
                 try {
+                    Log.e("Log", file.getName());
                     ftp.download(file.getName(), new FileOutputStream(new File(salvar_importes.concat(barraDoSistema).concat(file.getName()))), 0, new TransferCustom());
                     registrarLog.escrever(" Arquivos no servidor FTP " + file.getName() + " baixado com sucesso");
                 } catch (IllegalStateException e) {
@@ -317,8 +323,8 @@ public class TarefaComunicao implements Runnable {
                 }
 
                 try {
-                    Log.e("Log", file.getName());
-                    ftp.rename(file.getName(), file.getName().concat(".@@@"));
+                    Log.e("Log", file.getName() + " Renomear");
+                    ftp.rename(file.getName(), file.getName());
                     registrarLog.escrever(" Arquivo " + file.getName() + " foi renomeado no servidor com sucesso");
                 } catch (IllegalStateException e) {
                     Log.e("Log", e.getMessage());
@@ -348,7 +354,18 @@ public class TarefaComunicao implements Runnable {
     }
 
     private void validarMd5(){
+        Log.e("Log","validarMD5");
+        md5Utils.controladorArquivosFragmentados(salvar_importes);
+        List<File> arquivosValidos = md5Utils.getArquivosValidos();
 
+        if(null != arquivosValidos && !arquivosValidos.isEmpty()){
+            for(File file : arquivosValidos) {
+                String resultado = Arquivo.moverArquivo(file, new File(diretorioDeVideos.concat(barraDoSistema).concat(file.getName())));
+
+            }
+        }
+
+        desconectarFtp();
     }
 
     private void validarExp() {

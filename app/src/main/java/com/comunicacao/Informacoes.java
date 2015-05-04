@@ -16,7 +16,7 @@ import com.br.instore.utils.ConfiguaracaoUtils;
 
 
 public class Informacoes {
-    /*
+
 
     private static SQLiteDatabase db;
     private Context context;
@@ -109,5 +109,5 @@ public class Informacoes {
             db.close();
         }
         return videosNoBanco;
-    }*/
+    }
 }
