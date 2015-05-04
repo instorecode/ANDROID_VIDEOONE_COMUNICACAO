@@ -41,12 +41,7 @@ public class Comunicacao  {
     private PopularBanco popularBanco;
     private CriarPlaylist criarPlaylist;
     private LogUtils logUtils = new LogUtils();
-
-
-
     private int tentativasRealizadas = 0;
-
-
     private final byte[] buffer = new byte[1024];
 
     private Date ultimaComunicacao;
@@ -106,72 +101,6 @@ public class Comunicacao  {
         }
     }
 
-
-    private void downloadDeVideos() {
-        System.out.println("Metodo download de videos");
-        for (FTPFile file : listaArquivosFtp) {
-            if (file.getName().endsWith(".mov")) {
-                try {
-                    Log.e(" Onde vai salvar o download = " + salvar_importes.concat(barraDoSistema).concat(file.getName()));
-                    ftp.download(file.getName(), new FileOutputStream(new File(salvar_importes.concat(barraDoSistema).concat(file.getName()))), 0, new TransferCustom());
-                    Log.e(" Arquivos no servidor FTP " + file.getName() + " baixado com sucesso");
-
-                    logUtils.registrar(" Arquivos no servidor FTP " + file.getName() + " baixado com sucesso");
-                } catch (IllegalStateException e) {
-                    Log.e(" Não foi possível baixar o arquivo " + file.getName() + ". O cliente não está conectado ou não autenticado." + " " + e.getMessage());
-                    logUtils.registrar(" Não foi possível baixar o arquivo " + file.getName() + ". . O cliente não está conectado ou não autenticado." + " " + e.getMessage());
-                    continue;
-                } catch (FileNotFoundException e) {
-                    Log.e(" Não foi possível baixar o arquivo " + file.getName() + ". O arquivo em questão não pode ser encontrado." + " " + e.getMessage());
-                    logUtils.registrar(" Não foi possível baixar o arquivo " + file.getName() + ". O arquivo em questão não pode ser encontrado." + " " + e.getMessage());
-                    continue;
-                } catch (IOException e) {
-                    Log.e(" Não foi possível baixar o arquivo " + file.getName() + ". Erro na entrada ou saida de dados" + " " + e.getMessage());
-                    logUtils.registrar(" Não foi possível baixar o arquivo " + file.getName() + ". Erro na entrada ou saida de dados" + " " + e.getMessage());
-                    continue;
-                } catch (FTPIllegalReplyException e) {
-                    Log.e(" Não foi possível baixar o arquivo " + file.getName() + ". O servidor respondeu de forma ilegal" + " " + e.getMessage());
-                    logUtils.registrar(" Não foi possível baixar o arquivo " + file.getName() + ". O servidor respondeu de forma ilegal" + " " + e.getMessage());
-                    continue;
-                } catch (FTPException e) {
-                    Log.e(" Não foi possível baixar o arquivo " + file.getName() + ". A operação de download falhou" + " " + e.getMessage());
-                    logUtils.registrar(" Não foi possível baixar o arquivo " + file.getName() + ". A operação de download falhou" + " " + e.getMessage());
-                    continue;
-                } catch (FTPDataTransferException e) {
-                    Log.e(" Não foi possível baixar o arquivo " + file.getName() + ". Erro na entrada ou saida de dados e falhou na tranferencia" + " " + e.getMessage());
-                    logUtils.registrar(" Não foi possível baixar o arquivo " + file.getName() + ". Erro na entrada ou saida de dados e falhou na tranferencia" + " " + e.getMessage());
-                    continue;
-                } catch (FTPAbortedException e) {
-                    Log.e(" Não foi possível baixar o arquivo " + file.getName() + ". A operação foi abortada por outro fator" + " " + e.getMessage());
-                    logUtils.registrar(" Não foi possível baixar o arquivo " + file.getName() + ". A operação foi abortada por outro fator" + " " + e.getMessage());
-                    continue;
-                }
-
-                try {
-                    ftp.rename(file.getName(), file.getName().concat(".@@@"));
-                    Log.e(" Arquivo renomeado no servidor " + file.getName());
-                    logUtils.registrar(" Arquivo " + file.getName() + " foi renomeado no servidor com sucesso");
-                } catch (IllegalStateException e) {
-                    Log.e(" Não foi possível renomear o arquivo " + file.getName() + " " + e.getMessage());
-                    logUtils.registrar(" Não foi possível baixar o arquivo " + file.getName() + " " + e.getMessage());
-                    continue;
-                } catch (IOException e) {
-                    Log.e(" Não foi possível renomear o arquivo " + file.getName() + " " + e.getMessage());
-                    logUtils.registrar(" Não foi possível baixar o arquivo " + file.getName() + " " + e.getMessage());
-                    continue;
-                } catch (FTPIllegalReplyException e) {
-                    Log.e(" Não foi possível renomear o arquivo " + file.getName() + " " + e.getMessage());
-                    logUtils.registrar(" Não foi possível baixar o arquivo " + file.getName() + " " + e.getMessage());
-                    continue;
-                } catch (FTPException e) {
-                    Log.e(" Não foi possível renomear o arquivo " + file.getName() + " " + e.getMessage());
-                    logUtils.registrar(" Não foi possível baixar o arquivo " + file.getName() + " " + e.getMessage());
-                    continue;
-                }
-            }
-        }
-        downloadExp();
-    }
 
     private void validarExp() {
         Log.e("Metodo validar  exp");
