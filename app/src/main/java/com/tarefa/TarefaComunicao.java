@@ -391,7 +391,7 @@ public class TarefaComunicao implements Runnable {
                     continue;
                 }
 
-                try {
+                /*try {
                     Log.e("Log", file.getName() + " Renomear");
                     ftp.rename(file.getName(), file.getName());
                     registrarLog.escrever(" Arquivo " + file.getName() + " foi renomeado no servidor com sucesso");
@@ -430,7 +430,7 @@ public class TarefaComunicao implements Runnable {
                     e.printStackTrace();
                     registrarLog.escrever(" Não foi possível baixar o arquivo " + file.getName() + " " + e.getMessage());
                     continue;
-                }
+                }*/
             }
         }
         listaArquivosFtp = null;
@@ -444,7 +444,22 @@ public class TarefaComunicao implements Runnable {
 
         if(null != arquivosValidos && !arquivosValidos.isEmpty()){
             for(File file : arquivosValidos) {
-                String resultado = Arquivo.moverArquivo(file, new File(diretorioDeVideos.concat(barraDoSistema).concat(file.getName())));
+                boolean moveuArquivo = Arquivo.moverArquivo(file, new File(diretorioDeVideos.concat(barraDoSistema).concat(file.getName())));
+                if(moveuArquivo){
+                    Log.e("Log","Arquivo movido " + file.getAbsolutePath());
+
+                    File arquivosNoDiretorio = new File(salvar_importes);
+                    for(File todosArquivos : arquivosNoDiretorio.listFiles()){
+                        String nomeArquivoMovido = file.getName().substring(0, (file.getName().length() - 4));
+                        String nomeArquivosCorrente = todosArquivos.getName().substring(0, (todosArquivos.getName().length() - 4));
+                        if(nomeArquivosCorrente.contains(nomeArquivoMovido)){
+                            Log.e("Log" , "Arquivo deletado " + todosArquivos.getAbsolutePath());
+                            todosArquivos.delete();
+                        }
+                    }
+                } else {
+                    Log.e("Log","Arquivo não movido " + file.getAbsolutePath());
+                }
             }
         }
 
@@ -496,28 +511,28 @@ public class TarefaComunicao implements Runnable {
                 for (File arquivos : arquivosNoDiretorioImport) {
 
                     if (arquivos.getName().endsWith(".db")) {
-                        registrarLog.escrever(" Encontrou o arquivo de banco " + arquivos.getName());
-                        String resultado = Arquivo.moverArquivo(arquivos, new File(diretorioVideoOne.concat(barraDoSistema).concat(arquivos.getName())));
-                        registrarLog.escrever(" " + resultado);
-                        arquivos.delete();
+                        boolean moverArquivo = Arquivo.moverArquivo(arquivos, new File(diretorioVideoOne.concat(barraDoSistema).concat(arquivos.getName())));
+                        if(moverArquivo){
+                            arquivos.delete();
+                        }
                     }
 
                     if (arquivos.getName().endsWith(".apk")) {
-                        registrarLog.escrever(" Encontrou o arquivo " + arquivos.getName());
-                        String resultado = Arquivo.moverArquivo(arquivos, new File(diretorioVideoOne.concat(barraDoSistema).concat(arquivos.getName())));
-                        registrarLog.escrever(" " + resultado);
-                        arquivos.delete();
+                        boolean moverArquivo = Arquivo.moverArquivo(arquivos, new File(diretorioVideoOne.concat(barraDoSistema).concat(arquivos.getName())));
+                        if(moverArquivo){
+                            arquivos.delete();
+                        }
                     }
 
                     if (arquivos.getName().endsWith(".properties")) {
-                        registrarLog.escrever(" Encontrou o arquivo " + arquivos.getName());
-                        String resultado = Arquivo.moverArquivo(arquivos, new File(diretorioConfig.concat(barraDoSistema).concat(arquivos.getName())));
-                        registrarLog.escrever(" " + resultado);
-                        arquivos.delete();
+
+                        boolean moverArquivo = Arquivo.moverArquivo(arquivos, new File(diretorioConfig.concat(barraDoSistema).concat(arquivos.getName())));
+                        if(moverArquivo){
+                            arquivos.delete();
+                        }
                     }
                 }
             } else {
-                registrarLog.escrever(" Não foram encontrados arquivos no diretório " + salvar_importes);
                 desconectarFtp();
                 return;
             }
