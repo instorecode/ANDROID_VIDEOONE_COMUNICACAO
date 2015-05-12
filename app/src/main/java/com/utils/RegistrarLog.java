@@ -3,6 +3,7 @@ package com.utils;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Environment;
+import android.util.Log;
 
 import com.banco.BancoDAO;
 import com.br.instore.utils.Arquivo;
@@ -40,6 +41,11 @@ public class RegistrarLog {
     public RegistrarLog(Context context) {
         this.context = context;
         this.logUtils = new LogUtils();
+    }
+
+
+    public static void imprimirMsg(String tag, String texto){
+        RegistrarLog.imprimirMsg(tag, texto);
     }
 
 

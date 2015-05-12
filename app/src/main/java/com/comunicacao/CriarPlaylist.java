@@ -316,7 +316,7 @@ public class CriarPlaylist {
 
     public void categoria() {
         for (ProgramacaoExp p : listaProgramacao) {
-            Log.e("PROGRAMACAO", p.descricao);
+            RegistrarLog.imprimirMsg("PROGRAMACAO", p.descricao);
             codigoCategoria(p.categoria1, p.horarioInicio, p.horarioFinal);
             codigoCategoria(p.categoria2, p.horarioInicio, p.horarioFinal);
             codigoCategoria(p.categoria3, p.horarioInicio, p.horarioFinal);

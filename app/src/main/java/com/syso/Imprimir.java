@@ -8,7 +8,7 @@ import android.util.Log;
 public class Imprimir {
 
     public static void imprimirMensagem(String texto){
-        Log.e("Log", texto);
+        RegistrarLog.imprimirMsg("Log", texto);
 
     }
 

@@ -59,10 +59,10 @@ public class PopularBanco {
         File arquivoVideo = new File(video);
 
         if (!arquivoCategoria.exists()) {
-            Log.e(" O arquivo Categoria.exp não foi encontrado");
+            RegistrarLog.imprimirMsg(" O arquivo Categoria.exp não foi encontrado");
         } else {
             String resultado = insertCategoria(categoria);
-            Log.e(resultado);
+            RegistrarLog.imprimirMsg(resultado);
 
             if (null != ExpUtils.errosLerCategoria && ExpUtils.errosLerCategoria.size() > 0) {
                 errosCategoria = ExpUtils.errosLerCategoria;
@@ -72,9 +72,9 @@ public class PopularBanco {
             arquivoCategoria.renameTo(renomearCategoria);
 
             if (renomearCategoria.exists()) {
-                Log.e("Renomeu com sucesso Categoria.exp");
+                RegistrarLog.imprimirMsg("Renomeu com sucesso Categoria.exp");
             } else {
-                Log.e("Não renomeu com sucesso Categoria.exp");
+                RegistrarLog.imprimirMsg("Não renomeu com sucesso Categoria.exp");
             }
         }
 
@@ -82,7 +82,7 @@ public class PopularBanco {
             System.out.println("O arquivo Comercial.exp não foi encontrado");
         } else {
             String resultado = insertComercial(comercial);
-            Log.e(resultado);
+            RegistrarLog.imprimirMsg(resultado);
 
             if (null != ExpUtils.errosLerComercial && ExpUtils.errosLerComercial.size() > 0) {
                 errosComercial = ExpUtils.errosLerComercial;
@@ -92,9 +92,9 @@ public class PopularBanco {
             arquivoComercial.renameTo(renomearComercial);
 
             if (renomearComercial.exists()) {
-                Log.e("Renomeu com sucesso Comercial.exp");
+                RegistrarLog.imprimirMsg("Renomeu com sucesso Comercial.exp");
             } else {
-                Log.e("Não renomeu com sucesso Comercial.exp");
+                RegistrarLog.imprimirMsg("Não renomeu com sucesso Comercial.exp");
             }
         }
 
@@ -102,7 +102,7 @@ public class PopularBanco {
             System.out.println(" O arquivo Programacao.exp não foi encontrado");
         } else {
             String resultado = insertProgramacao(programacao);
-            Log.e(resultado);
+            RegistrarLog.imprimirMsg(resultado);
 
             if (null != ExpUtils.errosLerProgramacao && ExpUtils.errosLerProgramacao.size() > 0) {
                 errosProgramacao = ExpUtils.errosLerProgramacao;
@@ -112,9 +112,9 @@ public class PopularBanco {
             arquivoProgramacao.renameTo(renomearProgramacao);
 
             if (renomearProgramacao.exists()) {
-                Log.e("Renomeu com sucesso Programcao.exp ");
+                RegistrarLog.imprimirMsg("Renomeu com sucesso Programcao.exp ");
             } else {
-                Log.e("Não renomeu com sucesso Programcao.exp ");
+                RegistrarLog.imprimirMsg("Não renomeu com sucesso Programcao.exp ");
             }
         }
 
@@ -123,7 +123,7 @@ public class PopularBanco {
             System.out.println(" O arquivo Video.exp não foi encontrado");
         } else {
             String resultado = insertVideo(video);
-            Log.e(resultado);
+            RegistrarLog.imprimirMsg(resultado);
 
             if (null != ExpUtils.errosLerVideo && ExpUtils.errosLerVideo.size() > 0) {
                 errosVideo = ExpUtils.errosLerVideo;
@@ -133,9 +133,9 @@ public class PopularBanco {
             arquivoVideo.renameTo(renomearVideo);
 
             if (renomearVideo.exists()) {
-                Log.e("Renomeu com sucesso");
+                RegistrarLog.imprimirMsg("Renomeu com sucesso");
             } else {
-                Log.e("Não renomeu com sucesso");
+                RegistrarLog.imprimirMsg("Não renomeu com sucesso");
             }
         }
     }

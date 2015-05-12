@@ -69,9 +69,9 @@ public class Comunicacao  {
                 validarHoraAndDia.procurarHorarioValido();
 
                 if (validarHoraAndDia.isValid()) {
-                    Log.e("O horario é valido");
+                    RegistrarLog.imprimirMsg("O horario é valido");
                     if (!hashId.equals(validarHoraAndDia.hashId())) {
-                        Log.e("hash é diferente do hash anterior");
+                        RegistrarLog.imprimirMsg("hash é diferente do hash anterior");
                         tentativasRealizadas = 0;
                     }
 
@@ -79,7 +79,7 @@ public class Comunicacao  {
                     System.out.println("é um dia valido, Tentativas realizadas " + tentativasRealizadas);
 
                     if (tentativasRealizadas < maximoTentativas) {
-                        Log.e(" Rodando Thread ");
+                        RegistrarLog.imprimirMsg(" Rodando Thread ");
                         logUtils.registrar(" Rodando Thread");
                         conectarEnderecoFtp();
                         moverVideos();
@@ -90,20 +90,20 @@ public class Comunicacao  {
                     // executar o emergencia
                     System.out.println("Não é um dia valido, Maximo tentativas = " + maximoTentativas);
                     System.out.println("Não é um dia valido, Tentativas realizadas " + tentativasRealizadas);
-                    Log.e(" Não é válido o dia");
+                    RegistrarLog.imprimirMsg(" Não é válido o dia");
                     tentativasRealizadas = 0;
                 }
 
             } else {
                 logUtils.registrar(" Arquivo de configurações foi excluido");
-                Log.e("ERRO::", "Arquivo de configurações foi excluido");
+                RegistrarLog.imprimirMsg("ERRO::", "Arquivo de configurações foi excluido");
             }
         }
     }
 
 
     private void validarExp() {
-        Log.e("Metodo validar  exp");
+        RegistrarLog.imprimirMsg("Metodo validar  exp");
         File fileExp = new File(salvar_importes + "/videoOne.exp");
         long tamanho = fileExp.length();
 
@@ -113,7 +113,7 @@ public class Comunicacao  {
             try {
                 zip = new ZipFile(fileExp);
             } catch (ZipException e) {
-                Log.e("Erro ao pegar o arquivo videoOne.exp " + e.getMessage());
+                RegistrarLog.imprimirMsg("Erro ao pegar o arquivo videoOne.exp " + e.getMessage());
                 logUtils.registrar(" Erro ao pegar o arquivo videoOne.exp " + e.getMessage());
                 desconectarFtp();
             }
@@ -122,12 +122,12 @@ public class Comunicacao  {
                 try {
                     zip.extractAll(salvar_importes);
                 } catch (ZipException e) {
-                    Log.e("Não foi possível descompactar o arquivo zip" + zip.getFile().getName());
+                    RegistrarLog.imprimirMsg("Não foi possível descompactar o arquivo zip" + zip.getFile().getName());
                     logUtils.registrar(" Não foi possível descompactar o arquivo " + zip.getFile().getName());
                     desconectarFtp();
                 }
             } else {
-                Log.e("O arquivo zip " + zip.getFile().getName() + " está nulo");
+                RegistrarLog.imprimirMsg("O arquivo zip " + zip.getFile().getName() + " está nulo");
                 logUtils.registrar(" O arquivo zip " + zip.getFile().getName() + " está nulo");
                 desconectarFtp();
             }
@@ -159,7 +159,7 @@ public class Comunicacao  {
                     }
                 }
             } else {
-                Log.e("Não foram encontrados arquivos no diretório " + salvar_importes);
+                RegistrarLog.imprimirMsg("Não foram encontrados arquivos no diretório " + salvar_importes);
                 logUtils.registrar(" Não foram encontrados arquivos no diretório " + salvar_importes);
                 desconectarFtp();
                 return;
@@ -169,7 +169,7 @@ public class Comunicacao  {
 
 
         } else {
-            Log.e("Arquivos videoOne.exp não foi encontrado ");
+            RegistrarLog.imprimirMsg("Arquivos videoOne.exp não foi encontrado ");
             logUtils.registrar(" Arquivos videoOne.exp não foi encontrado ");
             desconectarFtp();
         }

@@ -14,6 +14,6 @@ public class TaskLerProperties implements Runnable {
     @Override
     public void run() {
         ConfiguaracaoUtils.lerProperties(caminho.concat(barraDoSistema).concat("videoOne").concat(barraDoSistema).concat("config").concat(barraDoSistema).concat("configuracoes.properties"));
-        Log.e("Log","TaskLerProperties");
+        RegistrarLog.imprimirMsg("Log","TaskLerProperties");
     }
 }
