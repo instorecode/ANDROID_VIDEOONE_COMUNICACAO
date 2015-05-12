@@ -2,6 +2,8 @@ package com.comunicacao;
 
 import android.util.Log;
 
+import com.utils.RegistrarLog;
+
 import it.sauronsoftware.ftp4j.FTPDataTransferListener;
 
 public class TransferCustom implements FTPDataTransferListener {

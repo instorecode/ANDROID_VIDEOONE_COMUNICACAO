@@ -1,6 +1,0 @@
-C:\Users\usuario\Google Drive\ANDROID_VIDEOONE_COMUNICACAO\app\build\intermediates\classes\debug
-C:\Users\usuario\Google Drive\ANDROID_VIDEOONE_COMUNICACAO\app\build\intermediates\pre-dexed\debug\projetoUtils-e5be82cb52d0c1302024f9498d03c407b80a58df.jar
-C:\Users\usuario\Google Drive\ANDROID_VIDEOONE_COMUNICACAO\app\build\intermediates\pre-dexed\debug\ftp4j-1.7.2-14d5366209761f08f91320478d409a2611f73c1a.jar
-C:\Users\usuario\Google Drive\ANDROID_VIDEOONE_COMUNICACAO\app\build\intermediates\pre-dexed\debug\zip4j_1.3.2-99f62ad34427ea8735402c3d263aeb7cd23a3de9.jar
-C:\Users\usuario\Google Drive\ANDROID_VIDEOONE_COMUNICACAO\app\build\intermediates\pre-dexed\debug\commons-lang3-3.3.2-e75a9187bc9c75462f9d6203e1da6a5d1d23ac7d.jar
-C:\Users\usuario\Google Drive\ANDROID_VIDEOONE_COMUNICACAO\app\build\intermediates\pre-dexed\debug\support-v4-19.0.0-05a39974c8b3bdb406e00f1ff0f9df89e658f943.jar
