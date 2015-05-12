@@ -2,6 +2,9 @@ package com.tarefa;
 
 import android.content.Context;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -30,6 +33,7 @@ import it.sauronsoftware.ftp4j.FTPAbortedException;
 import it.sauronsoftware.ftp4j.FTPClient;
 import it.sauronsoftware.ftp4j.FTPDataTransferException;
 import it.sauronsoftware.ftp4j.FTPException;
+import it.sauronsoftware.ftp4j.FTPFile;
 import it.sauronsoftware.ftp4j.FTPIllegalReplyException;
 import it.sauronsoftware.ftp4j.FTPListParseException;
 
@@ -52,7 +56,7 @@ public class TarefaComunicao implements Runnable {
     private List<File> listaArquivosFtp = new ArrayList<File>();
     private Md5Utils md5Utils = new Md5Utils();
     private Arquivo arquivoUtils = new Arquivo();
-
+    public Handler mHandler;
     public TarefaComunicao(Context context) {
         Toast.makeText(context, "CONSTRUTOR", Toast.LENGTH_LONG).show();
         this.context = context;
@@ -63,10 +67,10 @@ public class TarefaComunicao implements Runnable {
     public void run() {
         informacoesConexao();
         conectarEnderecoFtp();
-
     }
 
     private void informacoesConexao() {
+        RegistrarLog.imprimirMsg("Log", "INICIO");
         try {
             salvar_importes = caminho.concat(barraDoSistema).concat(ConfiguaracaoUtils.diretorio.getDiretorioImportacao());
             boolean diretorioCriado = Arquivo.criarDiretorio(salvar_importes);
@@ -290,7 +294,7 @@ public class TarefaComunicao implements Runnable {
                 RegistrarLog.imprimirMsg("Log", "Diretório " + diretorioVideoOne + " não foi criado");
             }
         }
-        RegistrarLog.imprimirMsg("Log", "informacoesConexao");
+        RegistrarLog.imprimirMsg("Log", "FIM");
     }
 
     private void conectarEnderecoFtp() {
@@ -425,163 +429,137 @@ public class TarefaComunicao implements Runnable {
             tentativasRealizadas++;
             desconectarFtp();
         }
-
-        arquivosNoFtp();
+        download();
     }
 
-    private void arquivosNoFtp() {
-        RegistrarLog.imprimirMsg("Log", "Metodo arquivos no ftp");
-        try {
-            String[] nomes = ftp.listNames();
-            for(String nome : nomes){
-                try {
-                    if (!nome.endsWith(".@@@")) {
-                        String caminhoDoArquivoHaAdicionar = salvar_importes.concat(barraDoSistema).concat(nome);
-                        File arquivoHaAdicionar = new File(caminhoDoArquivoHaAdicionar);
-                        listaArquivosFtp.add(arquivoHaAdicionar);
-                    }
-                } catch (NullPointerException e){
-                    RegistrarLog.imprimirMsg("Log","Erro ao pegar os arquivos no ftp");
-                    continue;
-                } catch (InvalidParameterException e){
-                    RegistrarLog.imprimirMsg("Log","Erro ao pegar os arquivos no ftp");
-                    continue;
-                } catch (Exception e){
-                    RegistrarLog.imprimirMsg("Log","Erro ao pegar os arquivos no ftp");
-                    continue;
-                }
-            }
-        } catch (IOException e) {
-            RegistrarLog.imprimirMsg("Log", " Erro ao pegar os arquivos mov" + " 1" + e.getMessage());
-            registrarLog.escrever(" Nenhum arquivo foi encontrado mov" + " 1" + e.getMessage());
-            desconectarFtp();
-        } catch (FTPIllegalReplyException e) {
-            RegistrarLog.imprimirMsg("Log", " Erro ao pegar os arquivos mov" + " 2" + e.getMessage());
-            registrarLog.escrever(" Nenhum arquivo foi encontrado mov" + " 1" + e.getMessage());
-            desconectarFtp();
-        } catch (FTPException e) {
-            RegistrarLog.imprimirMsg("Log", " Erro ao pegar os arquivos mov" + " 3" + e.getMessage());
-            registrarLog.escrever(" Nenhum arquivo foi encontrado mov" + " 1" + e.getMessage());
-            desconectarFtp();
-        } catch (FTPDataTransferException e) {
-            RegistrarLog.imprimirMsg("Log", " Erro ao pegar os arquivos mov" + " 4" + e.getMessage());
-            registrarLog.escrever(" Nenhum arquivo foi encontrado mov" + " 1" + e.getMessage());
-            desconectarFtp();
-        } catch (FTPAbortedException e) {
-            RegistrarLog.imprimirMsg("Log", " Erro ao pegar os arquivos mov" + " 5" + e.getMessage());
-            registrarLog.escrever(" Nenhum arquivo foi encontrado mov" + " 1" + e.getMessage());
-            desconectarFtp();
-        } catch (FTPListParseException e) {
-            RegistrarLog.imprimirMsg("Log", " Erro ao pegar os arquivos mov" + " 6" + e.getMessage());
-            registrarLog.escrever(" Nenhum arquivo foi encontrado mov" + " 1" + e.getMessage());
-            desconectarFtp();
-        } catch (NullPointerException e){
-            RegistrarLog.imprimirMsg("Log", " Erro ao pegar os arquivos mov" + " 7" + e.getMessage());
-            registrarLog.escrever(" Nenhum arquivo foi encontrado mov" + " 1" + e.getMessage());
-            desconectarFtp();
-        } catch (InvalidParameterException e){
-            RegistrarLog.imprimirMsg("Log", " Erro ao pegar os arquivos mov" + " 8" + e.getMessage());
-            registrarLog.escrever(" Nenhum arquivo foi encontrado mov" + " 1" + e.getMessage());
-            desconectarFtp();
-        } catch (Exception e ){
-            RegistrarLog.imprimirMsg("Log", " Erro ao pegar os arquivos mov" + " 9" + e.getMessage());
-            registrarLog.escrever(" Nenhum arquivo foi encontrado mov" + " 1" + e.getMessage());
-            desconectarFtp();
-        }
-
-        if(listaArquivosFtp.size() > 0 && !listaArquivosFtp.isEmpty()){
-            download(listaArquivosFtp);
-        } else {
-            RegistrarLog.imprimirMsg("Log", "Sem arquivos no diretorio");
-            desconectarFtp();
-        }
-    }
-
-    private void download(List<File> arquivos) {
+    private void download() {
         RegistrarLog.imprimirMsg("Log", "download");
-        for (File file : arquivos) {
-            if (!file.getName().endsWith(".@@@")) {
-                if (file.getName().contains(".mov") || file.getName().contains(".md5") || file.getName().contains(".db") || file.getName().contains(".exp")) {
-                    try {
-                        RegistrarLog.imprimirMsg("Log", file.getName());
-                        ftp.download(file.getName(), new FileOutputStream(new File(salvar_importes.concat(barraDoSistema).concat(file.getName()))), 0, new TransferCustom());
-                        registrarLog.escrever(" Arquivos no servidor FTP " + file.getName() + " baixado com sucesso");
-                    } catch (IllegalStateException e) {
-                        registrarLog.escrever(" Não foi possível baixar o arquivo " + file.getName() + ". . O cliente não está conectado ou não autenticado." + " " + e.getMessage());
-                        continue;
-                    } catch (FileNotFoundException e) {
-                        registrarLog.escrever(" Não foi possível baixar o arquivo " + file.getName() + ". O arquivo em questão não pode ser encontrado." + " " + e.getMessage());
-                        continue;
-                    } catch (IOException e) {
-                        registrarLog.escrever(" Não foi possível baixar o arquivo " + file.getName() + ". Erro na entrada ou saida de dados" + " " + e.getMessage());
-                        continue;
-                    } catch (FTPIllegalReplyException e) {
-                        registrarLog.escrever(" Não foi possível baixar o arquivo " + file.getName() + ". O servidor respondeu de forma ilegal" + " " + e.getMessage());
-                        continue;
-                    } catch (FTPException e) {
-                        registrarLog.escrever(" Não foi possível baixar o arquivo " + file.getName() + ". A operação de download falhou" + " " + e.getMessage());
-                        continue;
-                    } catch (FTPDataTransferException e) {
-                        registrarLog.escrever(" Não foi possível baixar o arquivo " + file.getName() + ". Erro na entrada ou saida de dados e falhou na tranferencia" + " " + e.getMessage());
-                        continue;
-                    } catch (FTPAbortedException e) {
-                        registrarLog.escrever(" Não foi possível baixar o arquivo " + file.getName() + ". A operação foi abortada por outro fator" + " " + e.getMessage());
-                        continue;
-                    } catch (NullPointerException e) {
-                        registrarLog.escrever(" Não foi possível baixar o arquivo " + file.getName() + ". A operação foi abortada por outro fator" + " " + e.getMessage());
-                        continue;
-                    } catch (InvalidParameterException e) {
-                        registrarLog.escrever(" Não foi possível baixar o arquivo " + file.getName() + ". A operação foi abortada por outro fator" + " " + e.getMessage());
-                        continue;
-                    } catch (Exception e) {
-                        registrarLog.escrever(" Não foi possível baixar o arquivo " + file.getName() + ". A operação foi abortada por outro fator" + " " + e.getMessage());
-                        continue;
-                    }
+        FTPFile[] files = null;
+        try {
+            files = ftp.list();
+        } catch (IOException e) {
+            RegistrarLog.imprimirMsg("Log","Erro ao pegar os arquivos do ftp 1");
+            desconectarFtp();
+            return;
+        } catch (FTPIllegalReplyException e) {
+            RegistrarLog.imprimirMsg("Log","Erro ao pegar os arquivos do ftp 2");
+            desconectarFtp();
+            return;
+        } catch (FTPException e) {
+            RegistrarLog.imprimirMsg("Log","Erro ao pegar os arquivos do ftp 3");
+            desconectarFtp();
+            return;
+        } catch (FTPDataTransferException e) {
+            RegistrarLog.imprimirMsg("Log","Erro ao pegar os arquivos do ftp 4");
+            desconectarFtp();
+            return;
+        } catch (FTPAbortedException e) {
+            RegistrarLog.imprimirMsg("Log","Erro ao pegar os arquivos do ftp 5");
+            desconectarFtp();
+            return;
+        } catch (FTPListParseException e) {
+            RegistrarLog.imprimirMsg("Log","Erro ao pegar os arquivos do ftp 6");
+            desconectarFtp();
+            return;
+        } catch (NullPointerException e){
+            RegistrarLog.imprimirMsg("Log","Erro ao pegar os arquivos do ftp 7");
+            desconectarFtp();
+            return;
+        } catch (InvalidParameterException e){
+            RegistrarLog.imprimirMsg("Log","Erro ao pegar os arquivos do ftp 8");
+            desconectarFtp();
+            return;
+        } catch (Exception e ){
+            RegistrarLog.imprimirMsg("Log","Erro ao pegar os arquivos do ftp 9");
+            desconectarFtp();
+            return;
+        }
 
-                    try {
-                        ftp.rename(file.getName(), file.getName().concat(".@@@"));
-                        RegistrarLog.imprimirMsg("Log", file.getName() + " Renomear");
-                        registrarLog.escrever(" Arquivo " + file.getName() + " foi renomeado no servidor com sucesso");
-                    } catch (IllegalStateException e) {
-                        RegistrarLog.imprimirMsg("Log", e.getMessage());
-                        e.printStackTrace();
-                        registrarLog.escrever(" Não foi possível baixar o arquivo " + file.getName() + " " + e.getMessage());
-                        continue;
-                    } catch (IOException e) {
-                        RegistrarLog.imprimirMsg("Log", e.getMessage());
-                        e.printStackTrace();
-                        registrarLog.escrever(" Não foi possível baixar o arquivo " + file.getName() + " " + e.getMessage());
-                        continue;
-                    } catch (FTPIllegalReplyException e) {
-                        RegistrarLog.imprimirMsg("Log", e.getMessage());
-                        e.printStackTrace();
-                        registrarLog.escrever(" Não foi possível baixar o arquivo " + file.getName() + " " + e.getMessage());
-                        continue;
-                    } catch (FTPException e) {
-                        RegistrarLog.imprimirMsg("Log", e.getMessage());
-                        e.printStackTrace();
-                        registrarLog.escrever(" Não foi possível baixar o arquivo " + file.getName() + " " + e.getMessage());
-                        continue;
-                    } catch (NullPointerException e) {
-                        RegistrarLog.imprimirMsg("Log", e.getMessage());
-                        e.printStackTrace();
-                        registrarLog.escrever(" Não foi possível baixar o arquivo " + file.getName() + " " + e.getMessage());
-                        continue;
-                    } catch (InvalidParameterException e) {
-                        RegistrarLog.imprimirMsg("Log", e.getMessage());
-                        e.printStackTrace();
-                        registrarLog.escrever(" Não foi possível baixar o arquivo " + file.getName() + " " + e.getMessage());
-                        continue;
-                    } catch (Exception e) {
-                        RegistrarLog.imprimirMsg("Log", e.getMessage());
-                        e.printStackTrace();
-                        registrarLog.escrever(" Não foi possível baixar o arquivo " + file.getName() + " " + e.getMessage());
-                        continue;
+        if(null != files && files.length > 0) {
+            for (FTPFile file : files) {
+                if (!file.getName().endsWith(".@@@")) {
+                    if (file.getName().contains(".mov") || file.getName().contains(".md5") || file.getName().contains(".db") || file.getName().contains(".exp")) {
+                        try {
+                            RegistrarLog.imprimirMsg("Log", file.getName());
+                            ftp.download(file.getName(), new FileOutputStream(new File(salvar_importes.concat(barraDoSistema).concat(file.getName()))), 0, new TransferCustom());
+                            registrarLog.escrever(" Arquivos no servidor FTP " + file.getName() + " baixado com sucesso");
+                        } catch (IllegalStateException e) {
+                            registrarLog.escrever(" Não foi possível baixar o arquivo " + file.getName() + ". . O cliente não está conectado ou não autenticado." + " " + e.getMessage());
+                            continue;
+                        } catch (FileNotFoundException e) {
+                            registrarLog.escrever(" Não foi possível baixar o arquivo " + file.getName() + ". O arquivo em questão não pode ser encontrado." + " " + e.getMessage());
+                            continue;
+                        } catch (IOException e) {
+                            registrarLog.escrever(" Não foi possível baixar o arquivo " + file.getName() + ". Erro na entrada ou saida de dados" + " " + e.getMessage());
+                            continue;
+                        } catch (FTPIllegalReplyException e) {
+                            registrarLog.escrever(" Não foi possível baixar o arquivo " + file.getName() + ". O servidor respondeu de forma ilegal" + " " + e.getMessage());
+                            continue;
+                        } catch (FTPException e) {
+                            registrarLog.escrever(" Não foi possível baixar o arquivo " + file.getName() + ". A operação de download falhou" + " " + e.getMessage());
+                            continue;
+                        } catch (FTPDataTransferException e) {
+                            registrarLog.escrever(" Não foi possível baixar o arquivo " + file.getName() + ". Erro na entrada ou saida de dados e falhou na tranferencia" + " " + e.getMessage());
+                            continue;
+                        } catch (FTPAbortedException e) {
+                            registrarLog.escrever(" Não foi possível baixar o arquivo " + file.getName() + ". A operação foi abortada por outro fator" + " " + e.getMessage());
+                            continue;
+                        } catch (NullPointerException e) {
+                            registrarLog.escrever(" Não foi possível baixar o arquivo " + file.getName() + ". A operação foi abortada por outro fator" + " " + e.getMessage());
+                            continue;
+                        } catch (InvalidParameterException e) {
+                            registrarLog.escrever(" Não foi possível baixar o arquivo " + file.getName() + ". A operação foi abortada por outro fator" + " " + e.getMessage());
+                            continue;
+                        } catch (Exception e) {
+                            registrarLog.escrever(" Não foi possível baixar o arquivo " + file.getName() + ". A operação foi abortada por outro fator" + " " + e.getMessage());
+                            continue;
+                        }
+
+                        try {
+                            ftp.rename(file.getName(), file.getName().concat(".@@@"));
+                            RegistrarLog.imprimirMsg("Log", file.getName() + " Renomear");
+                            registrarLog.escrever(" Arquivo " + file.getName() + " foi renomeado no servidor com sucesso");
+                        } catch (IllegalStateException e) {
+                            RegistrarLog.imprimirMsg("Log", e.getMessage());
+                            e.printStackTrace();
+                            registrarLog.escrever(" Não foi possível baixar o arquivo " + file.getName() + " " + e.getMessage());
+                            continue;
+                        } catch (IOException e) {
+                            RegistrarLog.imprimirMsg("Log", e.getMessage());
+                            e.printStackTrace();
+                            registrarLog.escrever(" Não foi possível baixar o arquivo " + file.getName() + " " + e.getMessage());
+                            continue;
+                        } catch (FTPIllegalReplyException e) {
+                            RegistrarLog.imprimirMsg("Log", e.getMessage());
+                            e.printStackTrace();
+                            registrarLog.escrever(" Não foi possível baixar o arquivo " + file.getName() + " " + e.getMessage());
+                            continue;
+                        } catch (FTPException e) {
+                            RegistrarLog.imprimirMsg("Log", e.getMessage());
+                            e.printStackTrace();
+                            registrarLog.escrever(" Não foi possível baixar o arquivo " + file.getName() + " " + e.getMessage());
+                            continue;
+                        } catch (NullPointerException e) {
+                            RegistrarLog.imprimirMsg("Log", e.getMessage());
+                            e.printStackTrace();
+                            registrarLog.escrever(" Não foi possível baixar o arquivo " + file.getName() + " " + e.getMessage());
+                            continue;
+                        } catch (InvalidParameterException e) {
+                            RegistrarLog.imprimirMsg("Log", e.getMessage());
+                            e.printStackTrace();
+                            registrarLog.escrever(" Não foi possível baixar o arquivo " + file.getName() + " " + e.getMessage());
+                            continue;
+                        } catch (Exception e) {
+                            RegistrarLog.imprimirMsg("Log", e.getMessage());
+                            e.printStackTrace();
+                            registrarLog.escrever(" Não foi possível baixar o arquivo " + file.getName() + " " + e.getMessage());
+                            continue;
+                        }
                     }
                 }
             }
         }
-        listaArquivosFtp = null;
+        files = null;
         validarMd5();
     }
 

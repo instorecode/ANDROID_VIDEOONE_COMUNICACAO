@@ -14,6 +14,7 @@ import java.io.File;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
+import java.security.InvalidParameterException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Enumeration;
@@ -35,7 +36,6 @@ public class RegistrarLog {
     private String videosNoBanco = "";
     private String comerciaisNoBanco = "";
     private String diretorioLogs;
-
     private BancoDAO bancoDAO;
 
     public RegistrarLog(Context context) {
@@ -43,11 +43,9 @@ public class RegistrarLog {
         this.logUtils = new LogUtils();
     }
 
-
     public static void imprimirMsg(String tag, String texto){
-        RegistrarLog.imprimirMsg(tag, texto);
+        Log.e(tag, texto);
     }
-
 
     private void informacaoes() {
         setVideosNoBanco();
@@ -74,26 +72,29 @@ public class RegistrarLog {
         logUtils.registrar(texto);
     }
 
-
     private String versaoAndroid(Context context) {
-        String versaoApp = null;
+        String versaoApp = "";
         try {
             versaoApp = String.valueOf(context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionCode);
             versaoApp = versaoApp + "." + context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionName;
         } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
+            return versaoApp;
+        } catch (NullPointerException e){
+            return versaoApp;
+        } catch (Exception e){
+            return versaoApp;
         }
         return versaoApp;
     }
 
     private String nomeDispositivo() {
-        String nomeDispositivo = null;
+        String nomeDispositivo = "";
         nomeDispositivo = android.os.Build.MODEL;
         return nomeDispositivo;
     }
 
     private String ip() {
-        String ipDispositivo = null;
+        String ipDispositivo = "";
         try {
             Enumeration<NetworkInterface> enumerationNetworkInterface = NetworkInterface.getNetworkInterfaces();
             while (enumerationNetworkInterface.hasMoreElements()) {
@@ -105,32 +106,61 @@ public class RegistrarLog {
                 }
             }
         } catch (SocketException e) {
-            e.printStackTrace();
+            return ipDispositivo;
+        } catch (NullPointerException e){
+            return ipDispositivo;
+        } catch (Exception e){
+            return ipDispositivo;
         }
         return ipDispositivo;
     }
 
     private String espacoTotal() {
-        String espacoTotal = null;
+        String espacoTotal = "";
         long espaco = new File(Environment.getExternalStorageDirectory().getAbsolutePath()).getTotalSpace();
         double espacoDouble = espaco / (1024 * 1024);
-        espacoTotal = String.valueOf(espacoDouble);
+
+        try{
+            espacoTotal = String.valueOf(espacoDouble);
+        } catch (NullPointerException e){
+            return espacoTotal;
+        } catch (InvalidParameterException e){
+            return espacoTotal;
+        } catch (Exception e){
+            return espacoTotal;
+        }
         return espacoTotal;
     }
 
     private String espacoDisponivel() {
-        String espacoDisponivel = null;
+        String espacoDisponivel = "";
         long espaco = new File(Environment.getExternalStorageDirectory().getAbsolutePath()).getFreeSpace();
         double espacoDouble = espaco / (1024 * 1024);
-        espacoDisponivel = String.valueOf(espacoDouble);
+        try{
+            espacoDisponivel = String.valueOf(espacoDouble);
+        } catch (NullPointerException e) {
+            return espacoDisponivel;
+        } catch (InvalidParameterException e){
+            return espacoDisponivel;
+        } catch (Exception e){
+            return espacoDisponivel;
+        }
         return espacoDisponivel;
     }
 
     private String arquivosDiretorio() {
-        String arquivosNoDiretorio = null;
-        File file = new File(caminho.concat(barraDoSistema).concat(ConfiguaracaoUtils.diretorio.getDiretorioVideo()));
-        Arquivo.criarDiretorio(file);
-        arquivosNoDiretorio = String.valueOf(file.listFiles().length);
+        String arquivosNoDiretorio = "";
+        try {
+            File file = new File(caminho.concat(barraDoSistema).concat(ConfiguaracaoUtils.diretorio.getDiretorioVideo()));
+            Arquivo.criarDiretorio(file);
+            arquivosNoDiretorio = String.valueOf(file.listFiles().length);
+        } catch (NullPointerException e) {
+            return arquivosNoDiretorio;
+        } catch (InvalidParameterException e){
+            return arquivosNoDiretorio;
+        } catch (Exception e) {
+            return arquivosNoDiretorio;
+        }
         return arquivosNoDiretorio;
     }
 

@@ -3,6 +3,7 @@ package com.comunicacao;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
 import android.widget.Toast;
 import com.tarefa.TarefaComunicao;
 import com.tarefa.TaskLerProperties;
@@ -23,7 +24,17 @@ public class MainActivity extends Activity {
         ScheduledExecutorService thread1 = Executors.newScheduledThreadPool(1);
         ScheduledExecutorService thread2 = Executors.newScheduledThreadPool(1);
         thread1.scheduleAtFixedRate(new TaskLerProperties(), 0, 10, TimeUnit.SECONDS);
-        thread2.scheduleAtFixedRate(new TarefaComunicao(context), 2, 90, TimeUnit.SECONDS);
+        //thread2.schedule(new TarefaComunicao(context), 2, TimeUnit.SECONDS);
+
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        final Handler handler = new Handler();
+        handler.post(new TarefaComunicao(context));
+
 	}
 
 }
