@@ -41,6 +41,7 @@ public class RegistrarLog {
     public RegistrarLog(Context context) {
         this.context = context;
         this.logUtils = new LogUtils();
+        this.bancoDAO = new BancoDAO(context);
     }
 
     public static void imprimirMsg(String tag, String texto){
@@ -59,6 +60,7 @@ public class RegistrarLog {
         espacoDisponivel = espacoDisponivel();
         arquivosDiretorio = arquivosDiretorio();
         diretorioLogs = caminho.concat(barraDoSistema).concat("videoOne").concat(barraDoSistema).concat("log");
+        bancoDAO.close();
         logUtils.parametros(nomeVersaoOs, versaoApp, ip, dia, nomeDispositivo, espacoTotal, espacoDisponivel, getVideosNoBanco(), getComerciaisNoBanco(), arquivosDiretorio, diretorioLogs);
     }
 
@@ -165,9 +167,7 @@ public class RegistrarLog {
     }
 
     private void setVideosNoBanco() {
-        bancoDAO = new BancoDAO(context);
         this.videosNoBanco = bancoDAO.quantidadeVideoNoBanco();
-        bancoDAO.close();
     }
 
     private String getVideosNoBanco() {
@@ -175,9 +175,7 @@ public class RegistrarLog {
     }
 
     private void setComerciaisNoBanco() {
-        bancoDAO = new BancoDAO(context);
         this.comerciaisNoBanco = bancoDAO.quantidadeComerciaisNoBanco();
-        bancoDAO.close();
     }
 
     private String getComerciaisNoBanco() {

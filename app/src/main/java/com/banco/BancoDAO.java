@@ -14,7 +14,6 @@ public class BancoDAO {
     private DatabaseHelper helper;
     private SQLiteDatabase db;
 
-
     public BancoDAO(Context context) {
         this.helper = new DatabaseHelper(context);
         this.registrarLog = new RegistrarLog(context);
@@ -48,5 +47,4 @@ public class BancoDAO {
         cursor.close();
         return videoNoBanco;
     }
-
 }
