@@ -24,16 +24,10 @@ public class MainActivity extends Activity {
         ScheduledExecutorService thread1 = Executors.newScheduledThreadPool(1);
         ScheduledExecutorService thread2 = Executors.newScheduledThreadPool(1);
         thread1.scheduleAtFixedRate(new TaskLerProperties(), 0, 10, TimeUnit.SECONDS);
-        //thread2.schedule(new TarefaComunicao(context), 2, TimeUnit.SECONDS);
+        thread2.schedule(new TarefaComunicao(context), 2, TimeUnit.SECONDS);
 
-        try {
-            Thread.sleep(3000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
 
-        final Handler handler = new Handler();
-        handler.post(new TarefaComunicao(context));
+
 
 	}
 
