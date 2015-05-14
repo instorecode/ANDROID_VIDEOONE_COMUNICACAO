@@ -1,26 +1,6 @@
 package com.comunicacao;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.lang.reflect.Field;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.List;
 
-import com.br.instore.utils.Banco;
-import com.br.instore.utils.ConfiguaracaoUtils;
-import com.br.instore.utils.ExpUtils;
-import com.br.instore.exp.bean.VideoExp;
-import com.br.instore.exp.bean.CategoriaExp;
-import com.br.instore.exp.bean.ComercialExp;
-import com.br.instore.exp.bean.ProgramacaoExp;
-import com.syso.Imprimir;
-import android.content.ContentValues;
-import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
-import android.os.Environment;
-import android.util.Log;
 
 public class PopularBanco {
 /*

@@ -1,5 +1,4 @@
 package com.comunicacao;
-import com.syso.Imprimir;
 
 import java.io.BufferedReader;
 import java.io.File;
