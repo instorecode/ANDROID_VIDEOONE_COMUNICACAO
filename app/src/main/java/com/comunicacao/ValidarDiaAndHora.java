@@ -213,7 +213,6 @@ public class ValidarDiaAndHora {
         return hash;
     }
 
-
     public boolean isValid() {
         return valid;
     }

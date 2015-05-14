@@ -64,7 +64,7 @@ public class TarefaComunicao implements Runnable {
         RegistrarLog.imprimirMsg("Log", "INICIO");
         informacoesConexao();
         conectarEnderecoFtp();
-        popularBanco();
+        //popularBanco();
     }
 
     private void informacoesConexao() {
@@ -903,6 +903,14 @@ public class TarefaComunicao implements Runnable {
 
         RegistrarLog.imprimirMsg("Log", "Desconectou-se do ftp");
         registrarLog.escrever(" Desconectou-se do ftp");
+
+        try {
+            Thread.sleep(20000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        run();
     }
 
     private void popularBanco(){
@@ -971,6 +979,13 @@ public class TarefaComunicao implements Runnable {
                 RegistrarLog.imprimirMsg("Log","3 " + e.getMessage());
             }
         }
+
+        try {
+            Thread.sleep(20000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         run();
     }
 }

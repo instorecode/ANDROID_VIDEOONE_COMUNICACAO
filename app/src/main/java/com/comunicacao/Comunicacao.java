@@ -7,23 +7,16 @@ public class Comunicacao  {
     private Context context;
     private FTPClient ftp = new FTPClient();
     private FTPFile[] listaArquivosFtp;
-
     private PopularBanco popularBanco;
     private CriarPlaylist criarPlaylist;
     private LogUtils logUtils = new LogUtils();
     private int tentativasRealizadas = 0;
     private final byte[] buffer = new byte[1024];
-
     private Date ultimaComunicacao;
     private boolean podeExecutar = true;
 
-
     private ValidarDiaAndHora validarHoraAndDia = new ValidarDiaAndHora(Environment.getExternalStorageDirectory() + "/videoOne/config/configuracoes.properties");
     private String hashId = "";
-
-    public Comunicacao(Context contextParametro) {
-        this.context = contextParametro;
-    }
 
     //---Thread---//
     @Override
@@ -71,47 +64,6 @@ public class Comunicacao  {
         }
     }
 
-    private void finalizar() {
-        popularBanco = new PopularBanco(context);
-        List<String> erroCategoria = PopularBanco.errosCategoria;
-        List<String> erroComercial = PopularBanco.errosComercial;
-        List<String> erroProgramacao = PopularBanco.errosProgramacao;
-        List<String> erroVideo = PopularBanco.errosVideo;
 
-        if (null != erroCategoria && erroCategoria.size() > 0) {
-            for (String erro : erroCategoria) {
-                logUtils.registrar(" Categoria: ERRO - " + erro);
-            }
-        }
-
-        if (null != erroComercial && erroComercial.size() > 0) {
-            for (String erro : erroComercial) {
-                logUtils.registrar(" Comercial: ERRO - " + erro);
-            }
-        }
-
-        if (null != erroProgramacao && erroProgramacao.size() > 0) {
-            for (String erro : erroProgramacao) {
-                logUtils.registrar(" Programação: ERRO - " + erro);
-            }
-        }
-
-        if (null != erroVideo && erroVideo.size() > 0) {
-            for (String erro : erroVideo) {
-                logUtils.registrar(" Video:ERRO - " + erro);
-            }
-        }
-
-        criarPlaylist = new CriarPlaylist(context, logUtils);
-        criarPlaylist.comerciaisDeterminados();
-        criarPlaylist.horariosComercialDeterminado();
-        criarPlaylist.criarArquivoComercialDet(caminho.concat("/videoOne/playlist") ,"PlaylistDet.exp");
-        criarPlaylist.programacao();
-        criarPlaylist.categoria();
-        criarPlaylist.criarArquivoPlaylist(caminho.concat("/videoOne/playlist"), "Playlist.exp");
-
-        tentativasRealizadas++;
-        logUtils.registrar(" Final Tentativas realizadas " + tentativasRealizadas);
-    }
 */
 }
