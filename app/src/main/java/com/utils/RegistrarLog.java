@@ -41,7 +41,7 @@ public class RegistrarLog {
     public RegistrarLog(Context context) {
         this.context = context;
         this.logUtils = new LogUtils();
-        this.bancoDAO = new BancoDAO(context);
+
     }
 
     public static void imprimirMsg(String tag, String texto){
@@ -49,8 +49,9 @@ public class RegistrarLog {
     }
 
     private void informacaoes() {
-        setVideosNoBanco();
-        setComerciaisNoBanco();
+        bancoDAO = new BancoDAO(context);
+        videosNoBanco = bancoDAO.quantidadeVideoNoBanco();
+        bancoDAO.close();
         nomeVersaoOs = versaoAndroid(context);
         versaoApp = versaoAndroid(context);
         ip = ip();
@@ -60,7 +61,6 @@ public class RegistrarLog {
         espacoDisponivel = espacoDisponivel();
         arquivosDiretorio = arquivosDiretorio();
         diretorioLogs = caminho.concat(barraDoSistema).concat("videoOne").concat(barraDoSistema).concat("log");
-        bancoDAO.close();
         logUtils.parametros(nomeVersaoOs, versaoApp, ip, dia, nomeDispositivo, espacoTotal, espacoDisponivel, getVideosNoBanco(), getComerciaisNoBanco(), arquivosDiretorio, diretorioLogs);
     }
 
@@ -69,7 +69,7 @@ public class RegistrarLog {
         File properties = new File(caminhoProperties);
 
         if(properties.exists()){
-            informacaoes();
+            //informacaoes();
         }
         logUtils.registrar(texto);
     }
@@ -166,16 +166,8 @@ public class RegistrarLog {
         return arquivosNoDiretorio;
     }
 
-    private void setVideosNoBanco() {
-        this.videosNoBanco = bancoDAO.quantidadeVideoNoBanco();
-    }
-
     private String getVideosNoBanco() {
         return videosNoBanco;
-    }
-
-    private void setComerciaisNoBanco() {
-        this.comerciaisNoBanco = bancoDAO.quantidadeComerciaisNoBanco();
     }
 
     private String getComerciaisNoBanco() {

@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Environment;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
+
     public DatabaseHelper(Context context) {
         super(context, Environment.getExternalStorageDirectory().getAbsolutePath().concat("/videoOne/").concat("videoOneDs.db"), null, 1);
     }
@@ -19,10 +20,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
     }
-
-
-
-
 }
 
 

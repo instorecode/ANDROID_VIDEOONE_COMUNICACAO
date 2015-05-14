@@ -3,11 +3,14 @@ package com.banco;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Environment;
+
 import com.br.instore.utils.Banco;
 import com.utils.RegistrarLog;
 
-public class BancoDAO {
+import java.io.File;
 
+public class BancoDAO {
     private Banco banco = new Banco();
     private Cursor cursor;
     private RegistrarLog registrarLog;
@@ -20,8 +23,13 @@ public class BancoDAO {
     }
 
     public SQLiteDatabase getDb() {
+        File banco = new File ( Environment.getExternalStorageDirectory().getAbsolutePath().concat("/videoOne/").concat("videoOneDs.db-journal"));
+        if(banco.exists()){
+            banco.delete();
+            RegistrarLog.imprimirMsg("Log","BANCO EXCLUIDO");
+        }
         if (null == db) {
-            db = helper.getWritableDatabase();
+            db = helper.getReadableDatabase();
         }
         return db;
     }
@@ -32,19 +40,17 @@ public class BancoDAO {
 
     public String quantidadeComerciaisNoBanco() {
         SQLiteDatabase db = helper.getWritableDatabase();
-        Cursor cursor = db.rawQuery("SELECT Arquivo FROM Comercial", new String[]{});
+        cursor = db.rawQuery("SELECT Arquivo FROM Comercial", new String[]{});
         String comerciaisNoBanco = "";
         comerciaisNoBanco = String.valueOf(cursor.getCount());
-        cursor.close();
         return comerciaisNoBanco;
     }
 
     public String quantidadeVideoNoBanco() {
-        SQLiteDatabase db = helper.getWritableDatabase();
-        Cursor cursor = db.rawQuery("SELECT Arquivo FROM Video", new String[]{});
+        SQLiteDatabase db = getDb();
+        cursor = db.rawQuery("SELECT Arquivo FROM Video", new String[]{});
         String videoNoBanco = "";
         videoNoBanco = String.valueOf(cursor.getCount());
-        cursor.close();
         return videoNoBanco;
     }
 }

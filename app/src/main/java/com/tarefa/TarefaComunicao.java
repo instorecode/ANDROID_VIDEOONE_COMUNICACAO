@@ -38,7 +38,7 @@ public class TarefaComunicao implements Runnable {
     private final String caminho = Environment.getExternalStorageDirectory().toString();
     private String salvar_importes = "";
     private String salvar_export = "";
-    private String arquivoZip = "";
+    private String caminhoArquivoZip = "";
     private String diretorioConfig = "";
     private String diretorioDeVideos = "";
     private String diretorioLog = "";
@@ -137,14 +137,16 @@ public class TarefaComunicao implements Runnable {
         }
 
         try {
-            arquivoZip = salvar_export.concat(barraDoSistema).concat("videoOne.zip");
+            caminhoArquivoZip = salvar_export.concat(barraDoSistema).concat("videoOne.zip");
         } catch (NullPointerException e) {
+            caminhoArquivoZip = "/mnt/sdcard/videoOne/export/videoOne.zip";
             //RegistrarLog.imprimirMsg("Log", "7 Erro ao pegar as informações de configurações");
         } catch (InvalidParameterException e) {
+            caminhoArquivoZip = "/mnt/sdcard/videoOne/export/videoOne.zip";
             //RegistrarLog.imprimirMsg("Log", "8 Erro ao pegar as informações de configurações");
         } catch (Exception e) {
+            caminhoArquivoZip = "/mnt/sdcard/videoOne/export/videoOne.zip";
             //RegistrarLog.imprimirMsg("Log", "9 Erro ao pegar as informações de configurações");
-
         }
 
         try {
@@ -383,7 +385,7 @@ public class TarefaComunicao implements Runnable {
             ftp.changeDirectory(ConfiguaracaoUtils.ftp.getDiretorioRemoto());
             RegistrarLog.imprimirMsg("Log", " Diretório ftp de download " + ConfiguaracaoUtils.ftp.getDiretorioRemoto());
             registrarLog.escrever(" Entrou no diretório " + ConfiguaracaoUtils.ftp.getDiretorioRemoto() + " com sucesso");
-            download();
+            zipArquivos();
         } catch (IllegalStateException e) {
             RegistrarLog.imprimirMsg("Log", " Diretório informado esta errado" + " 1" + e.getMessage());
             registrarLog.escrever(" Diretório informado esta errado" + " " + e.getMessage());
@@ -419,6 +421,157 @@ public class TarefaComunicao implements Runnable {
             registrarLog.escrever(" Diretório informado esta errado " + " " + e.getMessage());
             tentativasRealizadas++;
             desconectarFtp();
+        }
+    }
+
+    public void zipArquivos(){
+        RegistrarLog.imprimirMsg("Log","Zip Arquivos");
+        ZipParameters parameters = new ZipParameters();
+        parameters.setCompressionMethod(Zip4jConstants.COMP_DEFLATE);
+        parameters.setCompressionLevel(Zip4jConstants.DEFLATE_LEVEL_NORMAL);
+
+
+        File arquivoZip = new File(caminhoArquivoZip);
+        if(arquivoZip.exists()){
+            arquivoZip.delete();
+        }
+        ZipFile zip = null;
+
+        try {
+            zip = new ZipFile(arquivoZip);
+        } catch (NullPointerException e){
+            RegistrarLog.imprimirMsg("Log", e.getMessage() + " 1");
+            download();
+        } catch (InvalidParameterException e){
+            RegistrarLog.imprimirMsg("Log", e.getMessage() + " 2");
+            download();
+        } catch (Exception e) {
+            RegistrarLog.imprimirMsg("Log", e.getMessage() + " 3");
+            download();
+        }
+
+        List<File> arquivos = new ArrayList<File>();
+
+        try{
+            File arquivoDeBanco = new File(caminho.concat(barraDoSistema).concat("videoOne").concat(barraDoSistema).concat("videoOneDs.db"));
+            if(arquivoDeBanco.exists()){
+                arquivos.add(arquivoDeBanco);
+            } else {
+                RegistrarLog.imprimirMsg("Log", " Arquivo do banco não foi encontrado");
+            }
+        } catch (NullPointerException e){
+            RegistrarLog.imprimirMsg("Log", e.getMessage() + " 4");
+        } catch (InvalidParameterException e) {
+            RegistrarLog.imprimirMsg("Log", e.getMessage() + " 5");
+        } catch (Exception e) {
+            RegistrarLog.imprimirMsg("Log", e.getMessage() + " 6");
+        }
+
+        try {
+            File arquivoDeConfig = new File(diretorioConfig.concat(barraDoSistema).concat("configuracoes.properties"));
+            if(arquivoDeConfig.exists()){
+                arquivos.add(arquivoDeConfig);
+            } else {
+                RegistrarLog.imprimirMsg("Log", " Arquivo de config não foi encontrado");
+            }
+        } catch (NullPointerException e){
+            RegistrarLog.imprimirMsg("Log", e.getMessage() + " 7");
+        } catch (InvalidParameterException e) {
+            RegistrarLog.imprimirMsg("Log", e.getMessage() + " 8");
+        } catch (Exception e) {
+            RegistrarLog.imprimirMsg("Log", e.getMessage() + " 9");
+        }
+
+        try {
+            File arquivosLog = new File(diretorioLog);
+            for (File arquivoLog : arquivosLog.listFiles()){
+                if(arquivoLog.exists()){
+                    arquivos.add(arquivoLog);
+                }
+            }
+        } catch (NullPointerException e){
+            RegistrarLog.imprimirMsg("Log", e.getMessage() + " 10");
+        } catch (InvalidParameterException e) {
+            RegistrarLog.imprimirMsg("Log", e.getMessage() + " 11");
+        } catch (Exception e) {
+            RegistrarLog.imprimirMsg("Log", e.getMessage() + " 12");
+        }
+
+
+        for(File arquivosHaCompactar : arquivos){
+            if(arquivosHaCompactar.exists()){
+                try {
+                    zip.addFile(arquivosHaCompactar, parameters);
+                } catch (ZipException e) {
+                    e.printStackTrace();
+                    RegistrarLog.imprimirMsg("Log","1 Arquivo que não foi compactado " + arquivosHaCompactar.getAbsolutePath() + " " + e.getMessage());
+                    continue;
+                } catch (NullPointerException e) {
+                    e.printStackTrace();
+                    RegistrarLog.imprimirMsg("Log","2 Arquivo que não foi compactado " + arquivosHaCompactar.getAbsolutePath() + " " + e.getMessage());
+                    continue;
+                } catch (InvalidParameterException e) {
+                    e.printStackTrace();
+                    RegistrarLog.imprimirMsg("Log","3 Arquivo que não foi compactado " + arquivosHaCompactar.getAbsolutePath() + " " + e.getMessage());
+                    continue;
+                } catch (Exception e){
+                    e.printStackTrace();
+                    RegistrarLog.imprimirMsg("Log","4 Arquivo que não foi compactado " + arquivosHaCompactar.getAbsolutePath() + " " + e.getMessage());
+                    continue;
+                }
+            }
+        }
+        RegistrarLog.imprimirMsg("Log","Compactar");
+        uploadZip();
+    }
+
+    private void uploadZip() {
+        RegistrarLog.imprimirMsg("Log", "Entrou no metodo de upload de zip");
+        try {
+            ftp.upload(new File(caminhoArquivoZip));
+            RegistrarLog.imprimirMsg("Log", " Arquivo zip " + new File(caminhoArquivoZip).getName() + " foi enviado com sucesso");
+            registrarLog.escrever(" Arquivo zip " + new File(caminhoArquivoZip).getName() + " foi enviado com sucesso");
+            download();
+        } catch (IllegalStateException e) {
+            RegistrarLog.imprimirMsg("Log", " O servidor ftp não esta conectado. Não foi possível enviar o zip" + " " + e.getMessage());
+            registrarLog.escrever(" O servidor ftp não esta conectado. Não foi possível enviar o zip" + " " + e.getMessage());
+            download();
+        } catch (FileNotFoundException e) {
+            RegistrarLog.imprimirMsg("Log", " O arquivo zip" + new File(caminhoArquivoZip).getName() + " não foi encontrado " + " " + e.getMessage());
+            registrarLog.escrever(" O arquivo zip" + new File(caminhoArquivoZip).getName() + " não foi encontrado " + " " + e.getMessage());
+            download();
+        } catch (IOException e) {
+            RegistrarLog.imprimirMsg("Log", " Erro na entrada ou saida de dados. Não foi possível enviar o zip" + " " + e.getMessage());
+            registrarLog.escrever(" Erro na entrada ou saida de dados. Não foi possível enviar o zip" + " " + e.getMessage());
+            download();
+        } catch (FTPIllegalReplyException e) {
+            RegistrarLog.imprimirMsg("Log", " Servidor se comportou de forma inesperada. Não foi possível enviar o zip" + " " + e.getMessage());
+            registrarLog.escrever(" Servidor se comportou de forma inesperada. Não foi possível enviar o zip" + " " + e.getMessage());
+            download();
+        } catch (FTPException e) {
+            RegistrarLog.imprimirMsg("Log", " Operação falhou. Não foi possível enviar o zip" + " " + e.getMessage());
+            registrarLog.escrever(" Operação falhou. Não foi possível enviar o zip" + " " + e.getMessage());
+            download();
+        } catch (FTPDataTransferException e) {
+            RegistrarLog.imprimirMsg("Log", " Erro na entrada ou saida de dados mas possivelmente a conexão ainda esta ativa. Não foi possível enviar o zip" + " " + e.getMessage());
+            registrarLog.escrever(" Erro na entrada ou saida de dados mas possivelmente a conexão ainda esta ativa. Não foi possível enviar o zip" + " " + e.getMessage());
+            download();
+        } catch (FTPAbortedException e) {
+            RegistrarLog.imprimirMsg("Log", " O upload foi abortado por outra thread. Não foi possível enviar o zip" + " " + e.getMessage());
+            registrarLog.escrever(" O upload foi abortado por outra thread. Não foi possível enviar o zip" + " " + e.getMessage());
+            download();
+        } catch (NullPointerException e){
+            RegistrarLog.imprimirMsg("Log", " O upload foi abortado por outra thread. Não foi possível enviar o zip" + " " + e.getMessage());
+            registrarLog.escrever(" O upload foi abortado por outra thread. Não foi possível enviar o zip" + " " + e.getMessage());
+            download();
+        } catch (InvalidParameterException e){
+            RegistrarLog.imprimirMsg("Log", " O upload foi abortado por outra thread. Não foi possível enviar o zip" + " " + e.getMessage());
+            registrarLog.escrever(" O upload foi abortado por outra thread. Não foi possível enviar o zip" + " " + e.getMessage());
+            download();
+        } catch (Exception e){
+            RegistrarLog.imprimirMsg("Log", " O upload foi abortado por outra thread. Não foi possível enviar o zip" + " " + e.getMessage());
+            registrarLog.escrever(" O upload foi abortado por outra thread. Não foi possível enviar o zip" + " " + e.getMessage());
+            download();
         }
     }
 
@@ -505,7 +658,8 @@ public class TarefaComunicao implements Runnable {
                             continue;
                         }
 
-                        if (TransferCustom.transferido) {
+                        //if (TransferCustom.transferido) {
+                        if (false) {
                             try {
                                 ftp.rename(file.getName(), file.getName().concat(".@@@"));
                                 RegistrarLog.imprimirMsg("Log", file.getName() + " Renomear");
@@ -561,7 +715,7 @@ public class TarefaComunicao implements Runnable {
         List<File> arquivosValidos = md5Utils.getArquivosValidos();
 
         if (null != arquivosValidos && !arquivosValidos.isEmpty()) {
-            RegistrarLog.imprimirMsg("Log","Tem arquivos com md5 validos");
+            RegistrarLog.imprimirMsg("Log", "Tem arquivos com md5 validos");
             for (File file : arquivosValidos) {
                 RegistrarLog.imprimirMsg("Log", "Arquivo md5 valido " + file.getAbsolutePath());
                 boolean moveuArquivo = Arquivo.moverArquivo(file, new File(diretorioDeVideos.concat(barraDoSistema).concat(file.getName())));
@@ -718,96 +872,6 @@ public class TarefaComunicao implements Runnable {
             e.printStackTrace();
         }
         run();
-    }
-
-    private void zipArquivos() {
-        RegistrarLog.imprimirMsg("Log", "Entrou no metodo zip");
-        registrarLog.escrever(" Criando zip");
-        File fileZip = new File(arquivoZip);
-
-        ZipFile zip = null;
-        try {
-            zip = new ZipFile(fileZip);
-        } catch (ZipException e) {
-            ImprimirUtils.imprimirErro(TarefaComunicao.this, e);
-        }
-
-        List<File> arquivos = new ArrayList<File>();
-
-        File banco = new File(diretorioVideoOne.concat(barraDoSistema).concat("videoOneDs.db"));
-        if (banco.exists()) {
-            //arquivos.add(banco);
-        }
-
-        File properties = new File(diretorioConfig.concat(barraDoSistema).concat("configuracoes.properties"));
-        if (properties.exists()) {
-            //arquivos.add(properties);
-        }
-
-        File file = new File(diretorioLog);
-        for (File arquivoLog : file.listFiles()) {
-            arquivos.add(arquivoLog);
-        }
-
-        ZipParameters parameters = new ZipParameters();
-        parameters.setCompressionMethod(Zip4jConstants.COMP_DEFLATE);
-        parameters.setCompressionLevel(Zip4jConstants.DEFLATE_LEVEL_NORMAL);
-
-        for (File arquivosACompactar : arquivos) {
-            if (arquivosACompactar.exists()) {
-                try {
-                    RegistrarLog.imprimirMsg("Log", arquivosACompactar.getAbsolutePath());
-                    zip.addFile(arquivosACompactar, parameters);
-                } catch (ZipException e) {
-                    registrarLog.escrever(" " + e.getMessage() + " Não pode compactar o arquivo " + arquivosACompactar.getName() + " " + e.getMessage());
-                    continue;
-                }
-            }
-        }
-        RegistrarLog.imprimirMsg("Log", zip.getFile().getAbsolutePath());
-        desconectarFtp();
-        //uploadZip();
-    }
-
-    private void uploadZip() {
-        RegistrarLog.imprimirMsg("Log", "Entrou no metodo de upload de zip");
-        try {
-            ftp.upload(new File(arquivoZip));
-            RegistrarLog.imprimirMsg("Log", " Arquivo zip " + new File(arquivoZip).getName() + " foi enviado com sucesso");
-            registrarLog.escrever(" Arquivo zip " + new File(arquivoZip).getName() + " foi enviado com sucesso");
-            //arquivosNoFtp();
-            desconectarFtp();
-        } catch (IllegalStateException e) {
-            RegistrarLog.imprimirMsg("Log", " O servidor ftp não esta conectado. Não foi possível enviar o zip" + " " + e.getMessage());
-            registrarLog.escrever(" O servidor ftp não esta conectado. Não foi possível enviar o zip" + " " + e.getMessage());
-            desconectarFtp();
-        } catch (FileNotFoundException e) {
-            RegistrarLog.imprimirMsg("Log", " O arquivo zip" + new File(arquivoZip).getName() + " não foi encontrado " + " " + e.getMessage());
-            registrarLog.escrever(" O arquivo zip" + new File(arquivoZip).getName() + " não foi encontrado " + " " + e.getMessage());
-            desconectarFtp();
-        } catch (IOException e) {
-            RegistrarLog.imprimirMsg("Log", " Erro na entrada ou saida de dados. Não foi possível enviar o zip" + " " + e.getMessage());
-            registrarLog.escrever(" Erro na entrada ou saida de dados. Não foi possível enviar o zip" + " " + e.getMessage());
-            desconectarFtp();
-        } catch (FTPIllegalReplyException e) {
-            RegistrarLog.imprimirMsg("Log", " Servidor se comportou de forma inesperada. Não foi possível enviar o zip" + " " + e.getMessage());
-            registrarLog.escrever(" Servidor se comportou de forma inesperada. Não foi possível enviar o zip" + " " + e.getMessage());
-            desconectarFtp();
-        } catch (FTPException e) {
-            RegistrarLog.imprimirMsg("Log", " Operação falhou. Não foi possível enviar o zip" + " " + e.getMessage());
-            registrarLog.escrever(" Operação falhou. Não foi possível enviar o zip" + " " + e.getMessage());
-            desconectarFtp();
-        } catch (FTPDataTransferException e) {
-            RegistrarLog.imprimirMsg("Log", " Erro na entrada ou saida de dados mas possivelmente a conexão ainda esta ativa. Não foi possível enviar o zip" + " " + e.getMessage());
-            registrarLog.escrever(" Erro na entrada ou saida de dados mas possivelmente a conexão ainda esta ativa. Não foi possível enviar o zip" + " " + e.getMessage());
-            desconectarFtp();
-        } catch (FTPAbortedException e) {
-            RegistrarLog.imprimirMsg("Log", " O upload foi abortado por outra thread. Não foi possível enviar o zip" + " " + e.getMessage());
-            registrarLog.escrever(" O upload foi abortado por outra thread. Não foi possível enviar o zip" + " " + e.getMessage());
-            desconectarFtp();
-        }
-
-
     }
 
 }
