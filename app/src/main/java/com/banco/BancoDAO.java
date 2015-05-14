@@ -189,12 +189,41 @@ public class BancoDAO {
                     try {
                         ContentValues values = new ContentValues();
                         values.put("Descricao", p.descricao.trim());
-                        values.put("Dia", new SimpleDateFormat("dd").format(p.dataInicial));
-                        values.put("Mes", new SimpleDateFormat("MM").format(p.dataInicial));
-                        values.put("Ano", new SimpleDateFormat("yyyy").format(p.dataInicial));
-                        values.put("Diaf", new SimpleDateFormat("dd").format(p.dataFinal));
-                        values.put("Mesf", new SimpleDateFormat("MM").format(p.dataFinal));
-                        values.put("Anof", new SimpleDateFormat("yyyy").format(p.dataFinal));
+                        values.put("Dia", p.dataInicial.split("-")[0]);
+                        values.put("Mes", p.dataInicial.split("-")[1]);
+                        values.put("Ano", p.dataInicial.split("-")[2]);
+                        values.put("Diaf", p.dataFinal.split("-")[0]);
+                        values.put("Mesf", p.dataFinal.split("-")[1]);
+                        values.put("Anof", p.dataFinal.split("-")[2]);
+                        values.put("DiaSemana", p.diaDaSemana);
+                        values.put("HoraInicio", p.horarioInicio);
+                        values.put("HoraFinal", p.horarioFinal);
+                        values.put("Categoria1", p.categoria1);
+                        values.put("Categoria2", p.categoria2);
+                        values.put("Categoria3", p.categoria3);
+                        values.put("Categoria4", p.categoria4);
+                        values.put("Categoria5", p.categoria5);
+                        values.put("Categoria6", p.categoria6);
+                        values.put("Categoria7", p.categoria7);
+                        values.put("Categoria8", p.categoria8);
+                        values.put("Categoria9", p.categoria9);
+                        values.put("Categoria10", p.categoria10);
+                        values.put("Categoria11", p.categoria11);
+                        values.put("Categoria12", p.categoria12);
+                        values.put("Categoria13", p.categoria13);
+                        values.put("Categoria14", p.categoria14);
+                        values.put("Categoria15", p.categoria15);
+                        values.put("Categoria16", p.categoria16);
+                        values.put("Categoria17", p.categoria17);
+                        values.put("Categoria18", p.categoria18);
+                        values.put("Categoria19", p.categoria19);
+                        values.put("Categoria20", p.categoria20);
+                        values.put("Categoria21", p.categoria21);
+                        values.put("Categoria22", p.categoria22);
+                        values.put("Categoria23", p.categoria23);
+                        values.put("Categoria24", p.categoria24);
+                        values.put("Conteudo", p.conteudo);
+                        db.replace("Programacao", null, values);
 
                     } catch (SQLiteCantOpenDatabaseException e) {
                         RegistrarLog.imprimirMsg("Log", "Banco não pode ser aberto, não foi possivel atualizar a tabela Programacao");
