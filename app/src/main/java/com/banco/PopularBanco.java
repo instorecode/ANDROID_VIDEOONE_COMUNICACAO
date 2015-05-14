@@ -1,37 +1,40 @@
-package com.comunicacao;
+package com.banco;
 
 
+import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
+import android.os.Environment;
+
+import com.br.instore.utils.ConfiguaracaoUtils;
+import com.br.instore.utils.ExpUtils;
+import com.utils.RegistrarLog;
+
+import java.io.File;
 
 public class PopularBanco {
-/*
-    private SQLiteDatabase db;
+
+    private BancoDAO bancoDAO;
     private final String caminho = Environment.getExternalStorageDirectory().toString();
     private String barraDoSistema = System.getProperty("file.separator");
     private Context context;
-    private Banco banco;
 
-    public static List<String> errosCategoria;
-    public static List<String> errosComercial;
-    public static List<String> errosProgramacao;
-    public static List<String> errosVideo;
 
-    public PopularBanco(Context contextParamento) {
-        context = contextParamento;
+
+    public PopularBanco(Context context) {
+        this.context = context;
+        this.bancoDAO = new BancoDAO(context);
+
         controlador();
-        banco = new Banco();
-        banco.criarViewComercialDet();
-        banco.criarViewProgramacao();
-        banco.criarViewComercialRandom();
         criarViewComercialDet();
         criarViewProgramacao();
         criarViewComercialRandom();
     }
 
     private void controlador() {
-        String categoria = caminho + "/" + ConfiguaracaoUtils.diretorio.getDiretorioImportacao() + "/Categoria.exp";
-        String comercial = caminho + "/" + ConfiguaracaoUtils.diretorio.getDiretorioImportacao() + "/Comercial.exp";
-        String programacao = caminho + "/" + ConfiguaracaoUtils.diretorio.getDiretorioImportacao() + "/Programacao.exp";
-        String video = caminho + "/" + ConfiguaracaoUtils.diretorio.getDiretorioImportacao() + "/Video.exp";
+        String categoria = caminho.concat(barraDoSistema).concat(ConfiguaracaoUtils.diretorio.getDiretorioImportacao().concat(barraDoSistema).concat("Categoria.exp"));
+        String comercial = caminho.concat(barraDoSistema).concat(ConfiguaracaoUtils.diretorio.getDiretorioImportacao().concat(barraDoSistema).concat("Comercial.exp"));
+        String programacao = caminho.concat(barraDoSistema).concat(ConfiguaracaoUtils.diretorio.getDiretorioImportacao().concat(barraDoSistema).concat("Programacao.exp"));
+        String video = caminho.concat(barraDoSistema).concat(ConfiguaracaoUtils.diretorio.getDiretorioImportacao().concat(barraDoSistema).concat("Video.exp"));
 
         File arquivoCategoria = new File(categoria);
         File arquivoComercial = new File(comercial);
@@ -39,7 +42,7 @@ public class PopularBanco {
         File arquivoVideo = new File(video);
 
         if (!arquivoCategoria.exists()) {
-            RegistrarLog.imprimirMsg(" O arquivo Categoria.exp não foi encontrado");
+            RegistrarLog.imprimirMsg("Log"," O arquivo Categoria.exp não foi encontrado");
         } else {
             String resultado = insertCategoria(categoria);
             RegistrarLog.imprimirMsg(resultado);
@@ -118,122 +121,6 @@ public class PopularBanco {
                 RegistrarLog.imprimirMsg("Não renomeu com sucesso");
             }
         }
-    }
-
-    private String insertCategoria(String caminho) {
-        db = context.openOrCreateDatabase(Environment.getExternalStorageDirectory() + "/videoOne/videoOneDs.db", Context.MODE_PRIVATE, null);
-        db.beginTransaction();
-
-        try {
-            List<CategoriaExp> listaComercial = ExpUtils.lerCategoria(caminho);
-
-            for (CategoriaExp c : listaComercial) {
-                ContentValues values = new ContentValues();
-                values.put("Codigo", c.codigo);
-                values.put("Categoria", c.categoria.trim());
-                values.put("DataInicio", new SimpleDateFormat("yyyy-MM-dd").format(c.periodoInicial));
-                values.put("DataFinal", new SimpleDateFormat("yyyy-MM-dd").format(c.periodoFinal));
-                values.put("Tipo", c.tipo);
-                values.put("Tempo", new SimpleDateFormat("HH:mm:ss").format(c.tempo));
-                db.replace("Categoria", null, values);
-            }
-            db.setTransactionSuccessful();
-        } catch (IOException e) {
-            e.printStackTrace();
-            String resultado;
-            resultado = " Erro ao popular o banco com as informações do exp de categoria " + e.getMessage();
-            return resultado;
-
-        } catch (ParseException e) {
-            e.printStackTrace();
-            String resultado;
-            resultado = " Erro ao popular o banco com as informações do exp de categoria " + e.getMessage();
-            return resultado;
-        } finally {
-            db.endTransaction();
-            while(db.isOpen()){
-                db.close();
-            }
-        }
-        return " Banco foi populado com as informações do exp de categoria com sucesso";
-    }
-
-    private String insertComercial(String caminho) {
-        db = context.openOrCreateDatabase(Environment.getExternalStorageDirectory() + "/videoOne/videoOneDs.db", Context.MODE_PRIVATE, null);
-        db.beginTransaction();
-        try {
-            List<ComercialExp> listaComercial = ExpUtils.lerComercial(caminho);
-
-            for (ComercialExp c : listaComercial) {
-                ContentValues values = new ContentValues();
-
-                values.put("Arquivo", c.arquivo.trim());
-                values.put("Cliente", c.cliente.trim());
-                values.put("Titulo", c.titulo.trim());
-                values.put("TipoInterprete", c.tipoInterprete);
-                values.put("Categoria", c.categoria);
-                values.put("PeriodoInicial", new SimpleDateFormat("yyyy-MM-dd").format(c.periodoInicial));
-                values.put("PeriodoFinal", new SimpleDateFormat("yyyy-MM-dd").format(c.periodoFinal));
-
-                for (int i = 1; i <= 24; i++) {
-                    Field f = c.getClass().getDeclaredField("semana" + i);
-                    Field f2 = c.getClass().getDeclaredField("horario" + i);
-
-                    if (null != f) {
-                        values.put("Semana" + i, f.get(c).toString());
-                    }
-                    if (null != f2) {
-                        values.put("horario" + i, new SimpleDateFormat("HH:mm:ss").format(f2.get(c)));
-                    }
-                }
-
-                values.put("DiaSemana", c.diaSemana);
-                values.put("DiasAlternados", (c.diasAlternados == true) ? 1 : 0);
-                //values.put("Data", new SimpleDateFormat("yyyy-MM-dd").format(c.data));
-                //values.put("UltimaExecucao", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(c.ultimaExecucao));
-                values.put("TempoTotal", new SimpleDateFormat("HH:mm:ss").format(c.tempoTotal));
-                values.put("QtdePlayer", c.quantidade);
-                values.put("DataVencto", new SimpleDateFormat("yyyy-MM-dd").format(c.dataVencimento));
-                values.put("Dependencia1", c.dependencia1.trim());
-                values.put("Dependencia2", c.dependencia2.trim());
-                values.put("Dependencia3", c.dependencia3.trim());
-                values.put("FrameInicio", c.frameInicio);
-                values.put("FrameFinal", c.frameFinal);
-                values.put("Msg", c.mensagem);
-
-                db.replace("Comercial", null, values);
-            }
-            db.setTransactionSuccessful();
-        } catch (NoSuchFieldException e) {
-            e.printStackTrace();
-            String resultado;
-            resultado = " Erro ao popular o banco com as informações do exp de comercial " + e.getMessage();
-            return resultado;
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            String resultado;
-            resultado = " Erro ao popular o banco com as informações do exp de comercial " + e.getMessage();
-            return resultado;
-
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-            String resultado;
-            resultado = " Erro ao popular o banco com as informações do exp de comercial " + e.getMessage();
-            return resultado;
-
-        } catch (ParseException e) {
-            e.printStackTrace();
-            String resultado;
-            resultado = " Erro ao popular o banco com as informações do exp de comercial " + e.getMessage();
-            return resultado;
-        } finally {
-            db.endTransaction();
-            while(db.isOpen()){
-                db.close();
-            }
-        }
-        return " Banco foi populado com as informações do exp de comercial com sucesso";
     }
 
     private String insertProgramacao(String caminho) {
@@ -408,5 +295,5 @@ public class PopularBanco {
         while(db.isOpen()){
             db.close();
         }
-    }*/
+    }
 }

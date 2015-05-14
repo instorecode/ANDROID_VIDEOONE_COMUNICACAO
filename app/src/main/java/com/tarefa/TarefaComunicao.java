@@ -59,6 +59,7 @@ public class TarefaComunicao implements Runnable {
         RegistrarLog.imprimirMsg("Log", "INICIO");
         informacoesConexao();
         conectarEnderecoFtp();
+        popularBanco();
     }
 
     private void informacoesConexao() {
@@ -897,14 +898,9 @@ public class TarefaComunicao implements Runnable {
 
         RegistrarLog.imprimirMsg("Log", "Desconectou-se do ftp");
         registrarLog.escrever(" Desconectou-se do ftp");
-        RegistrarLog.imprimirMsg("Log", "FIM");
-
-        try {
-            Thread.sleep(20000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        run();
     }
 
+    private void popularBanco(){
+
+    }
 }
