@@ -4,6 +4,8 @@ import android.content.Context;
 import android.os.Environment;
 import android.os.Handler;
 import android.widget.Toast;
+
+import com.banco.BancoDAO;
 import com.br.instore.utils.Arquivo;
 import com.br.instore.utils.ConfiguaracaoUtils;
 import com.br.instore.utils.ImprimirUtils;
@@ -34,6 +36,10 @@ public class TarefaComunicao implements Runnable {
     private final Context context;
     private FTPClient ftp = new FTPClient();
     private RegistrarLog registrarLog;
+    private Md5Utils md5Utils = new Md5Utils();
+    private BancoDAO bancoDAO;
+
+
     private final String barraDoSistema = System.getProperty("file.separator");
     private final String caminho = Environment.getExternalStorageDirectory().toString();
     private String salvar_importes = "";
@@ -45,13 +51,12 @@ public class TarefaComunicao implements Runnable {
     private String diretorioVideoOne = "";
     private int maximoTentativas = 10;
     private int tentativasRealizadas = 0;
-    private Md5Utils md5Utils = new Md5Utils();
-    private Arquivo arquivoUtils = new Arquivo();
 
     public TarefaComunicao(Context context) {
         Toast.makeText(context, "CONSTRUTOR", Toast.LENGTH_LONG).show();
         this.context = context;
         registrarLog = new RegistrarLog(context);
+        bancoDAO = new BancoDAO(context);
     }
 
     @Override
@@ -901,6 +906,71 @@ public class TarefaComunicao implements Runnable {
     }
 
     private void popularBanco(){
+        String categoria = caminho.concat(barraDoSistema).concat(salvar_importes).concat(barraDoSistema).concat("Categoria.exp");
+        String comercial = caminho.concat(barraDoSistema).concat(salvar_importes).concat(barraDoSistema).concat("Comercial.exp");
+        String programacao = caminho.concat(barraDoSistema).concat(salvar_importes).concat(barraDoSistema).concat("Programacao.exp");
+        String video = caminho.concat(barraDoSistema).concat(salvar_importes).concat(barraDoSistema).concat("Video.exp");
 
+        File arquivoCategoria = new File(categoria);
+        File arquivoComercial = new File(comercial);
+        File arquivoProgramacao = new File(programacao);
+        File arquivoVideo = new File(video);
+
+        if(arquivoCategoria.exists()){
+            try {
+                bancoDAO.insertCategoria(arquivoCategoria.getAbsolutePath());
+                File renomearExpCategoria = new File(caminho.concat(barraDoSistema).concat(salvar_importes).concat(barraDoSistema).concat("Categoria.old"));
+                arquivoCategoria.renameTo(renomearExpCategoria);
+            } catch (NullPointerException e){
+                RegistrarLog.imprimirMsg("Log","1 " + e.getMessage());
+            } catch (InvalidParameterException e) {
+                RegistrarLog.imprimirMsg("Log","2 " + e.getMessage());
+            } catch (Exception e){
+                RegistrarLog.imprimirMsg("Log","3 " + e.getMessage());
+            }
+        }
+
+        if(arquivoComercial.exists()){
+            try{
+                bancoDAO.insertComercial(arquivoComercial.getAbsolutePath());
+                File renomearExpComercial = new File(caminho.concat(barraDoSistema).concat(salvar_importes).concat(barraDoSistema).concat("Comercial.old"));
+                arquivoComercial.renameTo(renomearExpComercial);
+            } catch (NullPointerException e){
+                RegistrarLog.imprimirMsg("Log","1 " + e.getMessage());
+            } catch (InvalidParameterException e) {
+                RegistrarLog.imprimirMsg("Log","2 " + e.getMessage());
+            } catch (Exception e){
+                RegistrarLog.imprimirMsg("Log","3 " + e.getMessage());
+            }
+        }
+
+        if(arquivoProgramacao.exists()){
+            try {
+                bancoDAO.insertProgramacao(arquivoProgramacao.getAbsolutePath());
+                File renomearExpProgramacao = new File(caminho.concat(barraDoSistema).concat(salvar_importes).concat(barraDoSistema).concat("Programacao.old"));
+                arquivoProgramacao.renameTo(renomearExpProgramacao);
+            } catch (NullPointerException e){
+                RegistrarLog.imprimirMsg("Log","1 " + e.getMessage());
+            } catch (InvalidParameterException e) {
+                RegistrarLog.imprimirMsg("Log","2 " + e.getMessage());
+            } catch (Exception e){
+                RegistrarLog.imprimirMsg("Log","3 " + e.getMessage());
+            }
+        }
+
+        if(arquivoVideo.exists()){
+            try {
+                bancoDAO.insertVideo(arquivoVideo.getAbsolutePath());
+                File renomearExpVideo = new File(caminho.concat(barraDoSistema).concat(salvar_importes).concat(barraDoSistema).concat("Video.old"));
+                arquivoVideo.renameTo(renomearExpVideo);
+            } catch (NullPointerException e){
+                RegistrarLog.imprimirMsg("Log","1 " + e.getMessage());
+            } catch (InvalidParameterException e) {
+                RegistrarLog.imprimirMsg("Log","2 " + e.getMessage());
+            } catch (Exception e){
+                RegistrarLog.imprimirMsg("Log","3 " + e.getMessage());
+            }
+        }
+        run();
     }
 }

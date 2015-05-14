@@ -41,7 +41,7 @@ public class RegistrarLog {
     public RegistrarLog(Context context) {
         this.context = context;
         this.logUtils = new LogUtils();
-
+        this.bancoDAO = new BancoDAO(context);
     }
 
     public static void imprimirMsg(String tag, String texto){
@@ -49,9 +49,8 @@ public class RegistrarLog {
     }
 
     private void informacaoes() {
-        bancoDAO = new BancoDAO(context);
         videosNoBanco = bancoDAO.quantidadeVideoNoBanco();
-        bancoDAO.close();
+        comerciaisNoBanco = bancoDAO.quantidadeComerciaisNoBanco();
         nomeVersaoOs = versaoAndroid(context);
         versaoApp = versaoAndroid(context);
         ip = ip();
@@ -61,7 +60,7 @@ public class RegistrarLog {
         espacoDisponivel = espacoDisponivel();
         arquivosDiretorio = arquivosDiretorio();
         diretorioLogs = caminho.concat(barraDoSistema).concat("videoOne").concat(barraDoSistema).concat("log");
-        logUtils.parametros(nomeVersaoOs, versaoApp, ip, dia, nomeDispositivo, espacoTotal, espacoDisponivel, getVideosNoBanco(), getComerciaisNoBanco(), arquivosDiretorio, diretorioLogs);
+        logUtils.parametros(nomeVersaoOs, versaoApp, ip, dia, nomeDispositivo, espacoTotal, espacoDisponivel, videosNoBanco, comerciaisNoBanco, arquivosDiretorio, diretorioLogs);
     }
 
     public void escrever(String texto) {
@@ -166,11 +165,4 @@ public class RegistrarLog {
         return arquivosNoDiretorio;
     }
 
-    private String getVideosNoBanco() {
-        return videosNoBanco;
-    }
-
-    private String getComerciaisNoBanco() {
-        return this.comerciaisNoBanco;
-    }
 }

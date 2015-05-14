@@ -13,6 +13,7 @@ import android.os.Environment;
 import com.br.instore.exp.bean.CategoriaExp;
 import com.br.instore.exp.bean.ComercialExp;
 import com.br.instore.exp.bean.ProgramacaoExp;
+import com.br.instore.exp.bean.VideoExp;
 import com.br.instore.utils.Banco;
 import com.br.instore.utils.ExpUtils;
 import com.utils.RegistrarLog;
@@ -41,7 +42,7 @@ public class BancoDAO {
             RegistrarLog.imprimirMsg("Log", "BANCO EXCLUIDO");
         }
         if (null == db) {
-            db = helper.getReadableDatabase();
+            db = helper.getWritableDatabase();
         }
         return db;
     }
@@ -66,7 +67,7 @@ public class BancoDAO {
         return videoNoBanco;
     }
 
-    private void insertCategoria(String caminho) {
+    public void insertCategoria(String caminho) {
         RegistrarLog.imprimirMsg("Log", "Insert Categoria");
         SQLiteDatabase db = getDb();
         if (null != caminho && !caminho.trim().replaceAll("\\s", "").isEmpty()) {
@@ -122,7 +123,7 @@ public class BancoDAO {
         RegistrarLog.imprimirMsg("Log", "Fim Insert Categoria");
     }
 
-    private void insertComercial(String caminho) {
+    public void insertComercial(String caminho) {
         RegistrarLog.imprimirMsg("Log", "Insert Comercial");
         SQLiteDatabase db = getDb();
 
@@ -179,13 +180,13 @@ public class BancoDAO {
         RegistrarLog.imprimirMsg("Log", "Fim Insert Comercial");
     }
 
-    private void insertProgramacao(String caminho) {
+    public void insertProgramacao(String caminho) {
         RegistrarLog.imprimirMsg("Log", "Insert Programacao");
         SQLiteDatabase db = getDb();
         if (null != caminho && !caminho.trim().replaceAll("\\s", "").isEmpty()) {
             try {
                 List<ProgramacaoExp> listaProgramacoes = expUtils.lerProgramacao(caminho);
-                for(ProgramacaoExp p : listaProgramacoes){
+                for (ProgramacaoExp p : listaProgramacoes) {
                     try {
                         ContentValues values = new ContentValues();
                         values.put("Descricao", p.descricao.trim());
@@ -248,6 +249,7 @@ public class BancoDAO {
                         continue;
                     }
                 }
+                db.setTransactionSuccessful();
             } catch (NullPointerException e) {
                 RegistrarLog.imprimirMsg("Log", "1 " + e.getMessage());
                 return;
@@ -262,5 +264,83 @@ public class BancoDAO {
             }
         }
         RegistrarLog.imprimirMsg("Log", "Fim Insert Programacao");
+    }
+
+    public void insertVideo(String caminho) {
+        RegistrarLog.imprimirMsg("Log", "Insert Video");
+        SQLiteDatabase db = getDb();
+        if (null != caminho && !caminho.trim().replaceAll("\\s", "").isEmpty()) {
+            try {
+                List<VideoExp> listaVideos = expUtils.lerVideo(caminho);
+                for(VideoExp v : listaVideos){
+                    try {
+                        ContentValues values = new ContentValues();
+                        values.put("Arquivo", v.arquivo.trim());
+                        values.put("Interprete", v.interprete.trim());
+                        values.put("TipoInterprete", v.tipoInterprete);
+                        values.put("Titulo", v.titulo.trim());
+                        values.put("Categoria1", v.categoria1);
+                        values.put("Categoria2", v.categoria2);
+                        values.put("Categoria3", v.categoria3);
+                        values.put("Crossover", (v.crossover == true) ? 1 : 0);
+
+                        values.put("DataVenctoCrossOver", v.dataVencimentoCrossover);
+                        values.put("DiasExecucao", v.diasExecucao1);
+                        values.put("DiasExecucao2", v.diasExecucao2);
+                        values.put("Afinidade1", v.afinadade1.trim());
+                        values.put("Afinidade2", v.afinadade2.trim());
+                        values.put("Afinidade3", v.afinadade3.trim());
+                        values.put("Afinidade4", v.afinadade4.trim());
+                        values.put("Gravadora", v.gravadora);
+                        values.put("AnoGravacao", v.anoGravacao);
+                        values.put("Velocidade", v.velocidade);
+                        values.put("Data", v.data);
+                        values.put("UltimaExecucaoData", v.ultimaExecucaoData);
+                        values.put("TempoTotal", v.tempoTotal);
+                        values.put("QtdePlayer", v.quantidadePlayerTotal);
+                        values.put("DataVencto", v.dataVencimento);
+                        values.put("FrameInicio", v.frameInicio);
+                        values.put("FrameFinal", v.frameFinal);
+                        values.put("Msg", v.mensagem);
+                        db.replace("Video", null, values);
+
+                    } catch (SQLiteCantOpenDatabaseException e) {
+                        RegistrarLog.imprimirMsg("Log", "Banco não pode ser aberto, não foi possivel atualizar a tabela Video");
+                        continue;
+                    } catch (SQLiteReadOnlyDatabaseException e) {
+                        RegistrarLog.imprimirMsg("Log", "Banco só pode ser lido, não foi possivel atualizar a tabela Video");
+                        continue;
+                    } catch (SQLiteDatabaseCorruptException e) {
+                        RegistrarLog.imprimirMsg("Log", "Banco está corrompido, não foi possivel atualizar a tabela Video");
+                        continue;
+                    } catch (SQLiteDatabaseLockedException e) {
+                        RegistrarLog.imprimirMsg("Log", "Banco está bloqueado, não foi possivel atualizar a tabela Video");
+                        continue;
+                    } catch (NullPointerException e) {
+                        RegistrarLog.imprimirMsg("Log", "Null Point, não foi possivel atualizar a tabela Video");
+                        continue;
+                    } catch (InvalidParameterException e) {
+                        RegistrarLog.imprimirMsg("Log", "Paremtro invalido, não foi possivel atualizar a tabela Video");
+                        continue;
+                    } catch (Exception e) {
+                        RegistrarLog.imprimirMsg("Log", "Erro, não foi possivel atualizar a tabela Video");
+                        continue;
+                    }
+                }
+                db.setTransactionSuccessful();
+            } catch (NullPointerException e) {
+                RegistrarLog.imprimirMsg("Log", "1 " + e.getMessage());
+                return;
+            } catch (InvalidParameterException e) {
+                RegistrarLog.imprimirMsg("Log", "2 " + e.getMessage());
+                return;
+            } catch (Exception e) {
+                RegistrarLog.imprimirMsg("Log", "3 " + e.getMessage());
+                return;
+            } finally {
+                db.endTransaction();
+            }
+        }
+        RegistrarLog.imprimirMsg("Log", "Fim Insert Video");
     }
 }
