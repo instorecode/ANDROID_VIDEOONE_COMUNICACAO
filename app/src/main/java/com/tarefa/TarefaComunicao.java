@@ -935,7 +935,7 @@ public class TarefaComunicao implements Runnable {
             }
         }
 
-        /*if(arquivoComercial.exists()){
+        if(arquivoComercial.exists()){
             try{
                 bancoDAO.insertComercial(arquivoComercial.getAbsolutePath());
                 //File renomearExpComercial = new File(salvar_importes.concat(barraDoSistema).concat("Comercial.old"));
@@ -975,7 +975,7 @@ public class TarefaComunicao implements Runnable {
             } catch (Exception e){
                 RegistrarLog.imprimirMsg("Log","3 " + e.getMessage());
             }
-        }*/
+        }
 
         RegistrarLog.imprimirMsg("Log","Banco Populado ");
         try {

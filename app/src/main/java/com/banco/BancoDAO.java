@@ -70,15 +70,10 @@ public class BancoDAO {
         RegistrarLog.imprimirMsg("Log", "Insert Categoria");
         db = helper.getWritableDatabase();
         db.beginTransaction();
-
         if (null != caminho && !caminho.trim().replaceAll("\\s", "").isEmpty()) {
-            RegistrarLog.imprimirMsg("Log", "Aqui 1");
             try {
-                RegistrarLog.imprimirMsg("Log", caminho + " Aqui");
                 List<CategoriaExp> listaCategoria = expUtils.lerCategoria(caminho);
-                RegistrarLog.imprimirMsg("Log", listaCategoria.size() + " Aqui 2");
                 for (CategoriaExp c : listaCategoria) {
-                    RegistrarLog.imprimirMsg("Log", c.toString());
                     try {
                         ContentValues values = new ContentValues();
                         values.put("Codigo", c.codigo);
@@ -130,8 +125,8 @@ public class BancoDAO {
 
     public void insertComercial(String caminho) {
         RegistrarLog.imprimirMsg("Log", "Insert Comercial");
-        SQLiteDatabase db = getDb();
-
+        db = helper.getWritableDatabase();
+        db.beginTransaction();
         if (null != caminho && !caminho.trim().replaceAll("\\s", "").isEmpty()) {
             try {
                 List<ComercialExp> listaComercial = expUtils.lerComercial(caminho);
@@ -145,6 +140,7 @@ public class BancoDAO {
                         values.put("Categoria", c.categoria);
                         values.put("PeriodoInicial", c.dataInicial);
                         values.put("PeriodoFinal", c.dataFinal);
+                        db.replace("Comercial", null, values);
                     } catch (SQLiteCantOpenDatabaseException e) {
                         RegistrarLog.imprimirMsg("Log", "Banco não pode ser aberto, não foi possivel atualizar a tabela Comercial");
                         continue;
@@ -187,7 +183,8 @@ public class BancoDAO {
 
     public void insertProgramacao(String caminho) {
         RegistrarLog.imprimirMsg("Log", "Insert Programacao");
-        SQLiteDatabase db = getDb();
+        db = helper.getWritableDatabase();
+        db.beginTransaction();
         if (null != caminho && !caminho.trim().replaceAll("\\s", "").isEmpty()) {
             try {
                 List<ProgramacaoExp> listaProgramacoes = expUtils.lerProgramacao(caminho);
@@ -273,7 +270,8 @@ public class BancoDAO {
 
     public void insertVideo(String caminho) {
         RegistrarLog.imprimirMsg("Log", "Insert Video");
-        SQLiteDatabase db = getDb();
+        db = helper.getWritableDatabase();
+        db.beginTransaction();
         if (null != caminho && !caminho.trim().replaceAll("\\s", "").isEmpty()) {
             try {
                 List<VideoExp> listaVideos = expUtils.lerVideo(caminho);
