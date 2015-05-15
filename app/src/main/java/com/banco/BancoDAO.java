@@ -25,7 +25,6 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 
 public class BancoDAO {
-
     private ExpUtils expUtils = new ExpUtils();
     private Cursor cursor;
     private DatabaseHelper helper;
@@ -69,11 +68,17 @@ public class BancoDAO {
 
     public void insertCategoria(String caminho) {
         RegistrarLog.imprimirMsg("Log", "Insert Categoria");
-        SQLiteDatabase db = getDb();
+        db = helper.getWritableDatabase();
+        db.beginTransaction();
+
         if (null != caminho && !caminho.trim().replaceAll("\\s", "").isEmpty()) {
+            RegistrarLog.imprimirMsg("Log", "Aqui 1");
             try {
+                RegistrarLog.imprimirMsg("Log", caminho + " Aqui");
                 List<CategoriaExp> listaCategoria = expUtils.lerCategoria(caminho);
+                RegistrarLog.imprimirMsg("Log", listaCategoria.size() + " Aqui 2");
                 for (CategoriaExp c : listaCategoria) {
+                    RegistrarLog.imprimirMsg("Log", c.toString());
                     try {
                         ContentValues values = new ContentValues();
                         values.put("Codigo", c.codigo);
