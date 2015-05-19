@@ -63,7 +63,7 @@ public class TarefaComunicao implements Runnable {
     public void run() {
         RegistrarLog.imprimirMsg("Log", "INICIO");
         informacoesConexao();
-        //conectarEnderecoFtp();
+        conectarEnderecoFtp();
         popularBanco();
     }
 
@@ -916,16 +916,12 @@ public class TarefaComunicao implements Runnable {
         File arquivoComercial = new File(comercial);
         File arquivoProgramacao = new File(programacao);
         File arquivoVideo = new File(video);
-        RegistrarLog.imprimirMsg("Log",arquivoCategoria.getAbsolutePath() + " caminho");
-        RegistrarLog.imprimirMsg("Log",arquivoComercial.getAbsolutePath() + " caminho");
-        RegistrarLog.imprimirMsg("Log",arquivoProgramacao.getAbsolutePath() + " caminho");
-        RegistrarLog.imprimirMsg("Log",arquivoVideo.getAbsolutePath() + " caminho");
 
         if(arquivoCategoria.exists()){
             try {
                 bancoDAO.insertCategoria(arquivoCategoria.getAbsolutePath());
-                //File renomearExpCategoria = new File(salvar_importes.concat(barraDoSistema).concat("Categoria.old"));
-                //arquivoCategoria.renameTo(renomearExpCategoria);
+                File renomearExpCategoria = new File(salvar_importes.concat(barraDoSistema).concat("Categoria.old"));
+                arquivoCategoria.renameTo(renomearExpCategoria);
             } catch (NullPointerException e){
                 RegistrarLog.imprimirMsg("Log","1 " + e.getMessage());
             } catch (InvalidParameterException e) {
@@ -938,8 +934,8 @@ public class TarefaComunicao implements Runnable {
         if(arquivoComercial.exists()){
             try{
                 bancoDAO.insertComercial(arquivoComercial.getAbsolutePath());
-                //File renomearExpComercial = new File(salvar_importes.concat(barraDoSistema).concat("Comercial.old"));
-                //arquivoComercial.renameTo(renomearExpComercial);
+                File renomearExpComercial = new File(salvar_importes.concat(barraDoSistema).concat("Comercial.old"));
+                arquivoComercial.renameTo(renomearExpComercial);
             } catch (NullPointerException e){
                 RegistrarLog.imprimirMsg("Log","1 " + e.getMessage());
             } catch (InvalidParameterException e) {
@@ -952,8 +948,8 @@ public class TarefaComunicao implements Runnable {
         if(arquivoProgramacao.exists()){
             try {
                 bancoDAO.insertProgramacao(arquivoProgramacao.getAbsolutePath());
-                //File renomearExpProgramacao = new File(salvar_importes.concat(barraDoSistema).concat("Programacao.old"));
-                //arquivoProgramacao.renameTo(renomearExpProgramacao);
+                File renomearExpProgramacao = new File(salvar_importes.concat(barraDoSistema).concat("Programacao.old"));
+                arquivoProgramacao.renameTo(renomearExpProgramacao);
             } catch (NullPointerException e){
                 RegistrarLog.imprimirMsg("Log","1 " + e.getMessage());
             } catch (InvalidParameterException e) {
@@ -966,8 +962,8 @@ public class TarefaComunicao implements Runnable {
         if(arquivoVideo.exists()){
             try {
                 bancoDAO.insertVideo(arquivoVideo.getAbsolutePath());
-                //File renomearExpVideo = new File(salvar_importes.concat(barraDoSistema).concat("Video.old"));
-                //arquivoVideo.renameTo(renomearExpVideo);
+                File renomearExpVideo = new File(salvar_importes.concat(barraDoSistema).concat("Video.old"));
+                arquivoVideo.renameTo(renomearExpVideo);
             } catch (NullPointerException e){
                 RegistrarLog.imprimirMsg("Log","1 " + e.getMessage());
             } catch (InvalidParameterException e) {
@@ -984,6 +980,6 @@ public class TarefaComunicao implements Runnable {
             e.printStackTrace();
         }
         RegistrarLog.imprimirMsg("Log","Rodar novamente");
-        //run();
+        run();
     }
 }
