@@ -68,8 +68,9 @@ public class RegistrarLog {
         File properties = new File(caminhoProperties);
 
         if(properties.exists()){
-            //informacaoes();
+            informacaoes();
         }
+        Log.e("Log",texto);
         logUtils.registrar(texto);
     }
 

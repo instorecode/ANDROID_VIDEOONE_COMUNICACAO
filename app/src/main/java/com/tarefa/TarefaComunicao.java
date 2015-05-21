@@ -62,236 +62,110 @@ public class TarefaComunicao implements Runnable {
     @Override
     public void run() {
         RegistrarLog.imprimirMsg("Log", "INICIO");
-        informacoesConexao();
-        conectarEnderecoFtp();
-        popularBanco();
+        //informacoesConexao();
+        //conectarEnderecoFtp();
+        //popularBanco();
+
+        registrarLog.escrever("Teste");
+
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        run();
+
     }
 
     private void informacoesConexao() {
         try {
             salvar_importes = caminho.concat(barraDoSistema).concat(ConfiguaracaoUtils.diretorio.getDiretorioImportacao());
             boolean diretorioCriado = Arquivo.criarDiretorio(salvar_importes);
-            if (diretorioCriado) {
-                //RegistrarLog.imprimirMsg("Log", "Diretório " + salvar_importes + " criado");
-            } else {
-                //RegistrarLog.imprimirMsg("Log", "Diretório " + salvar_importes + " não foi criado");
-            }
         } catch (NullPointerException e) {
-            RegistrarLog.imprimirMsg("Log", "1 Erro ao pegar as informações de configurações");
             salvar_importes = caminho.concat(barraDoSistema).concat("videoOne").concat(barraDoSistema).concat("import");
             boolean diretorioCriado = Arquivo.criarDiretorio(salvar_importes);
-            if (diretorioCriado) {
-                //RegistrarLog.imprimirMsg("Log", "Diretório " + salvar_importes + " criado");
-            } else {
-                //RegistrarLog.imprimirMsg("Log", "Diretório " + salvar_importes + " não foi criado");
-            }
         } catch (InvalidParameterException e) {
-            RegistrarLog.imprimirMsg("Log", "2 Erro ao pegar as informações de configurações");
             salvar_importes = caminho.concat(barraDoSistema).concat("videoOne").concat(barraDoSistema).concat("import");
             boolean diretorioCriado = Arquivo.criarDiretorio(salvar_importes);
-            if (diretorioCriado) {
-                //RegistrarLog.imprimirMsg("Log", "Diretório " + salvar_importes + " criado");
-            } else {
-                //RegistrarLog.imprimirMsg("Log", "Diretório " + salvar_importes + " não foi criado");
-            }
         } catch (Exception e) {
-            RegistrarLog.imprimirMsg("Log", "3 Erro ao pegar as informações de configurações");
             salvar_importes = caminho.concat(barraDoSistema).concat("videoOne").concat(barraDoSistema).concat("import");
             boolean diretorioCriado = Arquivo.criarDiretorio(salvar_importes);
-            if (diretorioCriado) {
-                //RegistrarLog.imprimirMsg("Log", "Diretório " + salvar_importes + " criado");
-            } else {
-                //RegistrarLog.imprimirMsg("Log", "Diretório " + salvar_importes + " não foi criado");
-            }
         }
 
         try {
             salvar_export = caminho.concat(barraDoSistema).concat(ConfiguaracaoUtils.diretorio.getDiretorioExportacao());
             boolean diretorioCriado = Arquivo.criarDiretorio(salvar_export);
-            if (diretorioCriado) {
-                //RegistrarLog.imprimirMsg("Log", "Diretório " + salvar_export + " criado");
-            } else {
-                //RegistrarLog.imprimirMsg("Log", "Diretório " + salvar_export + " não foi criado");
-            }
         } catch (NullPointerException e) {
-            RegistrarLog.imprimirMsg("Log", "4 Erro ao pegar as informações de configurações");
             salvar_export = caminho.concat(barraDoSistema).concat("videoOne").concat(barraDoSistema).concat("export");
             boolean diretorioCriado = Arquivo.criarDiretorio(salvar_export);
-            if (diretorioCriado) {
-                //RegistrarLog.imprimirMsg("Log", "Diretório " + salvar_export + " criado");
-            } else {
-                //RegistrarLog.imprimirMsg("Log", "Diretório " + salvar_export + " não foi criado");
-            }
         } catch (InvalidParameterException e) {
-            RegistrarLog.imprimirMsg("Log", "5 Erro ao pegar as informações de configurações");
             salvar_export = caminho.concat(barraDoSistema).concat("videoOne").concat(barraDoSistema).concat("export");
             boolean diretorioCriado = Arquivo.criarDiretorio(salvar_export);
-            if (diretorioCriado) {
-                //RegistrarLog.imprimirMsg("Log", "Diretório " + salvar_export + " criado");
-            } else {
-                //RegistrarLog.imprimirMsg("Log", "Diretório " + salvar_export + " não foi criado");
-            }
         } catch (Exception e) {
-            RegistrarLog.imprimirMsg("Log", "6 Erro ao pegar as informações de configurações");
             salvar_export = caminho.concat(barraDoSistema).concat("videoOne").concat(barraDoSistema).concat("export");
             boolean diretorioCriado = Arquivo.criarDiretorio(salvar_export);
-            if (diretorioCriado) {
-                //RegistrarLog.imprimirMsg("Log", "Diretório " + salvar_export + " criado");
-            } else {
-                //RegistrarLog.imprimirMsg("Log", "Diretório " + salvar_export + " não foi criado");
-            }
         }
 
         try {
             caminhoArquivoZip = salvar_export.concat(barraDoSistema).concat("videoOne.zip");
         } catch (NullPointerException e) {
             caminhoArquivoZip = "/mnt/sdcard/videoOne/export/videoOne.zip";
-            //RegistrarLog.imprimirMsg("Log", "7 Erro ao pegar as informações de configurações");
         } catch (InvalidParameterException e) {
             caminhoArquivoZip = "/mnt/sdcard/videoOne/export/videoOne.zip";
-            //RegistrarLog.imprimirMsg("Log", "8 Erro ao pegar as informações de configurações");
         } catch (Exception e) {
             caminhoArquivoZip = "/mnt/sdcard/videoOne/export/videoOne.zip";
-            //RegistrarLog.imprimirMsg("Log", "9 Erro ao pegar as informações de configurações");
         }
 
         try {
             diretorioConfig = caminho.concat(barraDoSistema).concat("videoOne").concat(barraDoSistema).concat("config");
         } catch (NullPointerException e) {
-            RegistrarLog.imprimirMsg("Log", "10 Erro ao pegar as informações de configurações");
             diretorioConfig = caminho.concat(barraDoSistema).concat("videoOne").concat(barraDoSistema).concat("config");
             boolean diretorioCriado = Arquivo.criarDiretorio(diretorioConfig);
-            if (diretorioCriado) {
-                //RegistrarLog.imprimirMsg("Log", "Diretório " + diretorioConfig + " criado");
-            } else {
-                //RegistrarLog.imprimirMsg("Log", "Diretório " + diretorioConfig + " não foi criado");
-            }
         } catch (InvalidParameterException e) {
-            RegistrarLog.imprimirMsg("Log", "11 Erro ao pegar as informações de configurações");
             diretorioConfig = caminho.concat(barraDoSistema).concat("videoOne").concat(barraDoSistema).concat("config");
             boolean diretorioCriado = Arquivo.criarDiretorio(diretorioConfig);
-            if (diretorioCriado) {
-                //RegistrarLog.imprimirMsg("Log", "Diretório " + diretorioConfig + " criado");
-            } else {
-                //RegistrarLog.imprimirMsg("Log", "Diretório " + diretorioConfig + " não foi criado");
-            }
         } catch (Exception e) {
-            RegistrarLog.imprimirMsg("Log", "12 Erro ao pegar as informações de configurações");
             diretorioConfig = caminho.concat(barraDoSistema).concat("videoOne").concat(barraDoSistema).concat("config");
             boolean diretorioCriado = Arquivo.criarDiretorio(diretorioConfig);
-            if (diretorioCriado) {
-                //RegistrarLog.imprimirMsg("Log", "Diretório " + diretorioConfig + " criado");
-            } else {
-                //RegistrarLog.imprimirMsg("Log", "Diretório " + diretorioConfig + " não foi criado");
-            }
         }
 
         try {
             diretorioLog = caminho.concat(barraDoSistema).concat(ConfiguaracaoUtils.diretorio.getDiretorioLog());
             boolean diretorioCriado = Arquivo.criarDiretorio(diretorioLog);
-            if (diretorioCriado) {
-                //RegistrarLog.imprimirMsg("Log", "Diretório " + diretorioLog + " criado");
-            } else {
-                //RegistrarLog.imprimirMsg("Log", "Diretório " + diretorioLog + " não foi criado");
-            }
         } catch (NullPointerException e) {
-            RegistrarLog.imprimirMsg("Log", "13 Erro ao pegar as informações de configurações");
             diretorioLog = caminho.concat(barraDoSistema).concat("videoOne").concat(barraDoSistema).concat("log");
             boolean diretorioCriado = Arquivo.criarDiretorio(diretorioLog);
-            if (diretorioCriado) {
-                //RegistrarLog.imprimirMsg("Log", "Diretório " + diretorioLog + " criado");
-            } else {
-                //RegistrarLog.imprimirMsg("Log", "Diretório " + diretorioLog + " não foi criado");
-            }
         } catch (InvalidParameterException e) {
-            RegistrarLog.imprimirMsg("Log", "14 Erro ao pegar as informações de configurações");
             diretorioLog = caminho.concat(barraDoSistema).concat("videoOne").concat(barraDoSistema).concat("log");
             boolean diretorioCriado = Arquivo.criarDiretorio(diretorioLog);
-            if (diretorioCriado) {
-                //RegistrarLog.imprimirMsg("Log", "Diretório " + diretorioLog + " criado");
-            } else {
-                //RegistrarLog.imprimirMsg("Log", "Diretório " + diretorioLog + " não foi criado");
-            }
         } catch (Exception e) {
-            RegistrarLog.imprimirMsg("Log", "15 Erro ao pegar as informações de configurações");
             diretorioLog = caminho.concat(barraDoSistema).concat("videoOne").concat(barraDoSistema).concat("log");
             boolean diretorioCriado = Arquivo.criarDiretorio(diretorioLog);
-            if (diretorioCriado) {
-                //RegistrarLog.imprimirMsg("Log", "Diretório " + diretorioLog + " criado");
-            } else {
-                //RegistrarLog.imprimirMsg("Log", "Diretório " + diretorioLog + " não foi criado");
-            }
         }
 
         try {
             diretorioDeVideos = caminho.concat(barraDoSistema).concat(ConfiguaracaoUtils.diretorio.getDiretorioVideo());
             boolean diretorioCriado = Arquivo.criarDiretorio(diretorioDeVideos);
-            if (diretorioCriado) {
-                //RegistrarLog.imprimirMsg("Log", "Diretório " + diretorioDeVideos + " criado");
-            } else {
-                //RegistrarLog.imprimirMsg("Log", "Diretório " + diretorioDeVideos + " não foi criado");
-            }
         } catch (NullPointerException e) {
-            RegistrarLog.imprimirMsg("Log", "16 Erro ao pegar as informações de configurações");
             diretorioDeVideos = caminho.concat(barraDoSistema).concat("videos");
             boolean diretorioCriado = Arquivo.criarDiretorio(diretorioDeVideos);
-            if (diretorioCriado) {
-                //RegistrarLog.imprimirMsg("Log", "Diretório " + diretorioDeVideos + " criado");
-            } else {
-                //RegistrarLog.imprimirMsg("Log", "Diretório " + diretorioDeVideos + " não foi criado");
-            }
         } catch (InvalidParameterException e) {
-            RegistrarLog.imprimirMsg("Log", "17 Erro ao pegar as informações de configurações");
             diretorioDeVideos = caminho.concat(barraDoSistema).concat("videos");
             boolean diretorioCriado = Arquivo.criarDiretorio(diretorioDeVideos);
-            if (diretorioCriado) {
-                //RegistrarLog.imprimirMsg("Log", "Diretório " + diretorioDeVideos + " criado");
-            } else {
-                //RegistrarLog.imprimirMsg("Log", "Diretório " + diretorioDeVideos + " não foi criado");
-            }
         } catch (Exception e) {
-            //RegistrarLog.imprimirMsg("Log", "18 Erro ao pegar as informações de configurações");
             diretorioDeVideos = caminho.concat(barraDoSistema).concat("videos");
             boolean diretorioCriado = Arquivo.criarDiretorio(diretorioDeVideos);
-            if (diretorioCriado) {
-                //RegistrarLog.imprimirMsg("Log", "Diretório " + diretorioDeVideos + " criado");
-            } else {
-                //RegistrarLog.imprimirMsg("Log", "Diretório " + diretorioDeVideos + " não foi criado");
-            }
         }
 
         try {
             diretorioVideoOne = caminho.concat(barraDoSistema).concat("videoOne");
             boolean diretorioCriado = Arquivo.criarDiretorio(diretorioVideoOne);
-            if (diretorioCriado) {
-                //RegistrarLog.imprimirMsg("Log", "Diretório " + diretorioVideoOne + " criado");
-            } else {
-                //RegistrarLog.imprimirMsg("Log", "Diretório " + diretorioVideoOne + " não foi criado");
-            }
         } catch (NullPointerException e) {
-            //RegistrarLog.imprimirMsg("Log", "19 Erro ao pegar as informações de configurações");
             boolean diretorioCriado = Arquivo.criarDiretorio(diretorioVideoOne);
-            if (diretorioCriado) {
-                //RegistrarLog.imprimirMsg("Log", "Diretório " + diretorioVideoOne + " criado");
-            } else {
-                //RegistrarLog.imprimirMsg("Log", "Diretório " + diretorioVideoOne + " não foi criado");
-            }
         } catch (InvalidParameterException e) {
-            RegistrarLog.imprimirMsg("Log", "20 Erro ao pegar as informações de configurações");
             boolean diretorioCriado = Arquivo.criarDiretorio(salvar_importes);
-            if (diretorioCriado) {
-                //RegistrarLog.imprimirMsg("Log", "Diretório " + diretorioVideoOne + " criado");
-            } else {
-                //RegistrarLog.imprimirMsg("Log", "Diretório " + diretorioVideoOne + " não foi criado");
-            }
         } catch (Exception e) {
-            RegistrarLog.imprimirMsg("Log", "21 Erro ao pegar as informações de configurações");
             boolean diretorioCriado = Arquivo.criarDiretorio(salvar_importes);
-            if (diretorioCriado) {
-                //RegistrarLog.imprimirMsg("Log", "Diretório " + diretorioVideoOne + " criado");
-            } else {
-                //RegistrarLog.imprimirMsg("Log", "Diretório " + diretorioVideoOne + " não foi criado");
-            }
         }
     }
 

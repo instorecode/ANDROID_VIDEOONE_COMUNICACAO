@@ -51,18 +51,65 @@ public class BancoDAO {
     }
 
     public String quantidadeComerciaisNoBanco() {
-        SQLiteDatabase db = helper.getWritableDatabase();
-        cursor = db.rawQuery("SELECT Arquivo FROM Comercial", new String[]{});
         String comerciaisNoBanco = "";
-        comerciaisNoBanco = String.valueOf(cursor.getCount());
+        try {
+            SQLiteDatabase db = helper.getWritableDatabase();
+            cursor = db.rawQuery("SELECT Arquivo FROM Comercial", new String[]{});
+            comerciaisNoBanco = String.valueOf(cursor.getCount());
+        } catch (SQLiteCantOpenDatabaseException e) {
+            RegistrarLog.imprimirMsg("Log", "Banco não pode ser aberto, não foi possivel atualizar a tabela Categoria");
+            return comerciaisNoBanco;
+        } catch (SQLiteReadOnlyDatabaseException e) {
+            RegistrarLog.imprimirMsg("Log", "Banco só pode ser lido, não foi possivel atualizar a tabela Categoria");
+            return comerciaisNoBanco;
+        } catch (SQLiteDatabaseCorruptException e) {
+            RegistrarLog.imprimirMsg("Log", "Banco está corrompido, não foi possivel atualizar a tabela Categoria");
+            return comerciaisNoBanco;
+        } catch (SQLiteDatabaseLockedException e) {
+            RegistrarLog.imprimirMsg("Log", "Banco está bloqueado, não foi possivel atualizar a tabela Categoria");
+            return comerciaisNoBanco;
+        } catch (NullPointerException e) {
+            RegistrarLog.imprimirMsg("Log", "Null Point, não foi possivel atualizar a tabela Categoria");
+            return comerciaisNoBanco;
+        } catch (InvalidParameterException e) {
+            RegistrarLog.imprimirMsg("Log", "Paremtro invalido, não foi possivel atualizar a tabela Categoria");
+            return comerciaisNoBanco;
+        } catch (Exception e) {
+            RegistrarLog.imprimirMsg("Log", "Erro, não foi possivel atualizar a tabela Categoria");
+            return comerciaisNoBanco;
+        }
         return comerciaisNoBanco;
     }
 
     public String quantidadeVideoNoBanco() {
-        SQLiteDatabase db = getDb();
-        cursor = db.rawQuery("SELECT Arquivo FROM Video", new String[]{});
         String videoNoBanco = "";
-        videoNoBanco = String.valueOf(cursor.getCount());
+        try {
+            SQLiteDatabase db = getDb();
+            cursor = db.rawQuery("SELECT Arquivo FROM Video", new String[]{});
+            videoNoBanco = String.valueOf(cursor.getCount());
+        } catch (SQLiteCantOpenDatabaseException e) {
+            RegistrarLog.imprimirMsg("Log", "Banco não pode ser aberto, não foi possivel atualizar a tabela Categoria");
+            return videoNoBanco;
+        } catch (SQLiteReadOnlyDatabaseException e) {
+            RegistrarLog.imprimirMsg("Log", "Banco só pode ser lido, não foi possivel atualizar a tabela Categoria");
+            return videoNoBanco;
+        } catch (SQLiteDatabaseCorruptException e) {
+            RegistrarLog.imprimirMsg("Log", "Banco está corrompido, não foi possivel atualizar a tabela Categoria");
+            return videoNoBanco;
+        } catch (SQLiteDatabaseLockedException e) {
+            RegistrarLog.imprimirMsg("Log", "Banco está bloqueado, não foi possivel atualizar a tabela Categoria");
+            return videoNoBanco;
+        } catch (NullPointerException e) {
+            RegistrarLog.imprimirMsg("Log", "Null Point, não foi possivel atualizar a tabela Categoria");
+            return videoNoBanco;
+        } catch (InvalidParameterException e) {
+            RegistrarLog.imprimirMsg("Log", "Paremtro invalido, não foi possivel atualizar a tabela Categoria");
+            return videoNoBanco;
+        } catch (Exception e) {
+            RegistrarLog.imprimirMsg("Log", "Erro, não foi possivel atualizar a tabela Categoria");
+            return videoNoBanco;
+        }
+
         return videoNoBanco;
     }
 

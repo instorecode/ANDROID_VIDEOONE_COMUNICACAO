@@ -19,7 +19,6 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
         context = getApplicationContext();
-        Toast.makeText(context, "MainActivity OK", Toast.LENGTH_LONG).show();
 
         ScheduledExecutorService thread1 = Executors.newScheduledThreadPool(1);
         ScheduledExecutorService thread2 = Executors.newScheduledThreadPool(1);
