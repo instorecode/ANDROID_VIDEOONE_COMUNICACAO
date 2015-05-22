@@ -21,60 +21,43 @@ import java.util.Enumeration;
 
 public class RegistrarLog {
 
-    private LogUtils logUtils;
-    private Context context;
     private String barraDoSistema = System.getProperty("file.separator");
     private String caminho = Environment.getExternalStorageDirectory().toString();
-    private String nomeVersaoOs = "";
-    private String versaoApp = "";
-    private String ip = "";
-    private String dia = "";
-    private String nomeDispositivo = "";
-    private String espacoTotal = "";
-    private String espacoDisponivel = "";
-    private String arquivosDiretorio = "";
-    private String videosNoBanco = "";
-    private String comerciaisNoBanco = "";
-    private String diretorioLogs;
-    private BancoDAO bancoDAO;
+    private String dia = new SimpleDateFormat("dd/MM/yyyy").format(new Date());;
+    private String diretorioLogs = caminho.concat(barraDoSistema).concat("videoOne").concat(barraDoSistema).concat("log");
+    private String caminhoArquivoDiasLogCompleto = caminho.concat(barraDoSistema).concat("videoOne").concat(barraDoSistema).concat("config");
 
-    public RegistrarLog(Context context) {
-        this.context = context;
-        this.logUtils = new LogUtils();
-        this.bancoDAO = new BancoDAO(context);
+    private BancoDAO bancoDAO;
+    private Context context;
+    private static RegistrarLog registrarLog;
+
+    private RegistrarLog(){
+        registrarLog = new RegistrarLog();
+    }
+
+    public static RegistrarLog getInstance() throws InvalidParameterException{
+        if(null == registrarLog){
+            throw  new InvalidParameterException("Informe o parametro");
+        }
+        LogUtils.getInstance();
+        return registrarLog;
+    }
+
+    public static RegistrarLog getInstance(Context context){
+        if(null == registrarLog){
+            registrarLog = new RegistrarLog();
+        }
+        registrarLog.context = context;
+        registrarLog.bancoDAO = new BancoDAO(context);
+        LogUtils.getInstance(registrarLog.caminhoArquivoDiasLogCompleto, "dias.exp", registrarLog.nomeVersaoOs(context), registrarLog.nomeVersaoOs(context), registrarLog.ip(), registrarLog.dia, registrarLog.nomeDispositivo(), registrarLog.espacoTotal(), registrarLog.espacoDisponivel(), registrarLog.bancoDAO.quantidadeVideoNoBanco(), registrarLog.bancoDAO.quantidadeComerciaisNoBanco(), registrarLog.arquivosDiretorio(), registrarLog.diretorioLogs);
+        return registrarLog;
     }
 
     public static void imprimirMsg(String tag, String texto){
         Log.e(tag, texto);
     }
 
-    private void informacaoes() {
-        videosNoBanco = bancoDAO.quantidadeVideoNoBanco();
-        comerciaisNoBanco = bancoDAO.quantidadeComerciaisNoBanco();
-        nomeVersaoOs = versaoAndroid(context);
-        versaoApp = versaoAndroid(context);
-        ip = ip();
-        dia = new SimpleDateFormat("dd/MM/yyyy").format(new Date());
-        nomeDispositivo = nomeDispositivo();
-        espacoTotal = espacoTotal();
-        espacoDisponivel = espacoDisponivel();
-        arquivosDiretorio = arquivosDiretorio();
-        diretorioLogs = caminho.concat(barraDoSistema).concat("videoOne").concat(barraDoSistema).concat("log");
-        logUtils.parametros(nomeVersaoOs, versaoApp, ip, dia, nomeDispositivo, espacoTotal, espacoDisponivel, videosNoBanco, comerciaisNoBanco, arquivosDiretorio, diretorioLogs);
-    }
-
-    public void escrever(String texto) {
-        String caminhoProperties = caminho.concat(barraDoSistema).concat("videoOne").concat(barraDoSistema).concat("config").concat(barraDoSistema).concat("configuracoes.properties");
-        File properties = new File(caminhoProperties);
-
-        if(properties.exists()){
-            informacaoes();
-        }
-        Log.e("Log",texto);
-        logUtils.registrar(texto);
-    }
-
-    private String versaoAndroid(Context context) {
+    private String nomeVersaoOs(Context context) {
         String versaoApp = "";
         try {
             versaoApp = String.valueOf(context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionCode);
