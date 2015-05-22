@@ -3,16 +3,17 @@ package com.tarefa;
 import android.content.Context;
 import android.os.Environment;
 import android.os.Handler;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.banco.BancoDAO;
 import com.br.instore.utils.Arquivo;
 import com.br.instore.utils.ConfiguaracaoUtils;
-import com.br.instore.utils.ImprimirUtils;
 import com.br.instore.utils.LogUtils;
 import com.br.instore.utils.Md5Utils;
 import com.comunicacao.TransferCustom;
 import com.comunicacao.ValidarDiaAndHora;
+import com.utils.AndroidImprimirUtils;
 import com.utils.RegistrarLog;
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
@@ -62,7 +63,22 @@ public class TarefaComunicao implements Runnable {
     }
 
     @Override
-    public void run() {
+    public void run(){
+        try {
+            String a = null;
+            a.concat(null);
+        } catch (NullPointerException e){
+            AndroidImprimirUtils.imprimirErro(TarefaComunicao.class, e);
+        } catch (Exception e){
+            AndroidImprimirUtils.imprimirErro(TarefaComunicao.class, e);
+        }
+
+        Log.e("Log", "Ok");
+    }
+
+
+
+    public void runa() {
         File properties = new File(caminho.concat(barraDoSistema).concat("videoOne").concat(barraDoSistema).concat("config"));
 
         try {
@@ -75,18 +91,22 @@ public class TarefaComunicao implements Runnable {
                 if (validarHoraAndDia.isValid()) {
                     if (!hashId.equals(validarHoraAndDia.hashId())) {
                         //ZERA AS TENTATIVAS DEVIDO OS HORARIOS SEREM DIFERENTES
+                        RegistrarLog.imprimirMsg("Log","É UM NOVO HORARIO VALIDO RODANDO");
                         tentativasRealizadas = 0;
                     }
 
                     if (tentativasRealizadas < maximoTentativas) {
-                        //RegistrarLog.imprimirMsg(" Rodando Thread ");
-                        conectarEnderecoFtp();
+                        RegistrarLog.imprimirMsg("Log","É UM HORARIO VALIDO RODANDO TENTATIVAS TAMBEM VALIDAS");
+                        conectarEnderecoFtp(false);
                         popularBanco();
                         hashId = validarHoraAndDia.hashId();
                     }
 
                 } else {
                     // executar o emergencia
+                    RegistrarLog.imprimirMsg("Log","NÂO É UM HORARIO VALIDO RODANDO EMERGENCIA");
+                    conectarEnderecoFtp(true);
+                    popularBanco();
                     tentativasRealizadas = 0;
                 }
 
@@ -95,28 +115,28 @@ public class TarefaComunicao implements Runnable {
                 try {
                     Thread.sleep(20000);
                 } catch (InterruptedException e) {
-                    ImprimirUtils.imprimirErro(TarefaComunicao.class, e);
+                    AndroidImprimirUtils.imprimirErro(TarefaComunicao.class, e);
                 } catch (NullPointerException e){
-                    ImprimirUtils.imprimirErro(TarefaComunicao.class, e);
+                    AndroidImprimirUtils.imprimirErro(TarefaComunicao.class, e);
                 } catch (InstantiationError e){
-                    ImprimirUtils.imprimirErro(TarefaComunicao.class, e);
+                    AndroidImprimirUtils.imprimirErro(TarefaComunicao.class, e);
                 } catch (InvalidParameterException e){
-                    ImprimirUtils.imprimirErro(TarefaComunicao.class, e);
+                    AndroidImprimirUtils.imprimirErro(TarefaComunicao.class, e);
                 } catch (Exception e) {
-                    ImprimirUtils.imprimirErro(TarefaComunicao.class, e);
+                    AndroidImprimirUtils.imprimirErro(TarefaComunicao.class, e);
                 }
                 run();
             }
 
 
         } catch (NullPointerException e){
-            ImprimirUtils.imprimirErro(TarefaComunicao.class, e);
+            AndroidImprimirUtils.imprimirErro(TarefaComunicao.class, e);
         } catch (InstantiationError e){
-            ImprimirUtils.imprimirErro(TarefaComunicao.class, e);
+            AndroidImprimirUtils.imprimirErro(TarefaComunicao.class, e);
         } catch (InvalidParameterException e){
-            ImprimirUtils.imprimirErro(TarefaComunicao.class, e);
+            AndroidImprimirUtils.imprimirErro(TarefaComunicao.class, e);
         } catch (Exception e) {
-            ImprimirUtils.imprimirErro(TarefaComunicao.class, e);
+            AndroidImprimirUtils.imprimirErro(TarefaComunicao.class, e);
         }
     }
 
@@ -212,7 +232,7 @@ public class TarefaComunicao implements Runnable {
         }
     }
 
-    private void conectarEnderecoFtp() {
+    private void conectarEnderecoFtp(boolean emergencia) {
         String ip = ConfiguaracaoUtils.ftp.getEnderecoFtp();
         RegistrarLog.imprimirMsg("Log", "conectarEnderecoFtp");
         try {
@@ -220,7 +240,7 @@ public class TarefaComunicao implements Runnable {
             ftp.connect(ip, 21);
             RegistrarLog.imprimirMsg("Log", " IP " + ip + " está correto");
             LogUtils.registrar(90, ConfiguaracaoUtils.diretorio.isLogCompleto(), " 90 IP " + ip + " está correto");
-            conectarLoginFtp();
+            conectarLoginFtp(emergencia);
         } catch (IllegalStateException e) {
             RegistrarLog.imprimirMsg("Log", "1 IP ou endereço esta errado " + " " + e.getMessage());
             LogUtils.registrar(90, ConfiguaracaoUtils.diretorio.isLogCompleto(), " 90 IP ou endereço esta errado " + " " + e.getMessage());
@@ -259,13 +279,13 @@ public class TarefaComunicao implements Runnable {
         }
     }
 
-    private void conectarLoginFtp() {
+    private void conectarLoginFtp(boolean emergencia) {
         RegistrarLog.imprimirMsg("Log", "Conectar Login Ftp");
         try {
             ftp.login(ConfiguaracaoUtils.ftp.getUsuario(), ConfiguaracaoUtils.ftp.getSenha());
             RegistrarLog.imprimirMsg("Log", " Usuario: " + ConfiguaracaoUtils.ftp.getUsuario() + " e senha: " + ConfiguaracaoUtils.ftp.getSenha() + " de FTP estão corretos ");
             LogUtils.registrar(90, ConfiguaracaoUtils.diretorio.isLogCompleto(), " Usuario: " + ConfiguaracaoUtils.ftp.getUsuario() + " e senha: " + ConfiguaracaoUtils.ftp.getSenha() + " de FTP estão corretos ");
-            conectarDiretorioFtp();
+            conectarDiretorioFtp(emergencia);
         } catch (IllegalStateException e) {
             RegistrarLog.imprimirMsg("Log", " Usuario ou senha de FTP estão incorretos " + " " + e.getMessage());
             LogUtils.registrar(90, ConfiguaracaoUtils.diretorio.isLogCompleto(), " Usuario ou senha de FTP estão incorretos " + " " + e.getMessage());
@@ -304,12 +324,17 @@ public class TarefaComunicao implements Runnable {
         }
     }
 
-    private void conectarDiretorioFtp() {
+    private void conectarDiretorioFtp(boolean emergencia) {
         try {
-            ftp.changeDirectory(ConfiguaracaoUtils.ftp.getDiretorioRemoto());
-            RegistrarLog.imprimirMsg("Log", " Diretório ftp de download " + ConfiguaracaoUtils.ftp.getDiretorioRemoto());
-            LogUtils.registrar(90, ConfiguaracaoUtils.diretorio.isLogCompleto(), " Entrou no diretório " + ConfiguaracaoUtils.ftp.getDiretorioRemoto() + " com sucesso");
-            zipArquivos();
+            if(emergencia){
+                ftp.changeDirectory(ConfiguaracaoUtils.ftp.getDiretorioRemoto().concat(barraDoSistema).concat("emergencia"));
+                download();
+            } else {
+                ftp.changeDirectory(ConfiguaracaoUtils.ftp.getDiretorioRemoto());
+                RegistrarLog.imprimirMsg("Log", " Diretório ftp de download " + ConfiguaracaoUtils.ftp.getDiretorioRemoto());
+                LogUtils.registrar(90, ConfiguaracaoUtils.diretorio.isLogCompleto(), " Entrou no diretório " + ConfiguaracaoUtils.ftp.getDiretorioRemoto() + " com sucesso");
+                zipArquivos();
+            }
         } catch (IllegalStateException e) {
             RegistrarLog.imprimirMsg("Log", " Diretório informado esta errado" + " 1" + e.getMessage());
             LogUtils.registrar(90, ConfiguaracaoUtils.diretorio.isLogCompleto(), " Diretório informado esta errado" + " " + e.getMessage());

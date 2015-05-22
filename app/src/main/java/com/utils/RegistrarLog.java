@@ -8,7 +8,7 @@ import android.util.Log;
 import com.banco.BancoDAO;
 import com.br.instore.utils.Arquivo;
 import com.br.instore.utils.ConfiguaracaoUtils;
-import com.br.instore.utils.ImprimirUtils;
+
 import com.br.instore.utils.LogUtils;
 
 import java.io.File;
@@ -42,14 +42,14 @@ public class RegistrarLog {
             try {
                 throw new Exception("Informe o parametro");
             } catch (Exception e){
-                ImprimirUtils.imprimirErro(RegistrarLog.class, e);
+                AndroidImprimirUtils.imprimirErro(RegistrarLog.class, e);
             }
         }
 
         try {
             LogUtils.getInstance();
         } catch (Exception e) {
-            ImprimirUtils.imprimirErro(RegistrarLog.class, e);
+            AndroidImprimirUtils.imprimirErro(RegistrarLog.class, e);
         }
         return registrarLog;
     }
@@ -72,13 +72,13 @@ public class RegistrarLog {
             versaoApp = String.valueOf(context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionCode);
             versaoApp = versaoApp + "." + context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionName;
         } catch (PackageManager.NameNotFoundException e) {
-            ImprimirUtils.imprimirErro(RegistrarLog.class, e);
+            AndroidImprimirUtils.imprimirErro(RegistrarLog.class, e);
             return versaoApp;
         } catch (NullPointerException e){
-            ImprimirUtils.imprimirErro(RegistrarLog.class, e);
+            AndroidImprimirUtils.imprimirErro(RegistrarLog.class, e);
             return versaoApp;
         } catch (Exception e){
-            ImprimirUtils.imprimirErro(RegistrarLog.class, e);
+            AndroidImprimirUtils.imprimirErro(RegistrarLog.class, e);
             return versaoApp;
         }
         return versaoApp;
@@ -103,13 +103,13 @@ public class RegistrarLog {
                 }
             }
         } catch (SocketException e) {
-            ImprimirUtils.imprimirErro(RegistrarLog.class, e);
+            AndroidImprimirUtils.imprimirErro(RegistrarLog.class, e);
             return ipDispositivo;
         } catch (NullPointerException e){
-            ImprimirUtils.imprimirErro(RegistrarLog.class, e);
+            AndroidImprimirUtils.imprimirErro(RegistrarLog.class, e);
             return ipDispositivo;
         } catch (Exception e){
-            ImprimirUtils.imprimirErro(RegistrarLog.class, e);
+            AndroidImprimirUtils.imprimirErro(RegistrarLog.class, e);
             return ipDispositivo;
         }
         return ipDispositivo;
@@ -123,13 +123,13 @@ public class RegistrarLog {
         try{
             espacoTotal = String.valueOf(espacoDouble);
         } catch (NullPointerException e){
-            ImprimirUtils.imprimirErro(RegistrarLog.class, e);
+            AndroidImprimirUtils.imprimirErro(RegistrarLog.class, e);
             return espacoTotal;
         } catch (InvalidParameterException e){
-            ImprimirUtils.imprimirErro(RegistrarLog.class, e);
+            AndroidImprimirUtils.imprimirErro(RegistrarLog.class, e);
             return espacoTotal;
         } catch (Exception e){
-            ImprimirUtils.imprimirErro(RegistrarLog.class, e);
+            AndroidImprimirUtils.imprimirErro(RegistrarLog.class, e);
             return espacoTotal;
         }
         return espacoTotal;
@@ -142,13 +142,13 @@ public class RegistrarLog {
         try{
             espacoDisponivel = String.valueOf(espacoDouble);
         } catch (NullPointerException e) {
-            ImprimirUtils.imprimirErro(RegistrarLog.class, e);
+            AndroidImprimirUtils.imprimirErro(RegistrarLog.class, e);
             return espacoDisponivel;
         } catch (InvalidParameterException e){
-            ImprimirUtils.imprimirErro(RegistrarLog.class, e);
+            AndroidImprimirUtils.imprimirErro(RegistrarLog.class, e);
             return espacoDisponivel;
         } catch (Exception e){
-            ImprimirUtils.imprimirErro(RegistrarLog.class, e);
+            AndroidImprimirUtils.imprimirErro(RegistrarLog.class, e);
             return espacoDisponivel;
         }
         return espacoDisponivel;
@@ -160,13 +160,13 @@ public class RegistrarLog {
             File file = new File(caminho.concat(barraDoSistema).concat(ConfiguaracaoUtils.diretorio.getDiretorioVideo()));
             arquivosNoDiretorio = String.valueOf(file.listFiles().length);
         } catch (NullPointerException e) {
-            ImprimirUtils.imprimirErro(RegistrarLog.class, e);
+            AndroidImprimirUtils.imprimirErro(RegistrarLog.class, e);
             return arquivosNoDiretorio;
         } catch (InvalidParameterException e){
-            ImprimirUtils.imprimirErro(RegistrarLog.class, e);
+            AndroidImprimirUtils.imprimirErro(RegistrarLog.class, e);
             return arquivosNoDiretorio;
         } catch (Exception e) {
-            ImprimirUtils.imprimirErro(RegistrarLog.class, e);
+            AndroidImprimirUtils.imprimirErro(RegistrarLog.class, e);
             return arquivosNoDiretorio;
         }
         return arquivosNoDiretorio;
