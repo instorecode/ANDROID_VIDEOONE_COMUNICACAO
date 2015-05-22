@@ -64,21 +64,8 @@ public class TarefaComunicao implements Runnable {
 
     @Override
     public void run(){
-        try {
-            String a = null;
-            a.concat(null);
-        } catch (NullPointerException e){
-            AndroidImprimirUtils.imprimirErro(TarefaComunicao.class, e);
-        } catch (Exception e){
-            AndroidImprimirUtils.imprimirErro(TarefaComunicao.class, e);
-        }
-
-        Log.e("Log", "Ok");
-    }
-
-
-
-    public void runa() {
+        RegistrarLog.imprimirMsg("Log","------------------------------------------------------------------------------------------------------------------------------------------------");
+        RegistrarLog.imprimirMsg("Log","------------------------------------------------------------------------------------------------------------------------------------------------");
         File properties = new File(caminho.concat(barraDoSistema).concat("videoOne").concat(barraDoSistema).concat("config"));
 
         try {
@@ -100,14 +87,20 @@ public class TarefaComunicao implements Runnable {
                         conectarEnderecoFtp(false);
                         popularBanco();
                         hashId = validarHoraAndDia.hashId();
+                        try {
+                            Thread.sleep(60000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        run();
                     }
+                }
 
-                } else {
+                if(null != ftp && !ftp.isConnected()) {
                     // executar o emergencia
-                    RegistrarLog.imprimirMsg("Log","NÂO É UM HORARIO VALIDO RODANDO EMERGENCIA");
+                    RegistrarLog.imprimirMsg("Log", "NÂO É UM HORARIO VALIDO RODANDO EMERGENCIA");
                     conectarEnderecoFtp(true);
                     popularBanco();
-                    tentativasRealizadas = 0;
                 }
 
             } else {
@@ -328,6 +321,7 @@ public class TarefaComunicao implements Runnable {
         try {
             if(emergencia){
                 ftp.changeDirectory(ConfiguaracaoUtils.ftp.getDiretorioRemoto().concat(barraDoSistema).concat("emergencia"));
+                RegistrarLog.imprimirMsg("Log", " Diretório ftp de download " + ConfiguaracaoUtils.ftp.getDiretorioRemoto().concat(barraDoSistema).concat("emergencia"));
                 download();
             } else {
                 ftp.changeDirectory(ConfiguaracaoUtils.ftp.getDiretorioRemoto());
@@ -571,6 +565,7 @@ public class TarefaComunicao implements Runnable {
                 if (!file.getName().endsWith(".@@@")) {
                     if (file.getName().contains(".mov") || file.getName().contains(".md5") || file.getName().contains(".db") || file.getName().contains(".exp")) {
                         try {
+                            RegistrarLog.imprimirMsg("Log", " Arquivos no servidor FTP " + file.getName());
                             ftp.download(file.getName(), new FileOutputStream(new File(salvar_importes.concat(barraDoSistema).concat(file.getName()))), 0, new TransferCustom());
                             RegistrarLog.imprimirMsg("Log", " Arquivos no servidor FTP " + file.getName() + " baixado com sucesso");
                             LogUtils.registrar(90, ConfiguaracaoUtils.diretorio.isLogCompleto(), " Arquivos no servidor FTP " + file.getName() + " baixado com sucesso");
@@ -915,12 +910,5 @@ public class TarefaComunicao implements Runnable {
         }
 
         RegistrarLog.imprimirMsg("Log","Banco Populado ");
-        try {
-            Thread.sleep(20000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        RegistrarLog.imprimirMsg("Log","Rodar novamente");
-        run();
     }
 }

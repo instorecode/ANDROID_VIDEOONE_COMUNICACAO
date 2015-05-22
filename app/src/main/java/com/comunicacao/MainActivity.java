@@ -22,8 +22,10 @@ public class MainActivity extends Activity {
 
         ScheduledExecutorService thread1 = Executors.newScheduledThreadPool(1);
         ScheduledExecutorService thread2 = Executors.newScheduledThreadPool(1);
+        ScheduledExecutorService thread3 = Executors.newScheduledThreadPool(1);
         thread1.scheduleAtFixedRate(new TaskLerProperties(context), 0, 10, TimeUnit.SECONDS);
         thread2.schedule(new TarefaComunicao(context), 2, TimeUnit.SECONDS);
+        thread3.scheduleAtFixedRate(new TarefaComunicao(context), 4, 1800, TimeUnit.SECONDS);
 	}
 
 }

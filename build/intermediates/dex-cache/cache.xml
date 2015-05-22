@@ -6,35 +6,35 @@
         jumboMode="false"
         revision="21.1.2"
         sha1="4a43600bb3bbe4bb13b70038a2978411c20e8b14">
-        <dex dex="C:\Users\usuario\Google Drive\ANDROID_VIDEOONE_COMUNICACAO\app\build\intermediates\pre-dexed\debug\projetoUtils-e5be82cb52d0c1302024f9498d03c407b80a58df.jar" />
+        <dex dex="C:\Users\usuario\Google Drive\ANDROID_VIDEOONE_COMUNICACAO\app\build\intermediates\pre-dexed\release\projetoUtils-e5be82cb52d0c1302024f9498d03c407b80a58df.jar" />
     </item>
     <item
         jar="C:\Users\usuario\Google Drive\ANDROID_VIDEOONE_COMUNICACAO\app\libs\ftp4j-1.7.2.jar"
         jumboMode="false"
         revision="21.1.2"
         sha1="abd6a2ba75b142926052c4538611efda49e0b0e2">
-        <dex dex="C:\Users\usuario\Google Drive\ANDROID_VIDEOONE_COMUNICACAO\app\build\intermediates\pre-dexed\debug\ftp4j-1.7.2-14d5366209761f08f91320478d409a2611f73c1a.jar" />
+        <dex dex="C:\Users\usuario\Google Drive\ANDROID_VIDEOONE_COMUNICACAO\app\build\intermediates\pre-dexed\release\ftp4j-1.7.2-14d5366209761f08f91320478d409a2611f73c1a.jar" />
     </item>
     <item
         jar="C:\Users\usuario\Google Drive\ANDROID_VIDEOONE_COMUNICACAO\app\libs\zip4j_1.3.2.jar"
         jumboMode="false"
         revision="21.1.2"
         sha1="3e20955923c5b61bfbcd4590a87720643c729695">
-        <dex dex="C:\Users\usuario\Google Drive\ANDROID_VIDEOONE_COMUNICACAO\app\build\intermediates\pre-dexed\debug\zip4j_1.3.2-99f62ad34427ea8735402c3d263aeb7cd23a3de9.jar" />
+        <dex dex="C:\Users\usuario\Google Drive\ANDROID_VIDEOONE_COMUNICACAO\app\build\intermediates\pre-dexed\release\zip4j_1.3.2-99f62ad34427ea8735402c3d263aeb7cd23a3de9.jar" />
     </item>
     <item
         jar="C:\Users\usuario\AppData\Local\Android\sdk\extras\android\m2repository\com\android\support\support-v4\19.0.0\support-v4-19.0.0.jar"
         jumboMode="false"
         revision="21.1.2"
         sha1="afee690af14bd2c32d400cdf78e746fd45c386fa">
-        <dex dex="C:\Users\usuario\Google Drive\ANDROID_VIDEOONE_COMUNICACAO\app\build\intermediates\pre-dexed\debug\support-v4-19.0.0-05a39974c8b3bdb406e00f1ff0f9df89e658f943.jar" />
+        <dex dex="C:\Users\usuario\Google Drive\ANDROID_VIDEOONE_COMUNICACAO\app\build\intermediates\pre-dexed\release\support-v4-19.0.0-05a39974c8b3bdb406e00f1ff0f9df89e658f943.jar" />
     </item>
     <item
         jar="C:\Users\usuario\Google Drive\ANDROID_VIDEOONE_COMUNICACAO\app\libs\commons-lang3-3.3.2.jar"
         jumboMode="false"
         revision="21.1.2"
         sha1="90a3822c38ec8c996e84c16a3477ef632cbc87a3">
-        <dex dex="C:\Users\usuario\Google Drive\ANDROID_VIDEOONE_COMUNICACAO\app\build\intermediates\pre-dexed\debug\commons-lang3-3.3.2-e75a9187bc9c75462f9d6203e1da6a5d1d23ac7d.jar" />
+        <dex dex="C:\Users\usuario\Google Drive\ANDROID_VIDEOONE_COMUNICACAO\app\build\intermediates\pre-dexed\release\commons-lang3-3.3.2-e75a9187bc9c75462f9d6203e1da6a5d1d23ac7d.jar" />
     </item>
 
 </items>

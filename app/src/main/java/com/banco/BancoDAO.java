@@ -88,7 +88,6 @@ public class BancoDAO {
             cursor = db.rawQuery("SELECT Arquivo FROM Video", new String[]{});
             videoNoBanco = String.valueOf(cursor.getCount());
         } catch (SQLiteCantOpenDatabaseException e) {
-
             RegistrarLog.imprimirMsg("Log", "Banco não pode ser aberto, não foi possivel atualizar a tabela Categoria");
             return videoNoBanco;
         } catch (SQLiteReadOnlyDatabaseException e) {

@@ -26,7 +26,7 @@ public class RegistrarLog {
     private String caminho = Environment.getExternalStorageDirectory().toString();
     private String dia = new SimpleDateFormat("dd/MM/yyyy").format(new Date());;
     private String diretorioLogs = caminho.concat(barraDoSistema).concat("videoOne").concat(barraDoSistema).concat("log");
-    private String caminhoArquivoDiasLogCompleto = caminho.concat(barraDoSistema).concat("videoOne").concat(barraDoSistema).concat("config");
+    private String caminhoArquivoDiasLogCompleto = caminho.concat(barraDoSistema).concat("videoOne").concat(barraDoSistema).concat("config").concat(barraDoSistema);
 
     private BancoDAO bancoDAO;
     private Context context;
@@ -40,9 +40,9 @@ public class RegistrarLog {
     public static RegistrarLog getInstance() throws Exception{
         if(null == registrarLog){
             try {
-                throw new Exception("Informe o parametro");
+               throw new Exception("Informe o parametro");
             } catch (Exception e){
-                AndroidImprimirUtils.imprimirErro(RegistrarLog.class, e);
+               AndroidImprimirUtils.imprimirErro(RegistrarLog.class, e);
             }
         }
 
