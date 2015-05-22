@@ -8,6 +8,7 @@ import android.util.Log;
 import com.banco.BancoDAO;
 import com.br.instore.utils.Arquivo;
 import com.br.instore.utils.ConfiguaracaoUtils;
+import com.br.instore.utils.ImprimirUtils;
 import com.br.instore.utils.LogUtils;
 
 import java.io.File;
@@ -31,25 +32,33 @@ public class RegistrarLog {
     private Context context;
     private static RegistrarLog registrarLog;
 
-    private RegistrarLog(){
-        registrarLog = new RegistrarLog();
+    private RegistrarLog(Context context){
+        this.context = context;
+        this.bancoDAO = new BancoDAO(context);
     }
 
-    public static RegistrarLog getInstance() throws InvalidParameterException{
+    public static RegistrarLog getInstance() throws Exception{
         if(null == registrarLog){
-            throw  new InvalidParameterException("Informe o parametro");
+            try {
+                throw new Exception("Informe o parametro");
+            } catch (Exception e){
+                ImprimirUtils.imprimirErro(RegistrarLog.class, e);
+            }
         }
-        LogUtils.getInstance();
+
+        try {
+            LogUtils.getInstance();
+        } catch (Exception e) {
+            ImprimirUtils.imprimirErro(RegistrarLog.class, e);
+        }
         return registrarLog;
     }
 
     public static RegistrarLog getInstance(Context context){
         if(null == registrarLog){
-            registrarLog = new RegistrarLog();
+            registrarLog = new RegistrarLog(context);
         }
-        registrarLog.context = context;
-        registrarLog.bancoDAO = new BancoDAO(context);
-        LogUtils.getInstance(registrarLog.caminhoArquivoDiasLogCompleto, "dias.exp", registrarLog.nomeVersaoOs(context), registrarLog.nomeVersaoOs(context), registrarLog.ip(), registrarLog.dia, registrarLog.nomeDispositivo(), registrarLog.espacoTotal(), registrarLog.espacoDisponivel(), registrarLog.bancoDAO.quantidadeVideoNoBanco(), registrarLog.bancoDAO.quantidadeComerciaisNoBanco(), registrarLog.arquivosDiretorio(), registrarLog.diretorioLogs);
+        LogUtils.getInstance(registrarLog.caminhoArquivoDiasLogCompleto, "dias.exp", registrarLog.nomeVersaoOs(registrarLog.context), registrarLog.nomeDispositivo(), registrarLog.ip(), registrarLog.dia, registrarLog.nomeDispositivo(), registrarLog.espacoTotal(), registrarLog.espacoDisponivel(), registrarLog.bancoDAO.quantidadeVideoNoBanco(), registrarLog.bancoDAO.quantidadeComerciaisNoBanco(), registrarLog.arquivosDiretorio(), registrarLog.diretorioLogs);
         return registrarLog;
     }
 
@@ -63,10 +72,13 @@ public class RegistrarLog {
             versaoApp = String.valueOf(context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionCode);
             versaoApp = versaoApp + "." + context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionName;
         } catch (PackageManager.NameNotFoundException e) {
+            ImprimirUtils.imprimirErro(RegistrarLog.class, e);
             return versaoApp;
         } catch (NullPointerException e){
+            ImprimirUtils.imprimirErro(RegistrarLog.class, e);
             return versaoApp;
         } catch (Exception e){
+            ImprimirUtils.imprimirErro(RegistrarLog.class, e);
             return versaoApp;
         }
         return versaoApp;
@@ -91,10 +103,13 @@ public class RegistrarLog {
                 }
             }
         } catch (SocketException e) {
+            ImprimirUtils.imprimirErro(RegistrarLog.class, e);
             return ipDispositivo;
         } catch (NullPointerException e){
+            ImprimirUtils.imprimirErro(RegistrarLog.class, e);
             return ipDispositivo;
         } catch (Exception e){
+            ImprimirUtils.imprimirErro(RegistrarLog.class, e);
             return ipDispositivo;
         }
         return ipDispositivo;
@@ -108,10 +123,13 @@ public class RegistrarLog {
         try{
             espacoTotal = String.valueOf(espacoDouble);
         } catch (NullPointerException e){
+            ImprimirUtils.imprimirErro(RegistrarLog.class, e);
             return espacoTotal;
         } catch (InvalidParameterException e){
+            ImprimirUtils.imprimirErro(RegistrarLog.class, e);
             return espacoTotal;
         } catch (Exception e){
+            ImprimirUtils.imprimirErro(RegistrarLog.class, e);
             return espacoTotal;
         }
         return espacoTotal;
@@ -124,10 +142,13 @@ public class RegistrarLog {
         try{
             espacoDisponivel = String.valueOf(espacoDouble);
         } catch (NullPointerException e) {
+            ImprimirUtils.imprimirErro(RegistrarLog.class, e);
             return espacoDisponivel;
         } catch (InvalidParameterException e){
+            ImprimirUtils.imprimirErro(RegistrarLog.class, e);
             return espacoDisponivel;
         } catch (Exception e){
+            ImprimirUtils.imprimirErro(RegistrarLog.class, e);
             return espacoDisponivel;
         }
         return espacoDisponivel;
@@ -137,13 +158,15 @@ public class RegistrarLog {
         String arquivosNoDiretorio = "";
         try {
             File file = new File(caminho.concat(barraDoSistema).concat(ConfiguaracaoUtils.diretorio.getDiretorioVideo()));
-            Arquivo.criarDiretorio(file);
             arquivosNoDiretorio = String.valueOf(file.listFiles().length);
         } catch (NullPointerException e) {
+            ImprimirUtils.imprimirErro(RegistrarLog.class, e);
             return arquivosNoDiretorio;
         } catch (InvalidParameterException e){
+            ImprimirUtils.imprimirErro(RegistrarLog.class, e);
             return arquivosNoDiretorio;
         } catch (Exception e) {
+            ImprimirUtils.imprimirErro(RegistrarLog.class, e);
             return arquivosNoDiretorio;
         }
         return arquivosNoDiretorio;

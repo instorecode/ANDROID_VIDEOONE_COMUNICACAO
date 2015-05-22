@@ -2,6 +2,7 @@ package com.tarefa;
 
 import android.content.Context;
 import android.os.Environment;
+import android.util.Log;
 
 import com.br.instore.utils.ConfiguaracaoUtils;
 import com.utils.RegistrarLog;
@@ -17,8 +18,8 @@ public class TaskLerProperties implements Runnable {
 
     @Override
     public void run() {
-        RegistrarLog.getInstance(context);
         ConfiguaracaoUtils.lerProperties(caminho.concat(barraDoSistema).concat("videoOne").concat(barraDoSistema).concat("config").concat(barraDoSistema).concat("configuracoes.properties"));
+        RegistrarLog.getInstance(context);
         RegistrarLog.imprimirMsg("Log", "TaskLerProperties");
     }
 }

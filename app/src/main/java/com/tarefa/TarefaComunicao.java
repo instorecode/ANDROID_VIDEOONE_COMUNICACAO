@@ -12,6 +12,7 @@ import com.br.instore.utils.ImprimirUtils;
 import com.br.instore.utils.LogUtils;
 import com.br.instore.utils.Md5Utils;
 import com.comunicacao.TransferCustom;
+import com.comunicacao.ValidarDiaAndHora;
 import com.utils.RegistrarLog;
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
@@ -50,6 +51,9 @@ public class TarefaComunicao implements Runnable {
     private String diretorioVideoOne = "";
     private int maximoTentativas = 10;
     private int tentativasRealizadas = 0;
+    private String hashId = "";
+    private ValidarDiaAndHora validarHoraAndDia;
+
 
     public TarefaComunicao(Context context) {
         Toast.makeText(context, "CONSTRUTOR", Toast.LENGTH_LONG).show();
@@ -59,18 +63,61 @@ public class TarefaComunicao implements Runnable {
 
     @Override
     public void run() {
-        RegistrarLog.imprimirMsg("Log", "INICIO");
-        //informacoesConexao();
-        //conectarEnderecoFtp();
-        //popularBanco();
+        File properties = new File(caminho.concat(barraDoSistema).concat("videoOne").concat(barraDoSistema).concat("config"));
 
         try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        run();
+            validarHoraAndDia = new ValidarDiaAndHora(caminho.concat("/videoOne/config/configuracoes.properties"));
 
+            if(properties.exists()){
+                informacoesConexao();
+                validarHoraAndDia.procurarHorarioValido();
+
+                if (validarHoraAndDia.isValid()) {
+                    if (!hashId.equals(validarHoraAndDia.hashId())) {
+                        //ZERA AS TENTATIVAS DEVIDO OS HORARIOS SEREM DIFERENTES
+                        tentativasRealizadas = 0;
+                    }
+
+                    if (tentativasRealizadas < maximoTentativas) {
+                        //RegistrarLog.imprimirMsg(" Rodando Thread ");
+                        conectarEnderecoFtp();
+                        popularBanco();
+                        hashId = validarHoraAndDia.hashId();
+                    }
+
+                } else {
+                    // executar o emergencia
+                    tentativasRealizadas = 0;
+                }
+
+            } else {
+                LogUtils.registrar(01, true, " Arquivo de configurações não existe, não é possível se comunicar");
+                try {
+                    Thread.sleep(20000);
+                } catch (InterruptedException e) {
+                    ImprimirUtils.imprimirErro(TarefaComunicao.class, e);
+                } catch (NullPointerException e){
+                    ImprimirUtils.imprimirErro(TarefaComunicao.class, e);
+                } catch (InstantiationError e){
+                    ImprimirUtils.imprimirErro(TarefaComunicao.class, e);
+                } catch (InvalidParameterException e){
+                    ImprimirUtils.imprimirErro(TarefaComunicao.class, e);
+                } catch (Exception e) {
+                    ImprimirUtils.imprimirErro(TarefaComunicao.class, e);
+                }
+                run();
+            }
+
+
+        } catch (NullPointerException e){
+            ImprimirUtils.imprimirErro(TarefaComunicao.class, e);
+        } catch (InstantiationError e){
+            ImprimirUtils.imprimirErro(TarefaComunicao.class, e);
+        } catch (InvalidParameterException e){
+            ImprimirUtils.imprimirErro(TarefaComunicao.class, e);
+        } catch (Exception e) {
+            ImprimirUtils.imprimirErro(TarefaComunicao.class, e);
+        }
     }
 
     private void informacoesConexao() {

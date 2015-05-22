@@ -15,7 +15,7 @@ public class Comunicacao  {
     private Date ultimaComunicacao;
     private boolean podeExecutar = true;
 
-    private ValidarDiaAndHora validarHoraAndDia = new ValidarDiaAndHora(Environment.getExternalStorageDirectory() + "/videoOne/config/configuracoes.properties");
+
     private String hashId = "";
 
     //---Thread---//

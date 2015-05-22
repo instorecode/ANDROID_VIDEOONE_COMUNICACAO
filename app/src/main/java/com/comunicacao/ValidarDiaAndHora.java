@@ -1,5 +1,7 @@
 package com.comunicacao;
 
+import com.br.instore.utils.ImprimirUtils;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -8,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
+import java.security.InvalidParameterException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
@@ -32,8 +35,12 @@ public class ValidarDiaAndHora {
         SEGUNDA, TERCA, QUARTA, QUINTA, SEXTA, SABADO, DOMINGO
     }
 
-    public ValidarDiaAndHora(String path) {
-        this.file = new File(path);
+    public ValidarDiaAndHora(String path) throws Exception{
+        if(null != path && !path.replaceAll("\\s","").trim().isEmpty()) {
+            this.file = new File(path);
+        } else {
+            throw new Exception("Caminho do properties está errado");
+        }
     }
 
     private class Horario {
@@ -74,9 +81,15 @@ public class ValidarDiaAndHora {
                 }
             }
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            ImprimirUtils.imprimirErro(ValidarDiaAndHora.class,e);
         } catch (IOException e) {
-            e.printStackTrace();
+            ImprimirUtils.imprimirErro(ValidarDiaAndHora.class,e);
+        } catch (NullPointerException e){
+            ImprimirUtils.imprimirErro(ValidarDiaAndHora.class,e);
+        } catch (InvalidParameterException e){
+            ImprimirUtils.imprimirErro(ValidarDiaAndHora.class,e);
+        } catch (Exception e){
+            ImprimirUtils.imprimirErro(ValidarDiaAndHora.class,e);
         }
 
         horarioInicial = null;
@@ -130,13 +143,13 @@ public class ValidarDiaAndHora {
             try {
                 horarioInicial = new SimpleDateFormat("ddMMyyyyHHmmss").parse(new SimpleDateFormat("ddMMyyyy").format(horarioAtual).concat(h1str.concat(m1str).concat("00")));
             } catch (ParseException e) {
-                e.printStackTrace();
+                ImprimirUtils.imprimirErro(ValidarDiaAndHora.class,e);
             }
 
             try {
                 horarioFinal = new SimpleDateFormat("ddMMyyyyHHmmss").parse(new SimpleDateFormat("ddMMyyyy").format(horarioAtual).concat(h2str.concat(m2str).concat("00")));
             } catch (ParseException e) {
-                e.printStackTrace();
+                ImprimirUtils.imprimirErro(ValidarDiaAndHora.class,e);
             }
 
             if (value.substring(12, value.length()).contains(diaStr)) {
@@ -205,9 +218,15 @@ public class ValidarDiaAndHora {
                 md.update(hash.getBytes("UTF-8"));
                 hash = "MD5:" + new BigInteger(1, md.digest()).toString(16).toUpperCase();
             } catch (NoSuchAlgorithmException e) {
-                e.printStackTrace();
+                ImprimirUtils.imprimirErro(ValidarDiaAndHora.class,e);
             } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
+                ImprimirUtils.imprimirErro(ValidarDiaAndHora.class,e);
+            } catch (NullPointerException e){
+                ImprimirUtils.imprimirErro(ValidarDiaAndHora.class,e);
+            } catch (InvalidParameterException e){
+                ImprimirUtils.imprimirErro(ValidarDiaAndHora.class,e);
+            } catch (Exception e){
+                ImprimirUtils.imprimirErro(ValidarDiaAndHora.class,e);
             }
         }
         return hash;
