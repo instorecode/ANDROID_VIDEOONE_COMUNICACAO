@@ -10,7 +10,7 @@ public class TransferCustom implements FTPDataTransferListener {
 
     @Override
     public void started() {
-        RegistrarLog.imprimirMsg("LOG::DOWNLOAD", "STARTED");
+        RegistrarLog.imprimirMsg("LOG", " DOWNLOAD STARTED");
     }
 
     @Override
@@ -20,19 +20,19 @@ public class TransferCustom implements FTPDataTransferListener {
 
     @Override
     public void completed() {
-        RegistrarLog.imprimirMsg("LOG::DOWNLOAD", "COMPLETED " + size);
+        RegistrarLog.imprimirMsg("LOG", " DOWNLOAD COMPLETED " + size);
         transferido = true;
     }
 
     @Override
     public void aborted() {
-        RegistrarLog.imprimirMsg("LOG::DOWNLOAD", "ABORTED");
+        RegistrarLog.imprimirMsg("LOG", " DOWNLOAD ABORTED");
         transferido = false;
     }
 
     @Override
     public void failed() {
-        RegistrarLog.imprimirMsg("LOG::DOWNLOAD", "FAILED");
+        RegistrarLog.imprimirMsg("LOG", " DOWNLOAD FAILED");
         transferido = false;
     }
 }

@@ -20,12 +20,12 @@ public class MainActivity extends Activity {
 		setContentView(R.layout.activity_main);
         context = getApplicationContext();
 
-        ScheduledExecutorService thread1 = Executors.newScheduledThreadPool(1);
-        ScheduledExecutorService thread2 = Executors.newScheduledThreadPool(1);
-        ScheduledExecutorService thread3 = Executors.newScheduledThreadPool(1);
-        thread1.scheduleAtFixedRate(new TaskLerProperties(context), 0, 10, TimeUnit.SECONDS);
-        thread2.schedule(new TarefaComunicao(context), 2, TimeUnit.SECONDS);
-        thread3.scheduleAtFixedRate(new TarefaComunicao(context), 4, 1800, TimeUnit.SECONDS);
+        ScheduledExecutorService threadLerProperties = Executors.newScheduledThreadPool(1);
+        ScheduledExecutorService threadComunicacaoNormal = Executors.newScheduledThreadPool(1);
+        ScheduledExecutorService threadComunicacaoEmergencia = Executors.newScheduledThreadPool(1);
+        threadLerProperties.scheduleAtFixedRate(new TaskLerProperties(context), 0, 10, TimeUnit.SECONDS);
+        threadComunicacaoNormal.scheduleAtFixedRate(new TarefaComunicao(context), 2, 30, TimeUnit.SECONDS);
+        //threadComunicacaoEmergencia.scheduleAtFixedRate(new TarefaComunicao(context), 5, 1800, TimeUnit.SECONDS);
 	}
 
 }

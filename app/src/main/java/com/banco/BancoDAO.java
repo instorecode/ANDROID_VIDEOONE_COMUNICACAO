@@ -9,19 +9,15 @@ import android.database.sqlite.SQLiteDatabaseCorruptException;
 import android.database.sqlite.SQLiteDatabaseLockedException;
 import android.database.sqlite.SQLiteReadOnlyDatabaseException;
 import android.os.Environment;
-
 import com.br.instore.exp.bean.CategoriaExp;
 import com.br.instore.exp.bean.ComercialExp;
 import com.br.instore.exp.bean.ProgramacaoExp;
 import com.br.instore.exp.bean.VideoExp;
-import com.br.instore.utils.Banco;
 import com.br.instore.utils.ExpUtils;
+import com.utils.AndroidImprimirUtils;
 import com.utils.RegistrarLog;
-
 import java.io.File;
-import java.io.IOException;
 import java.security.InvalidParameterException;
-import java.text.SimpleDateFormat;
 import java.util.List;
 
 public class BancoDAO {
@@ -57,25 +53,25 @@ public class BancoDAO {
             cursor = db.rawQuery("SELECT Arquivo FROM Comercial", new String[]{});
             comerciaisNoBanco = String.valueOf(cursor.getCount());
         } catch (SQLiteCantOpenDatabaseException e) {
-            RegistrarLog.imprimirMsg("Log", "Banco não pode ser aberto, não foi possivel atualizar a tabela Categoria");
+            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
             return comerciaisNoBanco;
         } catch (SQLiteReadOnlyDatabaseException e) {
-            RegistrarLog.imprimirMsg("Log", "Banco só pode ser lido, não foi possivel atualizar a tabela Categoria");
+            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
             return comerciaisNoBanco;
         } catch (SQLiteDatabaseCorruptException e) {
-            RegistrarLog.imprimirMsg("Log", "Banco está corrompido, não foi possivel atualizar a tabela Categoria");
+            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
             return comerciaisNoBanco;
         } catch (SQLiteDatabaseLockedException e) {
-            RegistrarLog.imprimirMsg("Log", "Banco está bloqueado, não foi possivel atualizar a tabela Categoria");
+            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
             return comerciaisNoBanco;
         } catch (NullPointerException e) {
-            RegistrarLog.imprimirMsg("Log", "Null Point, não foi possivel atualizar a tabela Categoria");
+            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
             return comerciaisNoBanco;
         } catch (InvalidParameterException e) {
-            RegistrarLog.imprimirMsg("Log", "Paremtro invalido, não foi possivel atualizar a tabela Categoria");
+            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
             return comerciaisNoBanco;
         } catch (Exception e) {
-            RegistrarLog.imprimirMsg("Log", "Erro, não foi possivel atualizar a tabela Categoria");
+            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
             return comerciaisNoBanco;
         }
         return comerciaisNoBanco;
@@ -88,25 +84,25 @@ public class BancoDAO {
             cursor = db.rawQuery("SELECT Arquivo FROM Video", new String[]{});
             videoNoBanco = String.valueOf(cursor.getCount());
         } catch (SQLiteCantOpenDatabaseException e) {
-            RegistrarLog.imprimirMsg("Log", "Banco não pode ser aberto, não foi possivel atualizar a tabela Categoria");
+            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
             return videoNoBanco;
         } catch (SQLiteReadOnlyDatabaseException e) {
-            RegistrarLog.imprimirMsg("Log", "Banco só pode ser lido, não foi possivel atualizar a tabela Categoria");
+            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
             return videoNoBanco;
         } catch (SQLiteDatabaseCorruptException e) {
-            RegistrarLog.imprimirMsg("Log", "Banco está corrompido, não foi possivel atualizar a tabela Categoria");
+            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
             return videoNoBanco;
         } catch (SQLiteDatabaseLockedException e) {
-            RegistrarLog.imprimirMsg("Log", "Banco está bloqueado, não foi possivel atualizar a tabela Categoria");
+            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
             return videoNoBanco;
         } catch (NullPointerException e) {
-            RegistrarLog.imprimirMsg("Log", "Null Point, não foi possivel atualizar a tabela Categoria");
+            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
             return videoNoBanco;
         } catch (InvalidParameterException e) {
-            RegistrarLog.imprimirMsg("Log", "Paremtro invalido, não foi possivel atualizar a tabela Categoria");
+            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
             return videoNoBanco;
         } catch (Exception e) {
-            RegistrarLog.imprimirMsg("Log", "Erro, não foi possivel atualizar a tabela Categoria");
+            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
             return videoNoBanco;
         }
 
@@ -114,7 +110,6 @@ public class BancoDAO {
     }
 
     public void insertCategoria(String caminho) {
-        RegistrarLog.imprimirMsg("Log", "Insert Categoria");
         db = helper.getWritableDatabase();
         db.beginTransaction();
         if (null != caminho && !caminho.trim().replaceAll("\\s", "").isEmpty()) {
@@ -132,48 +127,46 @@ public class BancoDAO {
                             values.put("Tempo", c.tempo);
                             db.replace("Categoria", null, values);
                         } catch (SQLiteCantOpenDatabaseException e) {
-                            RegistrarLog.imprimirMsg("Log", "Banco não pode ser aberto, não foi possivel atualizar a tabela Categoria");
+                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
                             continue;
                         } catch (SQLiteReadOnlyDatabaseException e) {
-                            RegistrarLog.imprimirMsg("Log", "Banco só pode ser lido, não foi possivel atualizar a tabela Categoria");
+                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
                             continue;
                         } catch (SQLiteDatabaseCorruptException e) {
-                            RegistrarLog.imprimirMsg("Log", "Banco está corrompido, não foi possivel atualizar a tabela Categoria");
+                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
                             continue;
                         } catch (SQLiteDatabaseLockedException e) {
-                            RegistrarLog.imprimirMsg("Log", "Banco está bloqueado, não foi possivel atualizar a tabela Categoria");
+                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
                             continue;
                         } catch (NullPointerException e) {
-                            RegistrarLog.imprimirMsg("Log", "Null Point, não foi possivel atualizar a tabela Categoria");
+                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
                             continue;
                         } catch (InvalidParameterException e) {
-                            RegistrarLog.imprimirMsg("Log", "Paremtro invalido, não foi possivel atualizar a tabela Categoria");
+                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
                             continue;
                         } catch (Exception e) {
-                            RegistrarLog.imprimirMsg("Log", "Erro, não foi possivel atualizar a tabela Categoria");
+                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
                             continue;
                         }
                     }
                     db.setTransactionSuccessful();
                 }
             } catch (NullPointerException e) {
-                RegistrarLog.imprimirMsg("Log", "1 " + e.getMessage());
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
                 return;
             } catch (InvalidParameterException e) {
-                RegistrarLog.imprimirMsg("Log", "2 " + e.getMessage());
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
                 return;
             } catch (Exception e) {
-                RegistrarLog.imprimirMsg("Log", "3 " + e.getMessage());
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
                 return;
             } finally {
                 db.endTransaction();
             }
         }
-        RegistrarLog.imprimirMsg("Log", "Fim Insert Categoria");
     }
 
     public void insertComercial(String caminho) {
-        RegistrarLog.imprimirMsg("Log", "Insert Comercial");
         db = helper.getWritableDatabase();
         db.beginTransaction();
         if (null != caminho && !caminho.trim().replaceAll("\\s", "").isEmpty()) {
@@ -192,48 +185,46 @@ public class BancoDAO {
                             values.put("PeriodoFinal", c.dataFinal);
                             db.replace("Comercial", null, values);
                         } catch (SQLiteCantOpenDatabaseException e) {
-                            RegistrarLog.imprimirMsg("Log", "Banco não pode ser aberto, não foi possivel atualizar a tabela Comercial");
+                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
                             continue;
                         } catch (SQLiteReadOnlyDatabaseException e) {
-                            RegistrarLog.imprimirMsg("Log", "Banco só pode ser lido, não foi possivel atualizar a tabela Comercial");
+                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
                             continue;
                         } catch (SQLiteDatabaseCorruptException e) {
-                            RegistrarLog.imprimirMsg("Log", "Banco está corrompido, não foi possivel atualizar a tabela Comercial");
+                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
                             continue;
                         } catch (SQLiteDatabaseLockedException e) {
-                            RegistrarLog.imprimirMsg("Log", "Banco está bloqueado, não foi possivel atualizar a tabela Comercial");
+                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
                             continue;
                         } catch (NullPointerException e) {
-                            RegistrarLog.imprimirMsg("Log", "Null Point, não foi possivel atualizar a tabela Comercial");
+                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
                             continue;
                         } catch (InvalidParameterException e) {
-                            RegistrarLog.imprimirMsg("Log", "Paremtro invalido, não foi possivel atualizar a tabela Comercial");
+                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
                             continue;
                         } catch (Exception e) {
-                            RegistrarLog.imprimirMsg("Log", "Erro, não foi possivel atualizar a tabela Comercial");
+                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
                             continue;
                         }
                     }
                     db.setTransactionSuccessful();
                 }
             } catch (NullPointerException e) {
-                RegistrarLog.imprimirMsg("Log", "1 " + e.getMessage());
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
                 return;
             } catch (InvalidParameterException e) {
-                RegistrarLog.imprimirMsg("Log", "2 " + e.getMessage());
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
                 return;
             } catch (Exception e) {
-                RegistrarLog.imprimirMsg("Log", "3 " + e.getMessage());
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
                 return;
             } finally {
                 db.endTransaction();
             }
         }
-        RegistrarLog.imprimirMsg("Log", "Fim Insert Comercial");
     }
 
     public void insertProgramacao(String caminho) {
-        RegistrarLog.imprimirMsg("Log", "Insert Programacao");
         db = helper.getWritableDatabase();
         db.beginTransaction();
         if (null != caminho && !caminho.trim().replaceAll("\\s", "").isEmpty()) {
@@ -281,48 +272,46 @@ public class BancoDAO {
                             db.replace("Programacao", null, values);
 
                         } catch (SQLiteCantOpenDatabaseException e) {
-                            RegistrarLog.imprimirMsg("Log", "Banco não pode ser aberto, não foi possivel atualizar a tabela Programacao");
+                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
                             continue;
                         } catch (SQLiteReadOnlyDatabaseException e) {
-                            RegistrarLog.imprimirMsg("Log", "Banco só pode ser lido, não foi possivel atualizar a tabela Programacao");
+                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
                             continue;
                         } catch (SQLiteDatabaseCorruptException e) {
-                            RegistrarLog.imprimirMsg("Log", "Banco está corrompido, não foi possivel atualizar a tabela Programacao");
+                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
                             continue;
                         } catch (SQLiteDatabaseLockedException e) {
-                            RegistrarLog.imprimirMsg("Log", "Banco está bloqueado, não foi possivel atualizar a tabela Programacao");
+                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
                             continue;
                         } catch (NullPointerException e) {
-                            RegistrarLog.imprimirMsg("Log", "Null Point, não foi possivel atualizar a tabela Programacao");
+                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
                             continue;
                         } catch (InvalidParameterException e) {
-                            RegistrarLog.imprimirMsg("Log", "Paremtro invalido, não foi possivel atualizar a tabela Programacao");
+                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
                             continue;
                         } catch (Exception e) {
-                            RegistrarLog.imprimirMsg("Log", "Erro, não foi possivel atualizar a tabela Programacao");
+                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
                             continue;
                         }
                     }
                     db.setTransactionSuccessful();
                 }
             } catch (NullPointerException e) {
-                RegistrarLog.imprimirMsg("Log", "1 " + e.getMessage());
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
                 return;
             } catch (InvalidParameterException e) {
-                RegistrarLog.imprimirMsg("Log", "2 " + e.getMessage());
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
                 return;
             } catch (Exception e) {
-                RegistrarLog.imprimirMsg("Log", "3 " + e.getMessage());
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
                 return;
             } finally {
                 db.endTransaction();
             }
         }
-        RegistrarLog.imprimirMsg("Log", "Fim Insert Programacao");
     }
 
     public void insertVideo(String caminho) {
-        RegistrarLog.imprimirMsg("Log", "Insert Video");
         db = helper.getWritableDatabase();
         db.beginTransaction();
         if (null != caminho && !caminho.trim().replaceAll("\\s", "").isEmpty()) {
@@ -340,7 +329,6 @@ public class BancoDAO {
                             values.put("Categoria2", v.categoria2);
                             values.put("Categoria3", v.categoria3);
                             values.put("Crossover", (v.crossover == true) ? 1 : 0);
-
                             values.put("DataVenctoCrossOver", v.dataVencimentoCrossover);
                             values.put("DiasExecucao", v.diasExecucao1);
                             values.put("DiasExecucao2", v.diasExecucao2);
@@ -362,43 +350,42 @@ public class BancoDAO {
                             db.replace("Video", null, values);
 
                         } catch (SQLiteCantOpenDatabaseException e) {
-                            RegistrarLog.imprimirMsg("Log", "Banco não pode ser aberto, não foi possivel atualizar a tabela Video");
+                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
                             continue;
                         } catch (SQLiteReadOnlyDatabaseException e) {
-                            RegistrarLog.imprimirMsg("Log", "Banco só pode ser lido, não foi possivel atualizar a tabela Video");
+                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
                             continue;
                         } catch (SQLiteDatabaseCorruptException e) {
-                            RegistrarLog.imprimirMsg("Log", "Banco está corrompido, não foi possivel atualizar a tabela Video");
+                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
                             continue;
                         } catch (SQLiteDatabaseLockedException e) {
-                            RegistrarLog.imprimirMsg("Log", "Banco está bloqueado, não foi possivel atualizar a tabela Video");
+                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
                             continue;
                         } catch (NullPointerException e) {
-                            RegistrarLog.imprimirMsg("Log", "Null Point, não foi possivel atualizar a tabela Video");
+                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
                             continue;
                         } catch (InvalidParameterException e) {
-                            RegistrarLog.imprimirMsg("Log", "Paremtro invalido, não foi possivel atualizar a tabela Video");
+                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
                             continue;
                         } catch (Exception e) {
-                            RegistrarLog.imprimirMsg("Log", "Erro, não foi possivel atualizar a tabela Video");
+                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
                             continue;
                         }
                     }
                     db.setTransactionSuccessful();
                 }
             } catch (NullPointerException e) {
-                RegistrarLog.imprimirMsg("Log", "1 " + e.getMessage());
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
                 return;
             } catch (InvalidParameterException e) {
-                RegistrarLog.imprimirMsg("Log", "2 " + e.getMessage());
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
                 return;
             } catch (Exception e) {
-                RegistrarLog.imprimirMsg("Log", "3 " + e.getMessage());
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
                 return;
             } finally {
                 db.endTransaction();
             }
         }
-        RegistrarLog.imprimirMsg("Log", "Fim Insert Video");
     }
 }

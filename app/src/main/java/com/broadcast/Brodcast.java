@@ -12,7 +12,6 @@ public class Brodcast extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Toast.makeText(context, "Brodcast OK", Toast.LENGTH_LONG).show();
         Intent startServiceIntent = new Intent(context, MyService.class);
         context.startService(startServiceIntent);
     }
