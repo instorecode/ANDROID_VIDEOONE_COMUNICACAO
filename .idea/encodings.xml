@@ -3,7 +3,14 @@
   <component name="Encoding" useUTFGuessing="true" native2AsciiForPropertiesFiles="false">
     <file url="file://$PROJECT_DIR$/app/libs/projetoUtils.jar" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/com/banco/DatabaseHelper.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/com/bean/ComercialDependencia.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/com/bean/ComercialDet.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/com/bean/Playlist.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/com/comunicacao/TransferCustom.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/com/tarefas/TaskComerciaisDeterminados.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/com/tarefas/TaskCriarViewExcluirInvalidos.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/com/tarefas/TaskPlayerComericiaisDeterminados.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/com/tarefas/TaskVideoAndComerciais.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/com/utils/RegistrarLog.java" charset="UTF-8" />
   </component>
 </project>

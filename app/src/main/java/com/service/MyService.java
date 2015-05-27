@@ -3,15 +3,10 @@ package com.service;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.IBinder;
-import com.comunicacao.Comunicacao;
 import com.comunicacao.MainActivity;
+
 public class MyService extends Service {
-
-    private Comunicacao comunicacao;
-    private SQLiteDatabase db;
-
 
     @Override
     public IBinder onBind(Intent intent) {

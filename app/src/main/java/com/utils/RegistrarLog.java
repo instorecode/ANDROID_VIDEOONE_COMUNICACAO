@@ -24,7 +24,7 @@ public class RegistrarLog {
 
     private String barraDoSistema = System.getProperty("file.separator");
     private String caminho = Environment.getExternalStorageDirectory().toString();
-    private String dia = new SimpleDateFormat("dd/MM/yyyy").format(new Date());;
+    private String dia = new SimpleDateFormat("dd/MM/yyyy").format(new Date());
     private String diretorioLogs = caminho.concat(barraDoSistema).concat("videoOne").concat(barraDoSistema).concat("log");
     private String caminhoArquivoDiasLogCompleto = caminho.concat(barraDoSistema).concat("videoOne").concat(barraDoSistema).concat("config").concat(barraDoSistema);
 
