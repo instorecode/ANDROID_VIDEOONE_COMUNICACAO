@@ -22,6 +22,7 @@ import com.br.instore.utils.ExpUtils;
 import com.br.instore.utils.LogUtils;
 import com.br.instore.utils.StringUtils;
 import com.utils.AndroidImprimirUtils;
+import com.utils.RegistrarLog;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -38,6 +39,8 @@ import java.util.TimeZone;
 
 public class BancoDAO {
 
+    private final File arquivoBanco = new File(Environment.getExternalStorageDirectory().getAbsolutePath().concat("/videoOne/").concat("videoOneDs.db"));
+
     private List<ProgramacaoExp> listaProgramacao = new ArrayList<ProgramacaoExp>();
     private List<String> listaDeArquivos = new ArrayList<String>();
     private List<ComercialDet> listaComercialDeterminados = new ArrayList<ComercialDet>();
@@ -52,6 +55,8 @@ public class BancoDAO {
     private static final String VIEW_PROGRAMACAO = "SELECT * FROM VIEW_CARREGAR_PROGRAMACAO";
     private final String barraDoSistema = System.getProperty("file.separator");
     private String caminho = Environment.getExternalStorageDirectory().toString();
+    private int valorRandom = 0;
+
 
     public BancoDAO(Context context) {
         this.helper = new DatabaseHelper(context);
@@ -70,6 +75,7 @@ public class BancoDAO {
 
     ///------------------ VIDEOS COMERCIAIS -------------------///
     public void programacoes() {
+        //if(arquivoBanco.exists()){
         SQLiteDatabase db = helper.getWritableDatabase();
         cursor = db.rawQuery(VIEW_PROGRAMACAO, new String[]{});
         if (cursor.getCount() > 0) {
@@ -572,112 +578,126 @@ public class BancoDAO {
 
     ///----------------- COMERCIAL DETERMINADO ----------///
     public void comerciaisDeterminados() {
-        try {
-            SQLiteDatabase db = helper.getWritableDatabase();
-            String script = "SELECT * FROM VIEW_CARREGAR_COMERCIAL_DET WHERE (QtdePlayer is null OR QtdePlayer > Qtde)";
-            cursor = db.rawQuery(script, new String[]{});
+        if(arquivoBanco.exists()) {
+            try {
+                SQLiteDatabase db = helper.getWritableDatabase();
+                String script = "SELECT * FROM VIEW_CARREGAR_COMERCIAL_DET WHERE (QtdePlayer is null OR QtdePlayer > Qtde)";
+                cursor = db.rawQuery(script, new String[]{});
 
-            if (cursor.getCount() > 0) {
-                while (cursor.moveToNext()) {
-                    try {
-                        ComercialDet comercialDet = new ComercialDet();
-                        comercialDet.arquivo = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Arquivo")));
-                        comercialDet.cliente = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Cliente")));
-                        comercialDet.titulo = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Titulo")));
-                        comercialDet.categoria = cursor.getString(cursor.getColumnIndex("Categoria"));
-                        comercialDet.dataInicial = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("PeriodoInicial")));
-                        comercialDet.dataFinal = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("PeriodoFinal")));
-                        comercialDet.horario1 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Horario1")));
-                        comercialDet.horario2 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Horario2")));
-                        comercialDet.horario3 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Horario3")));
-                        comercialDet.horario4 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Horario4")));
-                        comercialDet.horario5 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Horario5")));
-                        comercialDet.horario6 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Horario6")));
-                        comercialDet.horario7 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Horario7")));
-                        comercialDet.horario8 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Horario8")));
-                        comercialDet.horario9 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Horario9")));
-                        comercialDet.horario10 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Horario10")));
-                        comercialDet.horario11 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Horario11")));
-                        comercialDet.horario12 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Horario12")));
-                        comercialDet.horario13 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Horario13")));
-                        comercialDet.horario14 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Horario14")));
-                        comercialDet.horario15 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Horario15")));
-                        comercialDet.horario16 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Horario16")));
-                        comercialDet.horario17 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Horario17")));
-                        comercialDet.horario18 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Horario18")));
-                        comercialDet.horario19 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Horario19")));
-                        comercialDet.horario20 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Horario20")));
-                        comercialDet.horario21 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Horario21")));
-                        comercialDet.horario22 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Horario22")));
-                        comercialDet.horario23 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Horario23")));
-                        comercialDet.horario24 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Horario24")));
-                        comercialDet.semana1 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Semana1")));
-                        comercialDet.semana2 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Semana2")));
-                        comercialDet.semana3 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Semana2")));
-                        comercialDet.semana4 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Semana4")));
-                        comercialDet.semana5 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Semana5")));
-                        comercialDet.semana6 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Semana6")));
-                        comercialDet.semana7 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Semana7")));
-                        comercialDet.semana8 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Semana8")));
-                        comercialDet.semana9 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Semana9")));
-                        comercialDet.semana10 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Semana10")));
-                        comercialDet.semana11 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Semana11")));
-                        comercialDet.semana12 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Semana12")));
-                        comercialDet.semana13 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Semana13")));
-                        comercialDet.semana14 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Semana14")));
-                        comercialDet.semana15 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Semana15")));
-                        comercialDet.semana16 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Semana16")));
-                        comercialDet.semana17 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Semana17")));
-                        comercialDet.semana18 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Semana18")));
-                        comercialDet.semana19 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Semana19")));
-                        comercialDet.semana20 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Semana20")));
-                        comercialDet.semana21 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Semana21")));
-                        comercialDet.semana22 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Semana22")));
-                        comercialDet.semana23 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Semana23")));
-                        comercialDet.semana24 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Semana24")));
-                        comercialDet.diaSemana = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("DiaSemana")));
-                        comercialDet.diasAlternados = (cursor.getString(cursor.getColumnIndex("DiasAlternados")) == "1") ? true : false;
-                        comercialDet.data = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Data")));
-                        comercialDet.ultimaExecucao = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("UltimaExecucao")));
-                        comercialDet.tempoTotal = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("TempoTotal")));
-                        comercialDet.random = cursor.getInt(cursor.getColumnIndex("Random"));
-                        comercialDet.qtdePlayer = cursor.getInt(cursor.getColumnIndex("QtdePlayer"));
-                        comercialDet.qtdePlayer = cursor.getInt(cursor.getColumnIndex("Qtde"));
-                        comercialDet.dataVencimento = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("DataVencto")));
-                        comercialDet.dependencia1 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Dependencia1")));
-                        comercialDet.dependencia2 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Dependencia2")));
-                        comercialDet.dependencia3 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Dependencia3")));
-                        listaComercialDeterminados.add(comercialDet);
-                    } catch (SQLiteCantOpenDatabaseException e) {
-                        AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-                        continue;
-                    } catch (SQLiteReadOnlyDatabaseException e) {
-                        AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-                        continue;
-                    } catch (SQLiteDatabaseCorruptException e) {
-                        AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-                        continue;
-                    } catch (SQLiteDatabaseLockedException e) {
-                        AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-                        continue;
-                    } catch (NullPointerException e) {
-                        AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-                        continue;
-                    } catch (InvalidParameterException e) {
-                        AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-                        continue;
-                    } catch (Exception e) {
-                        AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-                        continue;
+                if (cursor.getCount() > 0) {
+                    while (cursor.moveToNext()) {
+                        try {
+                            ComercialDet comercialDet = new ComercialDet();
+                            comercialDet.arquivo = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Arquivo")));
+                            comercialDet.cliente = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Cliente")));
+                            comercialDet.titulo = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Titulo")));
+                            comercialDet.categoria = cursor.getString(cursor.getColumnIndex("Categoria"));
+                            comercialDet.dataInicial = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("PeriodoInicial")));
+                            comercialDet.dataFinal = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("PeriodoFinal")));
+                            comercialDet.horario1 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Horario1")));
+                            comercialDet.horario2 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Horario2")));
+                            comercialDet.horario3 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Horario3")));
+                            comercialDet.horario4 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Horario4")));
+                            comercialDet.horario5 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Horario5")));
+                            comercialDet.horario6 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Horario6")));
+                            comercialDet.horario7 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Horario7")));
+                            comercialDet.horario8 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Horario8")));
+                            comercialDet.horario9 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Horario9")));
+                            comercialDet.horario10 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Horario10")));
+                            comercialDet.horario11 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Horario11")));
+                            comercialDet.horario12 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Horario12")));
+                            comercialDet.horario13 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Horario13")));
+                            comercialDet.horario14 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Horario14")));
+                            comercialDet.horario15 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Horario15")));
+                            comercialDet.horario16 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Horario16")));
+                            comercialDet.horario17 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Horario17")));
+                            comercialDet.horario18 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Horario18")));
+                            comercialDet.horario19 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Horario19")));
+                            comercialDet.horario20 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Horario20")));
+                            comercialDet.horario21 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Horario21")));
+                            comercialDet.horario22 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Horario22")));
+                            comercialDet.horario23 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Horario23")));
+                            comercialDet.horario24 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Horario24")));
+                            comercialDet.semana1 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Semana1")));
+                            comercialDet.semana2 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Semana2")));
+                            comercialDet.semana3 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Semana2")));
+                            comercialDet.semana4 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Semana4")));
+                            comercialDet.semana5 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Semana5")));
+                            comercialDet.semana6 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Semana6")));
+                            comercialDet.semana7 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Semana7")));
+                            comercialDet.semana8 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Semana8")));
+                            comercialDet.semana9 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Semana9")));
+                            comercialDet.semana10 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Semana10")));
+                            comercialDet.semana11 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Semana11")));
+                            comercialDet.semana12 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Semana12")));
+                            comercialDet.semana13 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Semana13")));
+                            comercialDet.semana14 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Semana14")));
+                            comercialDet.semana15 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Semana15")));
+                            comercialDet.semana16 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Semana16")));
+                            comercialDet.semana17 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Semana17")));
+                            comercialDet.semana18 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Semana18")));
+                            comercialDet.semana19 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Semana19")));
+                            comercialDet.semana20 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Semana20")));
+                            comercialDet.semana21 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Semana21")));
+                            comercialDet.semana22 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Semana22")));
+                            comercialDet.semana23 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Semana23")));
+                            comercialDet.semana24 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Semana24")));
+                            comercialDet.diaSemana = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("DiaSemana")));
+                            comercialDet.diasAlternados = (cursor.getString(cursor.getColumnIndex("DiasAlternados")) == "1") ? true : false;
+                            comercialDet.data = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Data")));
+                            comercialDet.ultimaExecucao = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("UltimaExecucao")));
+                            comercialDet.tempoTotal = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("TempoTotal")));
+                            comercialDet.random = cursor.getInt(cursor.getColumnIndex("Random"));
+                            comercialDet.qtdePlayer = cursor.getInt(cursor.getColumnIndex("QtdePlayer"));
+                            comercialDet.qtdePlayer = cursor.getInt(cursor.getColumnIndex("Qtde"));
+                            comercialDet.dataVencimento = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("DataVencto")));
+                            comercialDet.dependencia1 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Dependencia1")));
+                            comercialDet.dependencia2 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Dependencia2")));
+                            comercialDet.dependencia3 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Dependencia3")));
+                            listaComercialDeterminados.add(comercialDet);
+                        } catch (SQLiteCantOpenDatabaseException e) {
+                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+                            continue;
+                        } catch (SQLiteReadOnlyDatabaseException e) {
+                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+                            continue;
+                        } catch (SQLiteDatabaseCorruptException e) {
+                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+                            continue;
+                        } catch (SQLiteDatabaseLockedException e) {
+                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+                            continue;
+                        } catch (NullPointerException e) {
+                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+                            continue;
+                        } catch (InvalidParameterException e) {
+                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+                            continue;
+                        } catch (Exception e) {
+                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+                            continue;
+                        }
                     }
                 }
+            } catch (NullPointerException e) {
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+            } catch (InvalidParameterException e) {
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+            } catch (Exception e) {
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
             }
-        } catch (NullPointerException e) {
-            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-        } catch (InvalidParameterException e) {
-            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-        } catch (Exception e) {
-            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+        } else {
+
         }
     }
 
@@ -745,10 +765,13 @@ public class BancoDAO {
                 }
             } catch (NullPointerException e) {
                 AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
             } catch (InvalidParameterException e) {
                 AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
             } catch (Exception e) {
                 AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
             }
             ///-----------------------DEPENDENCOA 2 ---------------------------------------------------------------///
             try {
@@ -768,10 +791,13 @@ public class BancoDAO {
                 }
             } catch (NullPointerException e) {
                 AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
             } catch (InvalidParameterException e) {
                 AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
             } catch (Exception e) {
                 AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
             }
             ///-----------------------DEPENDENCOA 3 ---------------------------------------------------------------///
             try {
@@ -791,10 +817,13 @@ public class BancoDAO {
                 }
             } catch (NullPointerException e) {
                 AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
             } catch (InvalidParameterException e) {
                 AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
             } catch (Exception e) {
                 AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
             }
         } else {
             LogUtils.registrar(99, ConfiguaracaoUtils.diretorio.isLogCompleto(), " Desprezada com tipo 99. O comercial " + nomeComercial + " não foi encontrado em nenhum diretório");
@@ -804,59 +833,74 @@ public class BancoDAO {
     }
 
     private ComercialDependencia validarDependenciaDeUmDeterminadoNoBanco(String nome) {
-        try {
-            if (null != nome && !nome.replaceAll("\\s", "").trim().isEmpty()) {
-                SQLiteDatabase db = helper.getWritableDatabase();
-                String sql = "SELECT * FROM VIEW_CARREGAR_COMERCIAL WHERE (QtdePlayer is null OR QtdePlayer > Qtde) AND Arquivo = '" + nome + "';";
-                Cursor cursorDependencia = db.rawQuery(sql, new String[]{});
-                if (cursorDependencia.getCount() > 0) {
-                    ComercialDependencia comercialDependencia = new ComercialDependencia();
-                    while (cursorDependencia.moveToNext()) {
-                        try {
-                            comercialDependencia.arquivo = StringUtils.nuloParaVazio(cursorDependencia.getString(cursorDependencia.getColumnIndex("Arquivo")));
-                            comercialDependencia.cliente = StringUtils.nuloParaVazio(cursorDependencia.getString(cursorDependencia.getColumnIndex("Cliente")));
-                            comercialDependencia.categoria = StringUtils.nuloParaVazio(cursorDependencia.getString(cursorDependencia.getColumnIndex("Categoria")));
-                            comercialDependencia.data = StringUtils.nuloParaVazio(cursorDependencia.getString(cursorDependencia.getColumnIndex("Data")));
-                            comercialDependencia.dataInicial = StringUtils.nuloParaVazio(cursorDependencia.getString(cursorDependencia.getColumnIndex("PeriodoInicial")));
-                            comercialDependencia.dataFinal = StringUtils.nuloParaVazio(cursorDependencia.getString(cursorDependencia.getColumnIndex("PeriodoFinal")));
-                            comercialDependencia.dataVencimento = StringUtils.nuloParaVazio(cursorDependencia.getString(cursorDependencia.getColumnIndex("DataVencto")));
-                            comercialDependencia.titulo = StringUtils.nuloParaVazio(cursorDependencia.getString(cursorDependencia.getColumnIndex("Titulo")));
-                        } catch (SQLiteCantOpenDatabaseException e) {
-                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-                            continue;
-                        } catch (SQLiteReadOnlyDatabaseException e) {
-                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-                            continue;
-                        } catch (SQLiteDatabaseCorruptException e) {
-                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-                            continue;
-                        } catch (SQLiteDatabaseLockedException e) {
-                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-                            continue;
-                        } catch (NullPointerException e) {
-                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-                            continue;
-                        } catch (InvalidParameterException e) {
-                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-                            continue;
-                        } catch (Exception e) {
-                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-                            continue;
+        if(arquivoBanco.exists()) {
+            try {
+                if (null != nome && !nome.replaceAll("\\s", "").trim().isEmpty()) {
+                    SQLiteDatabase db = helper.getWritableDatabase();
+                    String sql = "SELECT * FROM VIEW_CARREGAR_COMERCIAL WHERE (QtdePlayer is null OR QtdePlayer > Qtde) AND Arquivo = '" + nome + "';";
+                    Cursor cursorDependencia = db.rawQuery(sql, new String[]{});
+                    if (cursorDependencia.getCount() > 0) {
+                        ComercialDependencia comercialDependencia = new ComercialDependencia();
+                        while (cursorDependencia.moveToNext()) {
+                            try {
+                                comercialDependencia.arquivo = StringUtils.nuloParaVazio(cursorDependencia.getString(cursorDependencia.getColumnIndex("Arquivo")));
+                                comercialDependencia.cliente = StringUtils.nuloParaVazio(cursorDependencia.getString(cursorDependencia.getColumnIndex("Cliente")));
+                                comercialDependencia.categoria = StringUtils.nuloParaVazio(cursorDependencia.getString(cursorDependencia.getColumnIndex("Categoria")));
+                                comercialDependencia.data = StringUtils.nuloParaVazio(cursorDependencia.getString(cursorDependencia.getColumnIndex("Data")));
+                                comercialDependencia.dataInicial = StringUtils.nuloParaVazio(cursorDependencia.getString(cursorDependencia.getColumnIndex("PeriodoInicial")));
+                                comercialDependencia.dataFinal = StringUtils.nuloParaVazio(cursorDependencia.getString(cursorDependencia.getColumnIndex("PeriodoFinal")));
+                                comercialDependencia.dataVencimento = StringUtils.nuloParaVazio(cursorDependencia.getString(cursorDependencia.getColumnIndex("DataVencto")));
+                                comercialDependencia.titulo = StringUtils.nuloParaVazio(cursorDependencia.getString(cursorDependencia.getColumnIndex("Titulo")));
+                            } catch (SQLiteCantOpenDatabaseException e) {
+                                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+                                continue;
+                            } catch (SQLiteReadOnlyDatabaseException e) {
+                                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+                                continue;
+                            } catch (SQLiteDatabaseCorruptException e) {
+                                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+                                continue;
+                            } catch (SQLiteDatabaseLockedException e) {
+                                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+                                continue;
+                            } catch (NullPointerException e) {
+                                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+                                continue;
+                            } catch (InvalidParameterException e) {
+                                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+                                continue;
+                            } catch (Exception e) {
+                                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+                                continue;
+                            }
                         }
+                        cursorDependencia.close();
+                        return comercialDependencia;
                     }
-                    cursorDependencia.close();
-                    return comercialDependencia;
                 }
+            } catch (NullPointerException e) {
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+                return null;
+            } catch (InvalidParameterException e) {
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+                return null;
+            } catch (Exception e) {
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+                return null;
             }
-        } catch (NullPointerException e) {
-            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-            return null;
-        } catch (InvalidParameterException e) {
-            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-            return null;
-        } catch (Exception e) {
-            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-            return null;
+        } else {
+            RegistrarLog.imprimirMsg("Log","Banco não foi encontrado : validarDependenciaDeUmDeterminadoNoBanco()");
+            LogUtils.registrar(21, ConfiguaracaoUtils.diretorio.isLogCompleto(), " 21 Banco não foi encontrado : validarDependenciaDeUmDeterminadoNoBanco()");
         }
         return null;
     }
@@ -879,12 +923,20 @@ public class BancoDAO {
                         }
                     }
                 } catch (IndexOutOfBoundsException e) {
+                    AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                    AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
                     return;
                 } catch (NullPointerException e) {
+                    AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                    AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
                     return;
                 } catch (InvalidParameterException e) {
+                    AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                    AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
                     return;
                 } catch (Exception e) {
+                    AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                    AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
                     return;
                 }
 
@@ -910,12 +962,20 @@ public class BancoDAO {
                         }
                     }
                 } catch (IndexOutOfBoundsException e) {
+                    AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                    AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
                     return;
                 } catch (NullPointerException e) {
+                    AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                    AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
                     return;
                 } catch (InvalidParameterException e) {
+                    AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                    AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
                     return;
                 } catch (Exception e) {
+                    AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                    AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
                     return;
                 }
             }
@@ -931,10 +991,13 @@ public class BancoDAO {
             }
         } catch (NullPointerException e) {
             AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
         } catch (InvalidParameterException e) {
             AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
         } catch (Exception e) {
             AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
         }
 
 
@@ -946,22 +1009,28 @@ public class BancoDAO {
                         linhasPlaylistDet.add(linha);
                     } catch (NullPointerException e) {
                         AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                        AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
                         continue;
                     } catch (InvalidParameterException e) {
                         AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                        AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
                         continue;
                     } catch (Exception e) {
                         AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                        AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
                         continue;
                     }
                 }
             }
         } catch (NullPointerException e) {
             AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
         } catch (InvalidParameterException e) {
             AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
         } catch (Exception e) {
             AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
         }
 
         try {
@@ -969,10 +1038,13 @@ public class BancoDAO {
             linhasPlaylistDet.add(linha);
         } catch (NullPointerException e) {
             AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
         } catch (InvalidParameterException e) {
             AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
         } catch (Exception e) {
             AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
         }
     }
 
@@ -988,15 +1060,27 @@ public class BancoDAO {
             playlistDeterminados.createNewFile();
         } catch (IOException e) {
             AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+            linhasPlaylistDet.clear();
+            listaComercialDeterminados.clear();
             return;
         } catch (NullPointerException e) {
             AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+            linhasPlaylistDet.clear();
+            listaComercialDeterminados.clear();
             return;
         } catch (InvalidParameterException e) {
             AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+            linhasPlaylistDet.clear();
+            listaComercialDeterminados.clear();
             return;
         } catch (Exception e) {
             AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+            linhasPlaylistDet.clear();
+            listaComercialDeterminados.clear();
             return;
         }
 
@@ -1006,15 +1090,27 @@ public class BancoDAO {
             fileWriter = new FileWriter(playlistAntiga, true);
         } catch (IOException e) {
             AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+            linhasPlaylistDet.clear();
+            listaComercialDeterminados.clear();
             return;
         } catch (NullPointerException e) {
             AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+            linhasPlaylistDet.clear();
+            listaComercialDeterminados.clear();
             return;
         } catch (InvalidParameterException e) {
             AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+            linhasPlaylistDet.clear();
+            listaComercialDeterminados.clear();
             return;
         } catch (Exception e) {
             AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+            linhasPlaylistDet.clear();
+            listaComercialDeterminados.clear();
             return;
         }
         if (null != linhasPlaylistDet && !linhasPlaylistDet.isEmpty()) {
@@ -1023,15 +1119,19 @@ public class BancoDAO {
                     fileWriter.write(linha.concat("\n"));
                 } catch (IOException e) {
                     AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                    AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
                     continue;
                 } catch (NullPointerException e) {
                     AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                    AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
                     continue;
                 } catch (InvalidParameterException e) {
                     AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                    AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
                     continue;
                 } catch (Exception e) {
                     AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                    AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
                     continue;
                 }
             }
@@ -1045,15 +1145,19 @@ public class BancoDAO {
                 fileWriter.close();
             } catch (IOException e) {
                 AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
                 return;
             } catch (NullPointerException e) {
                 AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
                 return;
             } catch (InvalidParameterException e) {
                 AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
                 return;
             } catch (Exception e) {
                 AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
                 return;
             }
         }
@@ -1077,353 +1181,468 @@ public class BancoDAO {
             }
         } catch (InvalidParameterException e) {
             AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
             return null;
         } catch (NullPointerException e) {
             AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
             return null;
         } catch (Exception e) {
             AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
             return null;
         }
     }
 
     public void excluirComercialDoBanco() {
-        try {
-            SQLiteDatabase db = helper.getWritableDatabase();
-            String script = "SELECT * FROM Comercial WHERE DataVencto <= date('now')";
-            cursor = db.rawQuery(script, new String[]{});
+        if(arquivoBanco.exists()) {
+            try {
+                SQLiteDatabase db = helper.getWritableDatabase();
+                String script = "SELECT * FROM Comercial WHERE DataVencto <= date('now')";
+                cursor = db.rawQuery(script, new String[]{});
 
-            if (cursor.getCount() > 0) {
-                while (cursor.moveToNext()) {
-                    try {
+                if (cursor.getCount() > 0) {
+                    while (cursor.moveToNext()) {
+                        try {
 
-                        String arquivo = cursor.getString(cursor.getColumnIndex("Arquivo"));
-                        String titulo = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Titulo")));
-                        String dataVencto = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("DataVencto")));
-                        String resuldado = validarExistenciaDoVideo(arquivo);
-                        if (resuldado != null) {
-                            File file = new File(resuldado);
-                            file.delete();
-                            db.delete("Comercial", "Arquivo='" + arquivo + "'", null);
-                            LogUtils.registrar(10, ConfiguaracaoUtils.diretorio.isLogCompleto(), " 10 Excluindo comercial " + titulo + "-" + arquivo + "-" + dataVencto + "==" + new SimpleDateFormat("dd-MM-yyyy HH:mm").format(new Date()));
+                            String arquivo = cursor.getString(cursor.getColumnIndex("Arquivo"));
+                            String titulo = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Titulo")));
+                            String dataVencto = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("DataVencto")));
+                            String resuldado = validarExistenciaDoVideo(arquivo);
+                            if (resuldado != null) {
+                                File file = new File(resuldado);
+                                file.delete();
+                                db.delete("Comercial", "Arquivo='" + arquivo + "'", null);
+                                LogUtils.registrar(10, ConfiguaracaoUtils.diretorio.isLogCompleto(), " 10 Excluindo comercial " + titulo + "-" + arquivo + "-" + dataVencto + "==" + new SimpleDateFormat("dd-MM-yyyy HH:mm").format(new Date()));
+                            }
+                        } catch (SQLiteCantOpenDatabaseException e) {
+                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+                            continue;
+                        } catch (SQLiteReadOnlyDatabaseException e) {
+                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+                            continue;
+                        } catch (SQLiteDatabaseCorruptException e) {
+                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+                            continue;
+                        } catch (SQLiteDatabaseLockedException e) {
+                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+                            continue;
+                        } catch (NullPointerException e) {
+                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+                            continue;
+                        } catch (InvalidParameterException e) {
+                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+                            continue;
+                        } catch (Exception e) {
+                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+                            continue;
                         }
-                    } catch (SQLiteCantOpenDatabaseException e) {
-                        AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-                        continue;
-                    } catch (SQLiteReadOnlyDatabaseException e) {
-                        AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-                        continue;
-                    } catch (SQLiteDatabaseCorruptException e) {
-                        AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-                        continue;
-                    } catch (SQLiteDatabaseLockedException e) {
-                        AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-                        continue;
-                    } catch (NullPointerException e) {
-                        AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-                        continue;
-                    } catch (InvalidParameterException e) {
-                        AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-                        continue;
-                    } catch (Exception e) {
-                        AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-                        continue;
                     }
                 }
+            } catch (NullPointerException e) {
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+            } catch (InvalidParameterException e) {
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+            } catch (Exception e) {
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
             }
-        } catch (NullPointerException e) {
-            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-        } catch (InvalidParameterException e) {
-            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-        } catch (Exception e) {
-            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+        } else {
+            RegistrarLog.imprimirMsg("Log","Banco não foi encontrado : excluirComercialDoBanco()");
+            LogUtils.registrar(21, ConfiguaracaoUtils.diretorio.isLogCompleto(), " 21 Banco não foi encontrado : excluirComercialDoBanco()");
         }
     }
 
     public void excluirVideosDoBanco() {
-        try {
-            SQLiteDatabase db = helper.getWritableDatabase();
-            String script = "SELECT * FROM Video WHERE DataVencto <= date('now')";
-            cursor = db.rawQuery(script, new String[]{});
-            if (cursor.getCount() > 0) {
-                while (cursor.moveToNext()) {
-                    try {
-                        String arquivo = cursor.getString(cursor.getColumnIndex("Arquivo"));
-                        String titulo = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Titulo")));
-                        String dataVencto = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("DataVencto")));
-                        String resuldado = validarExistenciaDoVideo(arquivo);
+        if(arquivoBanco.exists()) {
+            try {
+                SQLiteDatabase db = helper.getWritableDatabase();
+                String script = "SELECT * FROM Video WHERE DataVencto <= date('now')";
+                cursor = db.rawQuery(script, new String[]{});
+                if (cursor.getCount() > 0) {
+                    while (cursor.moveToNext()) {
+                        try {
+                            String arquivo = cursor.getString(cursor.getColumnIndex("Arquivo"));
+                            String titulo = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Titulo")));
+                            String dataVencto = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("DataVencto")));
+                            String resuldado = validarExistenciaDoVideo(arquivo);
 
-                        if (resuldado != null) {
-                            File file = new File(resuldado);
-                            file.delete();
-                            db.delete("Video", "Arquivo='" + arquivo + "'", null);
-                            LogUtils.registrar(10, ConfiguaracaoUtils.diretorio.isLogCompleto(), " 10 Excluindo video " + titulo + "-" + arquivo + "-" + dataVencto + "==" + new SimpleDateFormat("dd-MM-yyyy HH:mm").format(new Date()));
+                            if (resuldado != null) {
+                                File file = new File(resuldado);
+                                file.delete();
+                                db.delete("Video", "Arquivo='" + arquivo + "'", null);
+                                LogUtils.registrar(10, ConfiguaracaoUtils.diretorio.isLogCompleto(), " 10 Excluindo video " + titulo + "-" + arquivo + "-" + dataVencto + "==" + new SimpleDateFormat("dd-MM-yyyy HH:mm").format(new Date()));
+                            }
+                        } catch (SQLiteCantOpenDatabaseException e) {
+                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+                            continue;
+                        } catch (SQLiteReadOnlyDatabaseException e) {
+                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+                            continue;
+                        } catch (SQLiteDatabaseCorruptException e) {
+                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+                            continue;
+                        } catch (SQLiteDatabaseLockedException e) {
+                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+                            continue;
+                        } catch (NullPointerException e) {
+                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+                            continue;
+                        } catch (InvalidParameterException e) {
+                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+                            continue;
+                        } catch (Exception e) {
+                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+                            continue;
                         }
-                    } catch (SQLiteCantOpenDatabaseException e) {
-                        AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-                        continue;
-                    } catch (SQLiteReadOnlyDatabaseException e) {
-                        AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-                        continue;
-                    } catch (SQLiteDatabaseCorruptException e) {
-                        AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-                        continue;
-                    } catch (SQLiteDatabaseLockedException e) {
-                        AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-                        continue;
-                    } catch (NullPointerException e) {
-                        AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-                        continue;
-                    } catch (InvalidParameterException e) {
-                        AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-                        continue;
-                    } catch (Exception e) {
-                        AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-                        continue;
                     }
                 }
+            } catch (NullPointerException e) {
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+            } catch (InvalidParameterException e) {
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+            } catch (Exception e) {
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
             }
-        } catch (NullPointerException e) {
-            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-        } catch (InvalidParameterException e) {
-            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-        } catch (Exception e) {
-            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+        } else {
+            RegistrarLog.imprimirMsg("Log","Banco não foi encontrado : excluirVideosDoBanco()");
+            LogUtils.registrar(21, ConfiguaracaoUtils.diretorio.isLogCompleto(), " 21 Banco não foi encontrado : excluirVideosDoBanco()");
         }
     }
 
     //------- CRIAR AS VIEW ---////
     public void criarViewProgramacao() {
-        try {
-            SQLiteDatabase db = helper.getWritableDatabase();
-            banco.criarViewProgramacao();
-            db.execSQL(banco.scriptProgramacaoView);
-        } catch (SQLiteCantOpenDatabaseException e) {
-            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-        } catch (SQLiteReadOnlyDatabaseException e) {
-            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-        } catch (SQLiteDatabaseCorruptException e) {
-            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-        } catch (SQLiteDatabaseLockedException e) {
-            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-        } catch (NullPointerException e) {
-            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-        } catch (InvalidParameterException e) {
-            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-        } catch (Exception e) {
-            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+        if(arquivoBanco.exists()) {
+            try {
+                SQLiteDatabase db = helper.getWritableDatabase();
+                banco.criarViewProgramacao();
+                db.execSQL(banco.scriptProgramacaoView);
+            } catch (SQLiteCantOpenDatabaseException e) {
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+            } catch (SQLiteReadOnlyDatabaseException e) {
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+            } catch (SQLiteDatabaseCorruptException e) {
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+            } catch (SQLiteDatabaseLockedException e) {
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+            } catch (NullPointerException e) {
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+            } catch (InvalidParameterException e) {
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+            } catch (Exception e) {
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+            }
+        } else {
+            RegistrarLog.imprimirMsg("Log","Banco não foi encontrado : criarViewProgramacao()");
+            LogUtils.registrar(21, ConfiguaracaoUtils.diretorio.isLogCompleto(), " 21 Banco não foi encontrado : criarViewProgramacao()");
         }
     }
 
     public void criarViewComercial() {
-        try {
-            SQLiteDatabase db = helper.getWritableDatabase();
-            banco.criarViewComercial();
-            db.execSQL(banco.scriptComercialView);
-        } catch (SQLiteCantOpenDatabaseException e) {
-            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-        } catch (SQLiteReadOnlyDatabaseException e) {
-            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-        } catch (SQLiteDatabaseCorruptException e) {
-            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-        } catch (SQLiteDatabaseLockedException e) {
-            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-        } catch (NullPointerException e) {
-            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-        } catch (InvalidParameterException e) {
-            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-        } catch (Exception e) {
-            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+        if(arquivoBanco.exists()) {
+            try {
+                SQLiteDatabase db = helper.getWritableDatabase();
+                banco.criarViewComercial();
+                db.execSQL(banco.scriptComercialView);
+            } catch (SQLiteCantOpenDatabaseException e) {
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+            } catch (SQLiteReadOnlyDatabaseException e) {
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+            } catch (SQLiteDatabaseCorruptException e) {
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+            } catch (SQLiteDatabaseLockedException e) {
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+            } catch (NullPointerException e) {
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+            } catch (InvalidParameterException e) {
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+            } catch (Exception e) {
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+            }
+        } else {
+            RegistrarLog.imprimirMsg("Log","Banco não foi encontrado : criarViewComercial()");
+            LogUtils.registrar(21, ConfiguaracaoUtils.diretorio.isLogCompleto(), " 21 Banco não foi encontrado : criarViewComercial()");
         }
     }
 
     public void criarViewComercialDetermidos() {
-        try {
-            SQLiteDatabase db = helper.getWritableDatabase();
-            banco.criarViewComercialDet();
-            db.execSQL(banco.scriptComercialDetView);
-        } catch (SQLiteCantOpenDatabaseException e) {
-            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-        } catch (SQLiteReadOnlyDatabaseException e) {
-            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-        } catch (SQLiteDatabaseCorruptException e) {
-            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-        } catch (SQLiteDatabaseLockedException e) {
-            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-        } catch (NullPointerException e) {
-            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-        } catch (InvalidParameterException e) {
-            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-        } catch (Exception e) {
-            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+        if(arquivoBanco.exists()) {
+            try {
+                SQLiteDatabase db = helper.getWritableDatabase();
+                banco.criarViewComercialDet();
+                db.execSQL(banco.scriptComercialDetView);
+            } catch (SQLiteCantOpenDatabaseException e) {
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+            } catch (SQLiteReadOnlyDatabaseException e) {
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+            } catch (SQLiteDatabaseCorruptException e) {
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+            } catch (SQLiteDatabaseLockedException e) {
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+            } catch (NullPointerException e) {
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+            } catch (InvalidParameterException e) {
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+            } catch (Exception e) {
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+            }
+        } else {
+            RegistrarLog.imprimirMsg("Log", "Banco não foi encontrado : criarViewComercialDeterminado()");
+            LogUtils.registrar(21, ConfiguaracaoUtils.diretorio.isLogCompleto(), " 21 Banco não foi encontrado : criarViewComercialDeterminado()");
         }
     }
 
     public void criarViewVideo() {
-        try {
-            SQLiteDatabase db = helper.getWritableDatabase();
-            banco.criarViewVideo();
-            db.execSQL(banco.scriptVideoView);
-        } catch (SQLiteCantOpenDatabaseException e) {
-            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-        } catch (SQLiteReadOnlyDatabaseException e) {
-            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-        } catch (SQLiteDatabaseCorruptException e) {
-            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-        } catch (SQLiteDatabaseLockedException e) {
-            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-        } catch (NullPointerException e) {
-            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-        } catch (InvalidParameterException e) {
-            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-        } catch (Exception e) {
-            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+        if (arquivoBanco.exists()) {
+            try {
+                SQLiteDatabase db = helper.getWritableDatabase();
+                banco.criarViewVideo();
+                db.execSQL(banco.scriptVideoView);
+            } catch (SQLiteCantOpenDatabaseException e) {
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+            } catch (SQLiteReadOnlyDatabaseException e) {
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+            } catch (SQLiteDatabaseCorruptException e) {
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+            } catch (SQLiteDatabaseLockedException e) {
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+            } catch (NullPointerException e) {
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+            } catch (InvalidParameterException e) {
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+            } catch (Exception e) {
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+            }
+        } else {
+            RegistrarLog.imprimirMsg("Log", "Banco não foi encontrado : criarViewVideo()");
+            LogUtils.registrar(21, ConfiguaracaoUtils.diretorio.isLogCompleto(), " 21 Banco não foi encontrado : criarViewVideo()");
         }
     }
 
     //---- QUANTIDADE DE COMERCIAIS E VIDEOS NO BANCO ----------------------------------------------------------------------------------///
     public String quantidadeComerciaisNoBanco() {
         String comerciaisNoBanco = "";
-        try {
-            SQLiteDatabase db = helper.getWritableDatabase();
-            cursor = db.rawQuery("SELECT Arquivo FROM Comercial", new String[]{});
-            comerciaisNoBanco = String.valueOf(cursor.getCount());
-        } catch (SQLiteCantOpenDatabaseException e) {
-            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+        if (arquivoBanco.exists()) {
+            try {
+                SQLiteDatabase db = helper.getWritableDatabase();
+                cursor = db.rawQuery("SELECT Arquivo FROM Comercial", new String[]{});
+                comerciaisNoBanco = String.valueOf(cursor.getCount());
+            } catch (SQLiteCantOpenDatabaseException e) {
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                return comerciaisNoBanco;
+            } catch (SQLiteReadOnlyDatabaseException e) {
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                return comerciaisNoBanco;
+            } catch (SQLiteDatabaseCorruptException e) {
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                return comerciaisNoBanco;
+            } catch (SQLiteDatabaseLockedException e) {
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                return comerciaisNoBanco;
+            } catch (NullPointerException e) {
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                return comerciaisNoBanco;
+            } catch (InvalidParameterException e) {
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                return comerciaisNoBanco;
+            } catch (Exception e) {
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                return comerciaisNoBanco;
+            }
             return comerciaisNoBanco;
-        } catch (SQLiteReadOnlyDatabaseException e) {
-            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-            return comerciaisNoBanco;
-        } catch (SQLiteDatabaseCorruptException e) {
-            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-            return comerciaisNoBanco;
-        } catch (SQLiteDatabaseLockedException e) {
-            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-            return comerciaisNoBanco;
-        } catch (NullPointerException e) {
-            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-            return comerciaisNoBanco;
-        } catch (InvalidParameterException e) {
-            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-            return comerciaisNoBanco;
-        } catch (Exception e) {
-            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+        } else {
+            RegistrarLog.imprimirMsg("Log", "Banco não foi encontrado : quantidadeComerciaisNoBanco()");
             return comerciaisNoBanco;
         }
-        return comerciaisNoBanco;
     }
 
     public String quantidadeVideoNoBanco() {
         String videoNoBanco = "";
-        try {
-            SQLiteDatabase db = getDb();
-            cursor = db.rawQuery("SELECT Arquivo FROM Video", new String[]{});
-            videoNoBanco = String.valueOf(cursor.getCount());
-        } catch (SQLiteCantOpenDatabaseException e) {
-            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+        if(arquivoBanco.exists()) {
+            try {
+                SQLiteDatabase db = getDb();
+                cursor = db.rawQuery("SELECT Arquivo FROM Video", new String[]{});
+                videoNoBanco = String.valueOf(cursor.getCount());
+            } catch (SQLiteCantOpenDatabaseException e) {
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                return videoNoBanco;
+            } catch (SQLiteReadOnlyDatabaseException e) {
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                return videoNoBanco;
+            } catch (SQLiteDatabaseCorruptException e) {
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                return videoNoBanco;
+            } catch (SQLiteDatabaseLockedException e) {
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                return videoNoBanco;
+            } catch (NullPointerException e) {
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                return videoNoBanco;
+            } catch (InvalidParameterException e) {
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                return videoNoBanco;
+            } catch (Exception e) {
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                return videoNoBanco;
+            }
+
             return videoNoBanco;
-        } catch (SQLiteReadOnlyDatabaseException e) {
-            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-            return videoNoBanco;
-        } catch (SQLiteDatabaseCorruptException e) {
-            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-            return videoNoBanco;
-        } catch (SQLiteDatabaseLockedException e) {
-            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-            return videoNoBanco;
-        } catch (NullPointerException e) {
-            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-            return videoNoBanco;
-        } catch (InvalidParameterException e) {
-            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-            return videoNoBanco;
-        } catch (Exception e) {
-            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+        } else {
+            RegistrarLog.imprimirMsg("Log"," Banco não foi encontrado : quantidadeVideoNoBanco()");
             return videoNoBanco;
         }
-
-        return videoNoBanco;
     }
 
     ///---------------------------ATUALIZAR O BANCO DURANTE A REPRODUÇÃO ---------------------------------------------------------------///
     public void atualizarBanco(File video, int tempoDoVideo, String tipoCategoria) {
-        try {
-            int quantidadePlayer = pegarQtdePlayer(video.getName().trim(), tipoCategoria);
-            DateFormat df = new SimpleDateFormat("HH:mm:ss");
-            df.setTimeZone(TimeZone.getTimeZone("GMT+0"));
-            String duracaoDoVideo = df.format(new Date(tempoDoVideo));
-            String data = data();
-            String ultimaExecucao = ultimaExecucao();
-            int valorRandom = validarRandom(tipoCategoria);
-            SQLiteDatabase db = helper.getWritableDatabase();
+        if(arquivoBanco.exists()) {
+            try {
+                int quantidadePlayer = pegarQtdePlayer(video.getName().trim(), tipoCategoria);
+                DateFormat df = new SimpleDateFormat("HH:mm:ss");
+                df.setTimeZone(TimeZone.getTimeZone("GMT+0"));
+                String duracaoDoVideo = df.format(new Date(tempoDoVideo));
+                String data = data();
+                String ultimaExecucao = ultimaExecucao();
+                validarRandom(tipoCategoria);
 
-            String sql = "";
-            if (tipoCategoria.equals("1")) {
-                sql = "UPDATE Video SET Data ='" + data + "', UltimaExecucao = '" + ultimaExecucao + "', TempoTotal = '" + duracaoDoVideo + "', Random = " + valorRandom + ", Qtde = " + quantidadePlayer + " WHERE Arquivo = '" + video.getName().trim() + "'";
-            } else {
-                sql = "UPDATE Comercial SET Data ='" + data + "', UltimaExecucao = '" + ultimaExecucao + "', TempoTotal = '" + duracaoDoVideo + "', Random = " + valorRandom + ", Qtde = " + quantidadePlayer + " WHERE Arquivo = '" + video.getName().trim() + "'";
+                SQLiteDatabase db = helper.getWritableDatabase();
+
+                String sql = "";
+                if (tipoCategoria.equals("1")) {
+                    sql = "UPDATE Video SET Data ='" + data + "', UltimaExecucao = '" + ultimaExecucao + "', TempoTotal = '" + duracaoDoVideo + "', Random = " + valorRandom + ", Qtde = " + quantidadePlayer + " WHERE Arquivo = '" + video.getName().trim() + "'";
+                } else {
+                    sql = "UPDATE Comercial SET Data ='" + data + "', UltimaExecucao = '" + ultimaExecucao + "', TempoTotal = '" + duracaoDoVideo + "', Random = " + valorRandom + ", Qtde = " + quantidadePlayer + " WHERE Arquivo = '" + video.getName().trim() + "'";
+                }
+                db.execSQL(sql);
+            } catch (SQLiteCantOpenDatabaseException e) {
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+            } catch (SQLiteReadOnlyDatabaseException e) {
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+            } catch (SQLiteDatabaseCorruptException e) {
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+            } catch (SQLiteDatabaseLockedException e) {
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+            } catch (NullPointerException e) {
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+            } catch (InvalidParameterException e) {
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+            } catch (Exception e) {
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
             }
-            db.execSQL(sql);
-        } catch (SQLiteCantOpenDatabaseException e) {
-            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-        } catch (SQLiteReadOnlyDatabaseException e) {
-            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-        } catch (SQLiteDatabaseCorruptException e) {
-            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-        } catch (SQLiteDatabaseLockedException e) {
-            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-        } catch (NullPointerException e) {
-            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-        } catch (InvalidParameterException e) {
-            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-        } catch (Exception e) {
-            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+        } else {
+            RegistrarLog.imprimirMsg("Log","Banco não foi encontrado : atualizarBanco()");
+            LogUtils.registrar(90, ConfiguaracaoUtils.diretorio.isLogCompleto(), " 90 Banco não foi encontrado : atualizarBanco()");
         }
     }
 
     private int pegarQtdePlayer(String arquivo, String tipoVideo) {
-        int quantidade = 0;
-        try {
-            SQLiteDatabase db = helper.getWritableDatabase();
+        int quantidade = 1;
+        if(arquivoBanco.exists()) {
+            try {
+                SQLiteDatabase db = helper.getWritableDatabase();
+                String sql = "";
 
-            String sql = "";
-
-            if (tipoVideo.equals("1")) {
-                sql = "Select * from Video where Arquivo = '" + arquivo + "' LIMIT 1;";
-            } else {
-                sql = "Select * from Comercial where Arquivo = '" + arquivo + "' LIMIT 1;";
-            }
-
-            cursor = db.rawQuery(sql, new String[]{});
-            if (cursor.getCount() > 0) {
-                cursor.moveToFirst();
-                if (null == cursor.getString(cursor.getColumnIndex("Qtde"))) {
-                    quantidade = 1;
+                if (tipoVideo.equals("1")) {
+                    sql = "Select * from Video where Arquivo = '" + arquivo + "' LIMIT 1;";
                 } else {
-                    quantidade = cursor.getInt(cursor.getColumnIndex("Qtde")) + 1;
+                    sql = "Select * from Comercial where Arquivo = '" + arquivo + "' LIMIT 1;";
                 }
+
+                cursor = db.rawQuery(sql, new String[]{});
+                if (cursor.getCount() > 0) {
+                    cursor.moveToFirst();
+                    if (null == cursor.getString(cursor.getColumnIndex("Qtde"))) {
+                        quantidade = 1;
+                    } else {
+                        quantidade = cursor.getInt(cursor.getColumnIndex("Qtde")) + 1;
+                    }
+                }
+            } catch (SQLiteCantOpenDatabaseException e) {
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+                return quantidade;
+            } catch (SQLiteReadOnlyDatabaseException e) {
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+                return quantidade;
+            } catch (SQLiteDatabaseCorruptException e) {
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+                return quantidade;
+            } catch (SQLiteDatabaseLockedException e) {
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+                return quantidade;
+            } catch (NullPointerException e) {
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+                return quantidade;
+            } catch (InvalidParameterException e) {
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+                return quantidade;
+            } catch (Exception e) {
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+                return quantidade;
             }
-        } catch (SQLiteCantOpenDatabaseException e) {
-            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-            return quantidade;
-        } catch (SQLiteReadOnlyDatabaseException e) {
-            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-            return quantidade;
-        } catch (SQLiteDatabaseCorruptException e) {
-            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-            return quantidade;
-        } catch (SQLiteDatabaseLockedException e) {
-            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-            return quantidade;
-        } catch (NullPointerException e) {
-            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-            return quantidade;
-        } catch (InvalidParameterException e) {
-            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-            return quantidade;
-        } catch (Exception e) {
-            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-            return quantidade;
+        } else {
+            RegistrarLog.imprimirMsg("Log","Banco não foi encontrado : pegarQtdePlayer()");
+            LogUtils.registrar(90, ConfiguaracaoUtils.diretorio.isLogCompleto(), " 90 Banco não foi encontrado : pegarQtdePlayer()");
         }
         return quantidade;
     }
@@ -1436,328 +1655,403 @@ public class BancoDAO {
         return new SimpleDateFormat("yyyy-MM-dd").format(new Date());
     }
 
-    private int validarRandom(String tipoCategoria) {
+    private void validarRandom(String tipoCategoria) {
         Random random = new Random();
         int valor = random.nextInt(9999);
-        try {
-            SQLiteDatabase db = helper.getWritableDatabase();
-            String sql = "";
-            if (tipoCategoria.equals("1")) {
-                sql = "SELECT Arquivo FROM Video where Random = " + valor + " LIMIT 1";
 
-            } else {
-                sql = "SELECT Arquivo FROM Comercial where Random = " + valor + " LIMIT 1";
+        if(arquivoBanco.exists()) {
+            try {
+                SQLiteDatabase db = helper.getWritableDatabase();
+                String sql = "";
+                if (tipoCategoria.equals("1")) {
+                    sql = "SELECT Arquivo FROM Video where Random = " + valor + " LIMIT 1";
+
+                } else {
+                    sql = "SELECT Arquivo FROM Comercial where Random = " + valor + " LIMIT 1";
+                }
+
+                cursor = db.rawQuery(sql, new String[]{});
+
+                while ((cursor.getCount() > 0)) {
+                    LogUtils.registrar(90, ConfiguaracaoUtils.diretorio.isLogCompleto(), " 70 Ja existem o random " + valor);
+                    validarRandom(tipoCategoria);
+                    return;
+                }
+                valorRandom = valor;
+            } catch (SQLiteCantOpenDatabaseException e) {
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+                valorRandom = valor;
+            } catch (SQLiteReadOnlyDatabaseException e) {
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+                valorRandom = valor;
+            } catch (SQLiteDatabaseCorruptException e) {
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+                valorRandom = valor;
+            } catch (SQLiteDatabaseLockedException e) {
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+                valorRandom = valor;
+            } catch (NullPointerException e) {
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+                valorRandom = valor;
+            } catch (InvalidParameterException e) {
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+                valorRandom = valor;
+            } catch (Exception e) {
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+                valorRandom = valor;
             }
-
-            cursor = db.rawQuery(sql, new String[]{});
-
-            while ((cursor.getCount() > 0)) {
-                LogUtils.registrar(90, ConfiguaracaoUtils.diretorio.isLogCompleto(), " 70 Ja existem o random " + valor);
-                validarRandom(tipoCategoria);
-            }
-        } catch (SQLiteCantOpenDatabaseException e) {
-            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-            return valor;
-        } catch (SQLiteReadOnlyDatabaseException e) {
-            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-            return valor;
-        } catch (SQLiteDatabaseCorruptException e) {
-            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-            return valor;
-        } catch (SQLiteDatabaseLockedException e) {
-            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-            return valor;
-        } catch (NullPointerException e) {
-            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-            return valor;
-        } catch (InvalidParameterException e) {
-            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-            return valor;
-        } catch (Exception e) {
-            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-            return valor;
+        } else {
+            RegistrarLog.imprimirMsg("Log","Banco não foi encontrado : validarRandom()");
+            LogUtils.registrar(90, ConfiguaracaoUtils.diretorio.isLogCompleto(), " 90 Banco não foi encontrado : validarRandom()");
+            valorRandom = valor;
         }
-        return valor;
     }
 
     //---------------------------POPULAR O BANCO APOS COMUNICACAO ---------------------------------------------------------------------//
     public void insertCategoria(String caminho) {
-        db = helper.getWritableDatabase();
-        db.beginTransaction();
-        if (null != caminho && !caminho.trim().replaceAll("\\s", "").isEmpty()) {
-            try {
-                List<CategoriaExp> listaCategoria = expUtils.lerCategoria(caminho);
-                if(null != listaCategoria && listaCategoria.size() > 0) {
-                    for (CategoriaExp c : listaCategoria) {
-                        try {
-                            ContentValues values = new ContentValues();
-                            values.put("Codigo", c.codigo);
-                            values.put("Categoria", c.categoria.trim());
-                            values.put("DataInicio", c.dataInicial);
-                            values.put("DataFinal", c.dataFinal);
-                            values.put("Tipo", c.tipo);
-                            values.put("Tempo", c.tempo);
-                            db.replace("Categoria", null, values);
-                        } catch (SQLiteCantOpenDatabaseException e) {
-                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-                            continue;
-                        } catch (SQLiteReadOnlyDatabaseException e) {
-                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-                            continue;
-                        } catch (SQLiteDatabaseCorruptException e) {
-                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-                            continue;
-                        } catch (SQLiteDatabaseLockedException e) {
-                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-                            continue;
-                        } catch (NullPointerException e) {
-                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-                            continue;
-                        } catch (InvalidParameterException e) {
-                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-                            continue;
-                        } catch (Exception e) {
-                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-                            continue;
+        if(arquivoBanco.exists()) {
+            db = helper.getWritableDatabase();
+            db.beginTransaction();
+            if (null != caminho && !caminho.trim().replaceAll("\\s", "").isEmpty()) {
+                try {
+                    List<CategoriaExp> listaCategoria = expUtils.lerCategoria(caminho);
+                    if (null != listaCategoria && listaCategoria.size() > 0) {
+                        for (CategoriaExp c : listaCategoria) {
+                            try {
+                                ContentValues values = new ContentValues();
+                                values.put("Codigo", c.codigo);
+                                values.put("Categoria", c.categoria.trim());
+                                values.put("DataInicio", c.dataInicial);
+                                values.put("DataFinal", c.dataFinal);
+                                values.put("Tipo", c.tipo);
+                                values.put("Tempo", c.tempo);
+                                db.replace("Categoria", null, values);
+                            } catch (SQLiteCantOpenDatabaseException e) {
+                                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+                                continue;
+                            } catch (SQLiteReadOnlyDatabaseException e) {
+                                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+                                continue;
+                            } catch (SQLiteDatabaseCorruptException e) {
+                                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+                                continue;
+                            } catch (SQLiteDatabaseLockedException e) {
+                                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+                                continue;
+                            } catch (NullPointerException e) {
+                                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+                                continue;
+                            } catch (InvalidParameterException e) {
+                                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+                                continue;
+                            } catch (Exception e) {
+                                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+                                continue;
+                            }
                         }
+                        db.setTransactionSuccessful();
                     }
-                    db.setTransactionSuccessful();
+                } catch (NullPointerException e) {
+                    AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                    AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+                    return;
+                } catch (InvalidParameterException e) {
+                    AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                    AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+                    return;
+                } catch (Exception e) {
+                    AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                    AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+                    return;
+                } finally {
+                    db.endTransaction();
                 }
-            } catch (NullPointerException e) {
-                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-                return;
-            } catch (InvalidParameterException e) {
-                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-                return;
-            } catch (Exception e) {
-                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-                return;
-            } finally {
-                db.endTransaction();
             }
+        } else {
+            RegistrarLog.imprimirMsg("Log","Banco não foi encontrado : insertCategoria()");
+            LogUtils.registrar(90, ConfiguaracaoUtils.diretorio.isLogCompleto(), " 90 Banco não foi encontrado : insertCategoria()");
         }
     }
 
     public void insertComercial(String caminho) {
-        db = helper.getWritableDatabase();
-        db.beginTransaction();
-        if (null != caminho && !caminho.trim().replaceAll("\\s", "").isEmpty()) {
-            try {
-                List<ComercialExp> listaComercial = expUtils.lerComercial(caminho);
-                if(null != listaComercial && listaComercial.size() > 0) {
-                    for (ComercialExp c : listaComercial) {
-                        try {
-                            ContentValues values = new ContentValues();
-                            values.put("Arquivo", c.arquivo.trim());
-                            values.put("Cliente", c.cliente.trim());
-                            values.put("Titulo", c.titulo.trim());
-                            values.put("TipoInterprete", c.tipoInterprete);
-                            values.put("Categoria", c.categoria);
-                            values.put("PeriodoInicial", c.dataInicial);
-                            values.put("PeriodoFinal", c.dataFinal);
-                            db.replace("Comercial", null, values);
-                        } catch (SQLiteCantOpenDatabaseException e) {
-                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-                            continue;
-                        } catch (SQLiteReadOnlyDatabaseException e) {
-                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-                            continue;
-                        } catch (SQLiteDatabaseCorruptException e) {
-                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-                            continue;
-                        } catch (SQLiteDatabaseLockedException e) {
-                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-                            continue;
-                        } catch (NullPointerException e) {
-                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-                            continue;
-                        } catch (InvalidParameterException e) {
-                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-                            continue;
-                        } catch (Exception e) {
-                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-                            continue;
+        if(arquivoBanco.exists()) {
+            db = helper.getWritableDatabase();
+            db.beginTransaction();
+            if (null != caminho && !caminho.trim().replaceAll("\\s", "").isEmpty()) {
+                try {
+                    List<ComercialExp> listaComercial = expUtils.lerComercial(caminho);
+                    if (null != listaComercial && listaComercial.size() > 0) {
+                        for (ComercialExp c : listaComercial) {
+                            try {
+                                ContentValues values = new ContentValues();
+                                values.put("Arquivo", c.arquivo.trim());
+                                values.put("Cliente", c.cliente.trim());
+                                values.put("Titulo", c.titulo.trim());
+                                values.put("TipoInterprete", c.tipoInterprete);
+                                values.put("Categoria", c.categoria);
+                                values.put("PeriodoInicial", c.dataInicial);
+                                values.put("PeriodoFinal", c.dataFinal);
+                                db.replace("Comercial", null, values);
+                            } catch (SQLiteCantOpenDatabaseException e) {
+                                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+                                continue;
+                            } catch (SQLiteReadOnlyDatabaseException e) {
+                                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+                                continue;
+                            } catch (SQLiteDatabaseCorruptException e) {
+                                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+                                continue;
+                            } catch (SQLiteDatabaseLockedException e) {
+                                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+                                continue;
+                            } catch (NullPointerException e) {
+                                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+                                continue;
+                            } catch (InvalidParameterException e) {
+                                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+                                continue;
+                            } catch (Exception e) {
+                                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+                                continue;
+                            }
                         }
+                        db.setTransactionSuccessful();
                     }
-                    db.setTransactionSuccessful();
+                } catch (NullPointerException e) {
+                    AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                    AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+                    return;
+                } catch (InvalidParameterException e) {
+                    AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                    AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+                    return;
+                } catch (Exception e) {
+                    AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                    AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+                    return;
+                } finally {
+                    db.endTransaction();
                 }
-            } catch (NullPointerException e) {
-                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-                return;
-            } catch (InvalidParameterException e) {
-                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-                return;
-            } catch (Exception e) {
-                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-                return;
-            } finally {
-                db.endTransaction();
             }
+        } else {
+            RegistrarLog.imprimirMsg("Log","Banco não foi encontrado : insertComercial()");
+            LogUtils.registrar(90, ConfiguaracaoUtils.diretorio.isLogCompleto(), " 90 Banco não foi encontrado : insertComercial()");
         }
     }
 
     public void insertProgramacao(String caminho) {
-        db = helper.getWritableDatabase();
-        db.beginTransaction();
-        if (null != caminho && !caminho.trim().replaceAll("\\s", "").isEmpty()) {
-            try {
-                List<ProgramacaoExp> listaProgramacoes = expUtils.lerProgramacao(caminho);
-                if(null != listaProgramacoes && listaProgramacoes.size() > 0) {
-                    for (ProgramacaoExp p : listaProgramacoes) {
-                        try {
-                            ContentValues values = new ContentValues();
-                            values.put("Descricao", p.descricao.trim());
-                            values.put("Dia", p.dataInicial.split("-")[0]);
-                            values.put("Mes", p.dataInicial.split("-")[1]);
-                            values.put("Ano", p.dataInicial.split("-")[2]);
-                            values.put("Diaf", p.dataFinal.split("-")[0]);
-                            values.put("Mesf", p.dataFinal.split("-")[1]);
-                            values.put("Anof", p.dataFinal.split("-")[2]);
-                            values.put("DiaSemana", p.diaDaSemana);
-                            values.put("HoraInicio", p.horarioInicio);
-                            values.put("HoraFinal", p.horarioFinal);
-                            values.put("Categoria1", p.categoria1);
-                            values.put("Categoria2", p.categoria2);
-                            values.put("Categoria3", p.categoria3);
-                            values.put("Categoria4", p.categoria4);
-                            values.put("Categoria5", p.categoria5);
-                            values.put("Categoria6", p.categoria6);
-                            values.put("Categoria7", p.categoria7);
-                            values.put("Categoria8", p.categoria8);
-                            values.put("Categoria9", p.categoria9);
-                            values.put("Categoria10", p.categoria10);
-                            values.put("Categoria11", p.categoria11);
-                            values.put("Categoria12", p.categoria12);
-                            values.put("Categoria13", p.categoria13);
-                            values.put("Categoria14", p.categoria14);
-                            values.put("Categoria15", p.categoria15);
-                            values.put("Categoria16", p.categoria16);
-                            values.put("Categoria17", p.categoria17);
-                            values.put("Categoria18", p.categoria18);
-                            values.put("Categoria19", p.categoria19);
-                            values.put("Categoria20", p.categoria20);
-                            values.put("Categoria21", p.categoria21);
-                            values.put("Categoria22", p.categoria22);
-                            values.put("Categoria23", p.categoria23);
-                            values.put("Categoria24", p.categoria24);
-                            values.put("Conteudo", p.conteudo);
-                            db.replace("Programacao", null, values);
+        if(arquivoBanco.exists()) {
+            db = helper.getWritableDatabase();
+            db.beginTransaction();
+            if (null != caminho && !caminho.trim().replaceAll("\\s", "").isEmpty()) {
+                try {
+                    List<ProgramacaoExp> listaProgramacoes = expUtils.lerProgramacao(caminho);
+                    if (null != listaProgramacoes && listaProgramacoes.size() > 0) {
+                        for (ProgramacaoExp p : listaProgramacoes) {
+                            try {
+                                ContentValues values = new ContentValues();
+                                values.put("Descricao", p.descricao.trim());
+                                values.put("Dia", p.dataInicial.split("-")[0]);
+                                values.put("Mes", p.dataInicial.split("-")[1]);
+                                values.put("Ano", p.dataInicial.split("-")[2]);
+                                values.put("Diaf", p.dataFinal.split("-")[0]);
+                                values.put("Mesf", p.dataFinal.split("-")[1]);
+                                values.put("Anof", p.dataFinal.split("-")[2]);
+                                values.put("DiaSemana", p.diaDaSemana);
+                                values.put("HoraInicio", p.horarioInicio);
+                                values.put("HoraFinal", p.horarioFinal);
+                                values.put("Categoria1", p.categoria1);
+                                values.put("Categoria2", p.categoria2);
+                                values.put("Categoria3", p.categoria3);
+                                values.put("Categoria4", p.categoria4);
+                                values.put("Categoria5", p.categoria5);
+                                values.put("Categoria6", p.categoria6);
+                                values.put("Categoria7", p.categoria7);
+                                values.put("Categoria8", p.categoria8);
+                                values.put("Categoria9", p.categoria9);
+                                values.put("Categoria10", p.categoria10);
+                                values.put("Categoria11", p.categoria11);
+                                values.put("Categoria12", p.categoria12);
+                                values.put("Categoria13", p.categoria13);
+                                values.put("Categoria14", p.categoria14);
+                                values.put("Categoria15", p.categoria15);
+                                values.put("Categoria16", p.categoria16);
+                                values.put("Categoria17", p.categoria17);
+                                values.put("Categoria18", p.categoria18);
+                                values.put("Categoria19", p.categoria19);
+                                values.put("Categoria20", p.categoria20);
+                                values.put("Categoria21", p.categoria21);
+                                values.put("Categoria22", p.categoria22);
+                                values.put("Categoria23", p.categoria23);
+                                values.put("Categoria24", p.categoria24);
+                                values.put("Conteudo", p.conteudo);
+                                db.replace("Programacao", null, values);
 
-                        } catch (SQLiteCantOpenDatabaseException e) {
-                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-                            continue;
-                        } catch (SQLiteReadOnlyDatabaseException e) {
-                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-                            continue;
-                        } catch (SQLiteDatabaseCorruptException e) {
-                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-                            continue;
-                        } catch (SQLiteDatabaseLockedException e) {
-                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-                            continue;
-                        } catch (NullPointerException e) {
-                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-                            continue;
-                        } catch (InvalidParameterException e) {
-                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-                            continue;
-                        } catch (Exception e) {
-                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-                            continue;
+                            } catch (SQLiteCantOpenDatabaseException e) {
+                                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+                                continue;
+                            } catch (SQLiteReadOnlyDatabaseException e) {
+                                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+                                continue;
+                            } catch (SQLiteDatabaseCorruptException e) {
+                                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+                                continue;
+                            } catch (SQLiteDatabaseLockedException e) {
+                                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+                                continue;
+                            } catch (NullPointerException e) {
+                                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+                                continue;
+                            } catch (InvalidParameterException e) {
+                                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+                                continue;
+                            } catch (Exception e) {
+                                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+                                continue;
+                            }
                         }
+                        db.setTransactionSuccessful();
                     }
-                    db.setTransactionSuccessful();
+                } catch (NullPointerException e) {
+                    AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                    AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+                    return;
+                } catch (InvalidParameterException e) {
+                    AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                    AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+                    return;
+                } catch (Exception e) {
+                    AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                    AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+                    return;
+                } finally {
+                    db.endTransaction();
                 }
-            } catch (NullPointerException e) {
-                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-                return;
-            } catch (InvalidParameterException e) {
-                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-                return;
-            } catch (Exception e) {
-                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-                return;
-            } finally {
-                db.endTransaction();
             }
+        } else {
+            RegistrarLog.imprimirMsg("Log","Banco não foi encontrado : insertProgramacao()");
+            LogUtils.registrar(90, ConfiguaracaoUtils.diretorio.isLogCompleto(), " 90 Banco não foi encontrado : insertProgramacao()");
         }
     }
 
     public void insertVideo(String caminho) {
-        db = helper.getWritableDatabase();
-        db.beginTransaction();
-        if (null != caminho && !caminho.trim().replaceAll("\\s", "").isEmpty()) {
-            try {
-                List<VideoExp> listaVideos = expUtils.lerVideo(caminho);
-                if(null != listaVideos && listaVideos.size() > 0) {
-                    for (VideoExp v : listaVideos) {
-                        try {
-                            ContentValues values = new ContentValues();
-                            values.put("Arquivo", v.arquivo.trim());
-                            values.put("Interprete", v.interprete.trim());
-                            values.put("TipoInterprete", v.tipoInterprete);
-                            values.put("Titulo", v.titulo.trim());
-                            values.put("Categoria1", v.categoria1);
-                            values.put("Categoria2", v.categoria2);
-                            values.put("Categoria3", v.categoria3);
-                            values.put("Crossover", (v.crossover == true) ? 1 : 0);
-                            values.put("DataVenctoCrossOver", v.dataVencimentoCrossover);
-                            values.put("DiasExecucao", v.diasExecucao1);
-                            values.put("DiasExecucao2", v.diasExecucao2);
-                            values.put("Afinidade1", v.afinadade1.trim());
-                            values.put("Afinidade2", v.afinadade2.trim());
-                            values.put("Afinidade3", v.afinadade3.trim());
-                            values.put("Afinidade4", v.afinadade4.trim());
-                            values.put("Gravadora", v.gravadora);
-                            values.put("AnoGravacao", v.anoGravacao);
-                            values.put("Velocidade", v.velocidade);
-                            values.put("Data", v.data);
-                            values.put("UltimaExecucaoData", v.ultimaExecucaoData);
-                            values.put("TempoTotal", v.tempoTotal);
-                            values.put("QtdePlayer", v.quantidadePlayerTotal);
-                            values.put("DataVencto", v.dataVencimento);
-                            values.put("FrameInicio", v.frameInicio);
-                            values.put("FrameFinal", v.frameFinal);
-                            values.put("Msg", v.mensagem);
-                            db.replace("Video", null, values);
+        if(arquivoBanco.exists()) {
+            db = helper.getWritableDatabase();
+            db.beginTransaction();
+            if (null != caminho && !caminho.trim().replaceAll("\\s", "").isEmpty()) {
+                try {
+                    List<VideoExp> listaVideos = expUtils.lerVideo(caminho);
+                    if (null != listaVideos && listaVideos.size() > 0) {
+                        for (VideoExp v : listaVideos) {
+                            try {
+                                ContentValues values = new ContentValues();
+                                values.put("Arquivo", v.arquivo.trim());
+                                values.put("Interprete", v.interprete.trim());
+                                values.put("TipoInterprete", v.tipoInterprete);
+                                values.put("Titulo", v.titulo.trim());
+                                values.put("Categoria1", v.categoria1);
+                                values.put("Categoria2", v.categoria2);
+                                values.put("Categoria3", v.categoria3);
+                                values.put("Crossover", (v.crossover == true) ? 1 : 0);
+                                values.put("DataVenctoCrossOver", v.dataVencimentoCrossover);
+                                values.put("DiasExecucao", v.diasExecucao1);
+                                values.put("DiasExecucao2", v.diasExecucao2);
+                                values.put("Afinidade1", v.afinadade1.trim());
+                                values.put("Afinidade2", v.afinadade2.trim());
+                                values.put("Afinidade3", v.afinadade3.trim());
+                                values.put("Afinidade4", v.afinadade4.trim());
+                                values.put("Gravadora", v.gravadora);
+                                values.put("AnoGravacao", v.anoGravacao);
+                                values.put("Velocidade", v.velocidade);
+                                values.put("Data", v.data);
+                                values.put("UltimaExecucaoData", v.ultimaExecucaoData);
+                                values.put("TempoTotal", v.tempoTotal);
+                                values.put("QtdePlayer", v.quantidadePlayerTotal);
+                                values.put("DataVencto", v.dataVencimento);
+                                values.put("FrameInicio", v.frameInicio);
+                                values.put("FrameFinal", v.frameFinal);
+                                values.put("Msg", v.mensagem);
+                                db.replace("Video", null, values);
 
-                        } catch (SQLiteCantOpenDatabaseException e) {
-                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-                            continue;
-                        } catch (SQLiteReadOnlyDatabaseException e) {
-                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-                            continue;
-                        } catch (SQLiteDatabaseCorruptException e) {
-                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-                            continue;
-                        } catch (SQLiteDatabaseLockedException e) {
-                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-                            continue;
-                        } catch (NullPointerException e) {
-                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-                            continue;
-                        } catch (InvalidParameterException e) {
-                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-                            continue;
-                        } catch (Exception e) {
-                            AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-                            continue;
+                            } catch (SQLiteCantOpenDatabaseException e) {
+                                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+                                continue;
+                            } catch (SQLiteReadOnlyDatabaseException e) {
+                                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+                                continue;
+                            } catch (SQLiteDatabaseCorruptException e) {
+                                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+                                continue;
+                            } catch (SQLiteDatabaseLockedException e) {
+                                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+                                continue;
+                            } catch (NullPointerException e) {
+                                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+                                continue;
+                            } catch (InvalidParameterException e) {
+                                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+                                continue;
+                            } catch (Exception e) {
+                                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+                                continue;
+                            }
                         }
+                        db.setTransactionSuccessful();
                     }
-                    db.setTransactionSuccessful();
+                } catch (NullPointerException e) {
+                    AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                    AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+                    return;
+                } catch (InvalidParameterException e) {
+                    AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                    AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+                    return;
+                } catch (Exception e) {
+                    AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
+                    AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+                    return;
+                } finally {
+                    db.endTransaction();
                 }
-            } catch (NullPointerException e) {
-                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-                return;
-            } catch (InvalidParameterException e) {
-                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-                return;
-            } catch (Exception e) {
-                AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
-                return;
-            } finally {
-                db.endTransaction();
             }
+        } else {
+            RegistrarLog.imprimirMsg("Log","Banco não foi encontrado : insertVideo()");
+            LogUtils.registrar(90, ConfiguaracaoUtils.diretorio.isLogCompleto(), " 90 Banco não foi encontrado : insertVideo()");
         }
     }
 }
