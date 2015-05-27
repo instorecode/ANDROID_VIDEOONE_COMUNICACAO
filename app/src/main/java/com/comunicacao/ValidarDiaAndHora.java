@@ -82,14 +82,19 @@ public class ValidarDiaAndHora {
             }
         } catch (FileNotFoundException e) {
             AndroidImprimirUtils.imprimirErro(ValidarDiaAndHora.class, e);
+            AndroidImprimirUtils.imprimirErro(ValidarDiaAndHora.class, e, 90);
         } catch (IOException e) {
-            AndroidImprimirUtils.imprimirErro(ValidarDiaAndHora.class,e);
+            AndroidImprimirUtils.imprimirErro(ValidarDiaAndHora.class, e);
+            AndroidImprimirUtils.imprimirErro(ValidarDiaAndHora.class, e, 90);
         } catch (NullPointerException e){
-            AndroidImprimirUtils.imprimirErro(ValidarDiaAndHora.class,e);
+            AndroidImprimirUtils.imprimirErro(ValidarDiaAndHora.class, e);
+            AndroidImprimirUtils.imprimirErro(ValidarDiaAndHora.class, e, 90);
         } catch (InvalidParameterException e){
-            AndroidImprimirUtils.imprimirErro(ValidarDiaAndHora.class,e);
+            AndroidImprimirUtils.imprimirErro(ValidarDiaAndHora.class, e);
+            AndroidImprimirUtils.imprimirErro(ValidarDiaAndHora.class, e, 90);
         } catch (Exception e){
-            AndroidImprimirUtils.imprimirErro(ValidarDiaAndHora.class,e);
+            AndroidImprimirUtils.imprimirErro(ValidarDiaAndHora.class, e);
+            AndroidImprimirUtils.imprimirErro(ValidarDiaAndHora.class, e, 90);
         }
 
         horarioInicial = null;
@@ -144,12 +149,14 @@ public class ValidarDiaAndHora {
                 horarioInicial = new SimpleDateFormat("ddMMyyyyHHmmss").parse(new SimpleDateFormat("ddMMyyyy").format(horarioAtual).concat(h1str.concat(m1str).concat("00")));
             } catch (ParseException e) {
                 AndroidImprimirUtils.imprimirErro(ValidarDiaAndHora.class, e);
+                AndroidImprimirUtils.imprimirErro(ValidarDiaAndHora.class, e, 90);
             }
 
             try {
                 horarioFinal = new SimpleDateFormat("ddMMyyyyHHmmss").parse(new SimpleDateFormat("ddMMyyyy").format(horarioAtual).concat(h2str.concat(m2str).concat("00")));
             } catch (ParseException e) {
                 AndroidImprimirUtils.imprimirErro(ValidarDiaAndHora.class, e);
+                AndroidImprimirUtils.imprimirErro(ValidarDiaAndHora.class, e, 90);
             }
 
             if (value.substring(12, value.length()).contains(diaStr)) {
@@ -218,15 +225,20 @@ public class ValidarDiaAndHora {
                 md.update(hash.getBytes("UTF-8"));
                 hash = "MD5:" + new BigInteger(1, md.digest()).toString(16).toUpperCase();
             } catch (NoSuchAlgorithmException e) {
-                AndroidImprimirUtils.imprimirErro(ValidarDiaAndHora.class,e);
+                AndroidImprimirUtils.imprimirErro(ValidarDiaAndHora.class, e);
+                AndroidImprimirUtils.imprimirErro(ValidarDiaAndHora.class, e, 90);
             } catch (UnsupportedEncodingException e) {
-                AndroidImprimirUtils.imprimirErro(ValidarDiaAndHora.class,e);
+                AndroidImprimirUtils.imprimirErro(ValidarDiaAndHora.class, e);
+                AndroidImprimirUtils.imprimirErro(ValidarDiaAndHora.class, e, 90);
             } catch (NullPointerException e){
-                AndroidImprimirUtils.imprimirErro(ValidarDiaAndHora.class,e);
+                AndroidImprimirUtils.imprimirErro(ValidarDiaAndHora.class, e);
+                AndroidImprimirUtils.imprimirErro(ValidarDiaAndHora.class, e, 90);
             } catch (InvalidParameterException e){
                 AndroidImprimirUtils.imprimirErro(ValidarDiaAndHora.class, e);
+                AndroidImprimirUtils.imprimirErro(ValidarDiaAndHora.class, e, 90);
             } catch (Exception e){
                 AndroidImprimirUtils.imprimirErro(ValidarDiaAndHora.class, e);
+                AndroidImprimirUtils.imprimirErro(ValidarDiaAndHora.class, e, 90);
             }
         }
         return hash;
