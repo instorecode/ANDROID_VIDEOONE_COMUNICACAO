@@ -82,7 +82,7 @@ public class TarefaComunicao implements Runnable {
                             tentativasRealizadas = 0;
                         }
 
-                        if (tentativasRealizadas <= 999999999) {
+                        if (tentativasRealizadas <= maximoTentativas) {
                             RegistrarLog.imprimirMsg("Log", "COMUNICACAO");
                             conectarEnderecoFtp(false);
                             popularBanco();
@@ -458,7 +458,7 @@ public class TarefaComunicao implements Runnable {
     private void uploadZip() {
         try {
             ftp.upload(new File(caminhoArquivoZip));
-            LogUtils.registrar(90, ConfiguaracaoUtils.diretorio.isLogCompleto(), " Arquivo zip " + new File(caminhoArquivoZip).getName() + " foi enviado com sucesso");
+            LogUtils.registrar(90, ConfiguaracaoUtils.diretorio.isLogCompleto(), " 90 Arquivo zip " + new File(caminhoArquivoZip).getName() + " foi enviado com sucesso");
             download();
         } catch (IllegalStateException e) {
             AndroidImprimirUtils.imprimirErro(TarefaComunicao.class, e);
@@ -880,9 +880,11 @@ public class TarefaComunicao implements Runnable {
 
         if (arquivoCategoria.exists()) {
             try {
-                bancoDAO.insertCategoria(arquivoCategoria.getAbsolutePath());
-                File renomearExpCategoria = new File(salvar_importes.concat(barraDoSistema).concat("Categoria.old"));
-                arquivoCategoria.renameTo(renomearExpCategoria);
+                boolean atualizou = bancoDAO.insertCategoria(arquivoCategoria.getAbsolutePath());
+                if(atualizou) {
+                    File renomearExpCategoria = new File(salvar_importes.concat(barraDoSistema).concat("Categoria.old"));
+                    //arquivoCategoria.renameTo(renomearExpCategoria);
+                }
             } catch (NullPointerException e) {
                 AndroidImprimirUtils.imprimirErro(TarefaComunicao.class, e);
                 AndroidImprimirUtils.imprimirErro(TarefaComunicao.class, e, 90);
@@ -897,9 +899,11 @@ public class TarefaComunicao implements Runnable {
 
         if (arquivoComercial.exists()) {
             try {
-                bancoDAO.insertComercial(arquivoComercial.getAbsolutePath());
-                File renomearExpComercial = new File(salvar_importes.concat(barraDoSistema).concat("Comercial.old"));
-                arquivoComercial.renameTo(renomearExpComercial);
+                boolean atualizou = bancoDAO.insertComercial(arquivoComercial.getAbsolutePath());
+                if(atualizou) {
+                    File renomearExpComercial = new File(salvar_importes.concat(barraDoSistema).concat("Comercial.old"));
+                    //arquivoComercial.renameTo(renomearExpComercial);
+                }
             } catch (NullPointerException e) {
                 AndroidImprimirUtils.imprimirErro(TarefaComunicao.class, e);
                 AndroidImprimirUtils.imprimirErro(TarefaComunicao.class, e, 90);
@@ -914,9 +918,11 @@ public class TarefaComunicao implements Runnable {
 
         if (arquivoProgramacao.exists()) {
             try {
-                bancoDAO.insertProgramacao(arquivoProgramacao.getAbsolutePath());
-                File renomearExpProgramacao = new File(salvar_importes.concat(barraDoSistema).concat("Programacao.old"));
-                arquivoProgramacao.renameTo(renomearExpProgramacao);
+                boolean atualizou = bancoDAO.insertProgramacao(arquivoProgramacao.getAbsolutePath());
+                if(atualizou) {
+                    File renomearExpProgramacao = new File(salvar_importes.concat(barraDoSistema).concat("Programacao.old"));
+                    //arquivoProgramacao.renameTo(renomearExpProgramacao);
+                }
             } catch (NullPointerException e) {
                 AndroidImprimirUtils.imprimirErro(TarefaComunicao.class, e);
                 AndroidImprimirUtils.imprimirErro(TarefaComunicao.class, e, 90);
@@ -931,9 +937,11 @@ public class TarefaComunicao implements Runnable {
 
         if (arquivoVideo.exists()) {
             try {
-                bancoDAO.insertVideo(arquivoVideo.getAbsolutePath());
-                File renomearExpVideo = new File(salvar_importes.concat(barraDoSistema).concat("Video.old"));
-                arquivoVideo.renameTo(renomearExpVideo);
+                boolean atualizou = bancoDAO.insertVideo(arquivoVideo.getAbsolutePath());
+                if(atualizou) {
+                    File renomearExpVideo = new File(salvar_importes.concat(barraDoSistema).concat("Video.old"));
+                    //arquivoVideo.renameTo(renomearExpVideo);
+                }
             } catch (NullPointerException e) {
                 AndroidImprimirUtils.imprimirErro(TarefaComunicao.class, e);
                 AndroidImprimirUtils.imprimirErro(TarefaComunicao.class, e, 90);

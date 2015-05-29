@@ -21,6 +21,7 @@ import com.br.instore.utils.DataUtils;
 import com.br.instore.utils.ExpUtils;
 import com.br.instore.utils.LogUtils;
 import com.br.instore.utils.StringUtils;
+import com.comunicacao.R;
 import com.utils.AndroidImprimirUtils;
 import com.utils.RegistrarLog;
 import java.io.File;
@@ -76,6 +77,7 @@ public class BancoDAO {
     ///------------------ VIDEOS COMERCIAIS -------------------///
     public void programacoes() {
         if (arquivoBanco.exists()) {
+
             SQLiteDatabase db = helper.getWritableDatabase();
             cursor = db.rawQuery(VIEW_PROGRAMACAO, new String[]{});
             if (cursor.getCount() > 0) {
@@ -152,6 +154,8 @@ public class BancoDAO {
                 }
                 categorias();
             } else {
+                LogUtils.registrar(90, ConfiguaracaoUtils.diretorio.isLogCompleto(), " 90 Não a programação válida para o horario");
+                RegistrarLog.imprimirMsg("Log", " 90 Não a programação válida para o horario");
                 listaProgramacao.clear();
                 listaDeArquivos.add("semVideo");
                 return;
@@ -163,8 +167,10 @@ public class BancoDAO {
     }
 
     private void categorias() {
+        RegistrarLog.imprimirMsg("Log", "categorias()");
         if (null != listaProgramacao && !listaProgramacao.isEmpty()) {
             for (ProgramacaoExp p : listaProgramacao) {
+                RegistrarLog.imprimirMsg("Log", p.descricao);
                 codigoCategoria(p.categoria1, p.horarioInicio, p.horarioFinal);
                 codigoCategoria(p.categoria2, p.horarioInicio, p.horarioFinal);
                 codigoCategoria(p.categoria3, p.horarioInicio, p.horarioFinal);
@@ -206,6 +212,9 @@ public class BancoDAO {
         if (arquivoBanco.exists()) {
             try {
                 if (null != codigo && null != horaFinalProgramacao && null != horaInicialProgramacao && !codigo.equals("0")) {
+                    RegistrarLog.imprimirMsg("Log", codigo + " Codigo parametro");
+                    RegistrarLog.imprimirMsg("Log", horaInicialProgramacao + " horaInicialProgamacao parametro");
+                    RegistrarLog.imprimirMsg("Log", horaFinalProgramacao + " horaFinalProgamacao parametro");
                     SQLiteDatabase db1 = helper.getWritableDatabase();
                     String scriptCategoria = "SELECT * FROM Categoria WHERE Codigo = '" + codigo + "' AND date('now') >= dataInicio AND date('now') < dataFinal";
                     Cursor cursorT = db1.rawQuery(scriptCategoria, new String[]{});
@@ -214,6 +223,7 @@ public class BancoDAO {
                             try {
                                 String codigoCategoria = cursorT.getString(cursorT.getColumnIndex("Codigo"));
                                 String tipoCategoria = cursorT.getString(cursorT.getColumnIndex("Tipo"));
+                                RegistrarLog.imprimirMsg("Log", tipoCategoria + " TipoCategoria");
                                 if (tipoCategoria.equals("1")) {
                                     video(codigoCategoria, horaInicialProgramacao, horaFinalProgramacao);
                                 } else if (tipoCategoria.equals("2")) {
@@ -279,7 +289,6 @@ public class BancoDAO {
                 if (cursor.getCount() > 0) {
                     while (cursor.moveToNext()) {
                         try {
-
                             String arquivo = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Arquivo")));
                             String titulo = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Titulo")));
                             String velocidade = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Velocidade")));
@@ -348,8 +357,8 @@ public class BancoDAO {
                     if (cursor.getCount() > 0) {
                         while (cursor.moveToNext()) {
                             try {
-
                                 String arquivo = cursor.getString(cursor.getColumnIndex("Arquivo"));
+                                RegistrarLog.imprimirMsg("Log", arquivo + " Nome do arquivo comercial");
                                 String diasAlternados = cursor.getString(cursor.getColumnIndex("DiasAlternados"));
                                 String dataStr = cursor.getString(cursor.getColumnIndex("Data"));
                                 String titulo = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Titulo")));
@@ -410,8 +419,10 @@ public class BancoDAO {
     }
 
     private boolean validarDiasComercial(String arquivo, String titulo, String dependencia1, String dependencia2, String dependencia3, String horaInicial, String horaFinal, String codigoCategoria, String dataStr, String diasAlternados) {
+        RegistrarLog.imprimirMsg("Log", "validarDiasComercial()");
         Date data = null;
         if (null != dataStr) {
+            RegistrarLog.imprimirMsg("Log", dataStr + " Data do comercial não é nula");
             try {
                 data = new SimpleDateFormat("yyyy-MM-dd").parse(dataStr);
             } catch (ParseException e) {
@@ -427,11 +438,13 @@ public class BancoDAO {
             diaAtual.setTime(new Date());
 
             if (diasAlternados.equals("0")) {
+                RegistrarLog.imprimirMsg("Log", " Não é dias alternados");
                 boolean comercialEDependenciasExistemNosDiretoriosEBanco = validarDependenciasComercial(arquivo, titulo, dependencia1, dependencia2, dependencia3, horaInicial, horaFinal, codigoCategoria);
                 if (comercialEDependenciasExistemNosDiretoriosEBanco) {
                     return true;
                 }
             } else {
+                RegistrarLog.imprimirMsg("Log", " É dias alternados");
                 if (diaQueTocou.get(Calendar.DAY_OF_MONTH) == diaAtual.get(Calendar.DAY_OF_MONTH)) {
                     LogUtils.registrar(99, ConfiguaracaoUtils.diretorio.isLogCompleto(), " Desprezada com tipo 99. O comercial " + arquivo + " não pode ser tocado devido ter sido cadastrado como dias alternados");
                     return false;
@@ -447,6 +460,7 @@ public class BancoDAO {
     }
 
     private boolean validarDependenciasComercial(String arquivo, String titulo, String dependencia1, String dependencia2, String dependencia3, String horaInicial, String horaFinal, String codigoCategoria) {
+        RegistrarLog.imprimirMsg("log", " validarDependenciasComercial()");
         if (!dependencia1.trim().toLowerCase().contains("nenhuma")) {
             String caminhoDoArquivo = validarExistenciaDoVideo(dependencia1);
             if (caminhoDoArquivo == null) {
@@ -491,8 +505,10 @@ public class BancoDAO {
 
         String caminhoDoArquivo = validarExistenciaDoVideo(arquivo);
         if (caminhoDoArquivo == null) {
+            RegistrarLog.imprimirMsg("Log", " Desprezada com tipo 99. O arquivo " + arquivo + " não foi encontrado em nenhum diretório");
             LogUtils.registrar(99, ConfiguaracaoUtils.diretorio.isLogCompleto(), " Desprezada com tipo 99. O arquivo " + arquivo + " não foi encontrado em nenhum diretório");
         } else {
+            RegistrarLog.imprimirMsg("Log", "normal|" + horaInicial + "|" + horaFinal + "|" + caminhoDoArquivo + "|0|0|" + arquivo + "|" + titulo + "|" + codigoCategoria + "|0|2");
             listaDeArquivos.add("normal|" + horaInicial + "|" + horaFinal + "|" + caminhoDoArquivo + "|0|0|" + arquivo + "|" + titulo + "|" + codigoCategoria + "|0|2");
             return true;
         }
@@ -1656,9 +1672,9 @@ public class BancoDAO {
 
                 String sql = "";
                 if (tipoCategoria.equals("1")) {
-                    sql = "UPDATE Video SET Data ='" + data + "', UltimaExecucao = '" + ultimaExecucao + "', TempoTotal = '" + duracaoDoVideo + "', Random = " + valorRandom + ", Qtde = " + quantidadePlayer + " WHERE Arquivo = '" + video.getName().trim() + "'";
+                    sql = "UPDATE Video SET Data ='" + data + "', UltimaExecucao = '" + ultimaExecucao + "', TempoTotal = '" + duracaoDoVideo + "', Random = " + valorRandom + ", QtdePlayer = " + quantidadePlayer + " WHERE Arquivo = '" + video.getName().trim() + "'";
                 } else {
-                    sql = "UPDATE Comercial SET Data ='" + data + "', UltimaExecucao = '" + ultimaExecucao + "', TempoTotal = '" + duracaoDoVideo + "', Random = " + valorRandom + ", Qtde = " + quantidadePlayer + " WHERE Arquivo = '" + video.getName().trim() + "'";
+                    sql = "UPDATE Comercial SET Data ='" + data + "', UltimaExecucao = '" + ultimaExecucao + "', TempoTotal = '" + duracaoDoVideo + "', Random = " + valorRandom + ", QtdePlayer = " + quantidadePlayer + " WHERE Arquivo = '" + video.getName().trim() + "'";
                 }
                 db.execSQL(sql);
             } catch (SQLiteCantOpenDatabaseException e) {
@@ -1705,10 +1721,10 @@ public class BancoDAO {
                 cursor = db.rawQuery(sql, new String[]{});
                 if (cursor.getCount() > 0) {
                     cursor.moveToFirst();
-                    if (null == cursor.getString(cursor.getColumnIndex("Qtde"))) {
+                    if (null == cursor.getString(cursor.getColumnIndex("QtdePlayer"))) {
                         quantidade = 1;
                     } else {
-                        quantidade = cursor.getInt(cursor.getColumnIndex("Qtde")) + 1;
+                        quantidade = cursor.getInt(cursor.getColumnIndex("QtdePlayer")) + 1;
                     }
                 }
             } catch (SQLiteCantOpenDatabaseException e) {
@@ -1815,7 +1831,7 @@ public class BancoDAO {
     }
 
     //---------------------------POPULAR O BANCO APOS COMUNICACAO ---------------------------------------------------------------------//
-    public void insertCategoria(String caminho) {
+    public boolean insertCategoria(String caminho) {
         if (arquivoBanco.exists()) {
             db = helper.getWritableDatabase();
             db.beginTransaction();
@@ -1864,30 +1880,36 @@ public class BancoDAO {
                             }
                         }
                         db.setTransactionSuccessful();
+                        return true;
+                    } else {
+                        return false;
                     }
                 } catch (NullPointerException e) {
                     AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
                     AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
-                    return;
+                    return false;
                 } catch (InvalidParameterException e) {
                     AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
                     AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
-                    return;
+                    return false;
                 } catch (Exception e) {
                     AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
                     AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
-                    return;
+                    return false;
                 } finally {
                     db.endTransaction();
                 }
+            } else {
+                return false;
             }
         } else {
             RegistrarLog.imprimirMsg("Log", "Banco não foi encontrado : insertCategoria()");
             LogUtils.registrar(90, ConfiguaracaoUtils.diretorio.isLogCompleto(), " 90 Banco não foi encontrado : insertCategoria()");
+            return false;
         }
     }
 
-    public void insertComercial(String caminho) {
+    public boolean insertComercial(String caminho) {
         if (arquivoBanco.exists()) {
             db = helper.getWritableDatabase();
             db.beginTransaction();
@@ -1896,6 +1918,7 @@ public class BancoDAO {
                     List<ComercialExp> listaComercial = expUtils.lerComercial(caminho);
                     if (null != listaComercial && listaComercial.size() > 0) {
                         for (ComercialExp c : listaComercial) {
+                            //RegistrarLog.imprimirMsg("Log", c.toString());
                             try {
                                 ContentValues values = new ContentValues();
                                 values.put("Arquivo", c.arquivo.trim());
@@ -1910,11 +1933,11 @@ public class BancoDAO {
                                 values.put("Semana2", c.semana2);
                                 values.put("Horario2", c.horario2);
                                 values.put("Semana3", c.semana3);
-                                values.put("Horario3,", c.horario3);
+                                values.put("Horario3", c.horario3);
                                 values.put("Semana4", c.semana4);
-                                values.put("Horario4,", c.horario4);
+                                values.put("Horario4", c.horario4);
                                 values.put("Semana5", c.semana5);
-                                values.put("Horario5,", c.horario5);
+                                values.put("Horario5", c.horario5);
                                 values.put("Semana6", c.semana6);
                                 values.put("Horario6", c.horario6);
                                 values.put("Semana7", c.semana7);
@@ -1958,7 +1981,7 @@ public class BancoDAO {
                                 values.put("Data", c.data);
                                 values.put("UltimaExecucao", c.ultimaExecucao);
                                 values.put("TempoTotal", c.tempoTotal);
-                                values.put("QtdePlayer", c.qtdePlayer);
+                                values.put("Qtde", c.qtdePlayer);
                                 values.put("DataVencto", c.dataVencimento);
                                 values.put("Dependencia1", c.dependencia1);
                                 values.put("Dependencia2", c.dependencia2);
@@ -1997,30 +2020,36 @@ public class BancoDAO {
                             }
                         }
                         db.setTransactionSuccessful();
+                        return true;
+                    } else {
+                        return false;
                     }
                 } catch (NullPointerException e) {
                     AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
                     AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
-                    return;
+                    return false;
                 } catch (InvalidParameterException e) {
                     AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
                     AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
-                    return;
+                    return false;
                 } catch (Exception e) {
                     AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
                     AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
-                    return;
+                    return false;
                 } finally {
                     db.endTransaction();
                 }
+            } else {
+                return false;
             }
         } else {
             RegistrarLog.imprimirMsg("Log", "Banco não foi encontrado : insertComercial()");
             LogUtils.registrar(90, ConfiguaracaoUtils.diretorio.isLogCompleto(), " 90 Banco não foi encontrado : insertComercial()");
+            return false;
         }
     }
 
-    public void insertProgramacao(String caminho) {
+    public boolean insertProgramacao(String caminho) {
         if (arquivoBanco.exists()) {
             db = helper.getWritableDatabase();
             db.beginTransaction();
@@ -2034,7 +2063,7 @@ public class BancoDAO {
                                 values.put("Descricao", p.descricao.trim());
                                 values.put("Dia", p.diaInicial);
                                 values.put("Mes", p.mesInicial);
-                                values.put("Ano", p.anoFinal);
+                                values.put("Ano", p.anoInicial);
                                 values.put("Diaf", p.diaFinal);
                                 values.put("Mesf", p.mesFinal);
                                 values.put("Anof", p.anoFinal);
@@ -2099,30 +2128,36 @@ public class BancoDAO {
                             }
                         }
                         db.setTransactionSuccessful();
+                        return true;
+                    } else {
+                        return false;
                     }
                 } catch (NullPointerException e) {
                     AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
                     AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
-                    return;
+                    return false;
                 } catch (InvalidParameterException e) {
                     AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
                     AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
-                    return;
+                    return false;
                 } catch (Exception e) {
                     AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
                     AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
-                    return;
+                    return false;
                 } finally {
                     db.endTransaction();
                 }
+            } else {
+                return false;
             }
         } else {
             RegistrarLog.imprimirMsg("Log", "Banco não foi encontrado : insertProgramacao()");
             LogUtils.registrar(90, ConfiguaracaoUtils.diretorio.isLogCompleto(), " 90 Banco não foi encontrado : insertProgramacao()");
+            return false;
         }
     }
 
-    public void insertVideo(String caminho) {
+    public boolean insertVideo(String caminho) {
         if (arquivoBanco.exists()) {
             db = helper.getWritableDatabase();
             db.beginTransaction();
@@ -2154,7 +2189,7 @@ public class BancoDAO {
                                 values.put("Data", v.data);
                                 values.put("UltimaExecucaoData", v.ultimaExecucaoData);
                                 values.put("TempoTotal", v.tempoTotal);
-                                values.put("QtdePlayer", v.quantidadePlayerTotal);
+                                values.put("Qtde", v.quantidadePlayerTotal);
                                 values.put("DataVencto", v.dataVencimento);
                                 values.put("FrameInicio", v.frameInicio);
                                 values.put("FrameFinal", v.frameFinal);
@@ -2192,26 +2227,32 @@ public class BancoDAO {
                             }
                         }
                         db.setTransactionSuccessful();
+                        return false;
+                    } else {
+                        return false;
                     }
                 } catch (NullPointerException e) {
                     AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
                     AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
-                    return;
+                    return false;
                 } catch (InvalidParameterException e) {
                     AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
                     AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
-                    return;
+                    return false;
                 } catch (Exception e) {
                     AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
                     AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
-                    return;
+                    return false;
                 } finally {
                     db.endTransaction();
                 }
+            } else {
+                return false;
             }
         } else {
             RegistrarLog.imprimirMsg("Log", "Banco não foi encontrado : insertVideo()");
             LogUtils.registrar(90, ConfiguaracaoUtils.diretorio.isLogCompleto(), " 90 Banco não foi encontrado : insertVideo()");
+            return false;
         }
     }
 }
