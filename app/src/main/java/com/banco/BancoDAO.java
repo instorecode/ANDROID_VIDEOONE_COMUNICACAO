@@ -167,10 +167,8 @@ public class BancoDAO {
     }
 
     private void categorias() {
-        RegistrarLog.imprimirMsg("Log", "categorias()");
         if (null != listaProgramacao && !listaProgramacao.isEmpty()) {
             for (ProgramacaoExp p : listaProgramacao) {
-                RegistrarLog.imprimirMsg("Log", p.descricao);
                 codigoCategoria(p.categoria1, p.horarioInicio, p.horarioFinal);
                 codigoCategoria(p.categoria2, p.horarioInicio, p.horarioFinal);
                 codigoCategoria(p.categoria3, p.horarioInicio, p.horarioFinal);
@@ -201,6 +199,8 @@ public class BancoDAO {
         }
 
         if (null == listaDeArquivos || listaDeArquivos.isEmpty()) {
+            LogUtils.registrar(90, ConfiguaracaoUtils.diretorio.isLogCompleto(), " 90 Não a videos nem comerciais válidos");
+            RegistrarLog.imprimirMsg("Log", " 90 Não a videos nem comerciais válidos");
             listaDeArquivos.add("semVideo");
             listaProgramacao.clear();
             return;
@@ -212,9 +212,6 @@ public class BancoDAO {
         if (arquivoBanco.exists()) {
             try {
                 if (null != codigo && null != horaFinalProgramacao && null != horaInicialProgramacao && !codigo.equals("0")) {
-                    RegistrarLog.imprimirMsg("Log", codigo + " Codigo parametro");
-                    RegistrarLog.imprimirMsg("Log", horaInicialProgramacao + " horaInicialProgamacao parametro");
-                    RegistrarLog.imprimirMsg("Log", horaFinalProgramacao + " horaFinalProgamacao parametro");
                     SQLiteDatabase db1 = helper.getWritableDatabase();
                     String scriptCategoria = "SELECT * FROM Categoria WHERE Codigo = '" + codigo + "' AND date('now') >= dataInicio AND date('now') < dataFinal";
                     Cursor cursorT = db1.rawQuery(scriptCategoria, new String[]{});
@@ -223,7 +220,6 @@ public class BancoDAO {
                             try {
                                 String codigoCategoria = cursorT.getString(cursorT.getColumnIndex("Codigo"));
                                 String tipoCategoria = cursorT.getString(cursorT.getColumnIndex("Tipo"));
-                                RegistrarLog.imprimirMsg("Log", tipoCategoria + " TipoCategoria");
                                 if (tipoCategoria.equals("1")) {
                                     video(codigoCategoria, horaInicialProgramacao, horaFinalProgramacao);
                                 } else if (tipoCategoria.equals("2")) {
@@ -358,7 +354,6 @@ public class BancoDAO {
                         while (cursor.moveToNext()) {
                             try {
                                 String arquivo = cursor.getString(cursor.getColumnIndex("Arquivo"));
-                                RegistrarLog.imprimirMsg("Log", arquivo + " Nome do arquivo comercial");
                                 String diasAlternados = cursor.getString(cursor.getColumnIndex("DiasAlternados"));
                                 String dataStr = cursor.getString(cursor.getColumnIndex("Data"));
                                 String titulo = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Titulo")));
@@ -419,10 +414,8 @@ public class BancoDAO {
     }
 
     private boolean validarDiasComercial(String arquivo, String titulo, String dependencia1, String dependencia2, String dependencia3, String horaInicial, String horaFinal, String codigoCategoria, String dataStr, String diasAlternados) {
-        RegistrarLog.imprimirMsg("Log", "validarDiasComercial()");
         Date data = null;
         if (null != dataStr) {
-            RegistrarLog.imprimirMsg("Log", dataStr + " Data do comercial não é nula");
             try {
                 data = new SimpleDateFormat("yyyy-MM-dd").parse(dataStr);
             } catch (ParseException e) {
@@ -438,13 +431,11 @@ public class BancoDAO {
             diaAtual.setTime(new Date());
 
             if (diasAlternados.equals("0")) {
-                RegistrarLog.imprimirMsg("Log", " Não é dias alternados");
                 boolean comercialEDependenciasExistemNosDiretoriosEBanco = validarDependenciasComercial(arquivo, titulo, dependencia1, dependencia2, dependencia3, horaInicial, horaFinal, codigoCategoria);
                 if (comercialEDependenciasExistemNosDiretoriosEBanco) {
                     return true;
                 }
             } else {
-                RegistrarLog.imprimirMsg("Log", " É dias alternados");
                 if (diaQueTocou.get(Calendar.DAY_OF_MONTH) == diaAtual.get(Calendar.DAY_OF_MONTH)) {
                     LogUtils.registrar(99, ConfiguaracaoUtils.diretorio.isLogCompleto(), " Desprezada com tipo 99. O comercial " + arquivo + " não pode ser tocado devido ter sido cadastrado como dias alternados");
                     return false;
@@ -460,7 +451,6 @@ public class BancoDAO {
     }
 
     private boolean validarDependenciasComercial(String arquivo, String titulo, String dependencia1, String dependencia2, String dependencia3, String horaInicial, String horaFinal, String codigoCategoria) {
-        RegistrarLog.imprimirMsg("log", " validarDependenciasComercial()");
         if (!dependencia1.trim().toLowerCase().contains("nenhuma")) {
             String caminhoDoArquivo = validarExistenciaDoVideo(dependencia1);
             if (caminhoDoArquivo == null) {
@@ -505,10 +495,8 @@ public class BancoDAO {
 
         String caminhoDoArquivo = validarExistenciaDoVideo(arquivo);
         if (caminhoDoArquivo == null) {
-            RegistrarLog.imprimirMsg("Log", " Desprezada com tipo 99. O arquivo " + arquivo + " não foi encontrado em nenhum diretório");
             LogUtils.registrar(99, ConfiguaracaoUtils.diretorio.isLogCompleto(), " Desprezada com tipo 99. O arquivo " + arquivo + " não foi encontrado em nenhum diretório");
         } else {
-            RegistrarLog.imprimirMsg("Log", "normal|" + horaInicial + "|" + horaFinal + "|" + caminhoDoArquivo + "|0|0|" + arquivo + "|" + titulo + "|" + codigoCategoria + "|0|2");
             listaDeArquivos.add("normal|" + horaInicial + "|" + horaFinal + "|" + caminhoDoArquivo + "|0|0|" + arquivo + "|" + titulo + "|" + codigoCategoria + "|0|2");
             return true;
         }
@@ -1918,7 +1906,6 @@ public class BancoDAO {
                     List<ComercialExp> listaComercial = expUtils.lerComercial(caminho);
                     if (null != listaComercial && listaComercial.size() > 0) {
                         for (ComercialExp c : listaComercial) {
-                            //RegistrarLog.imprimirMsg("Log", c.toString());
                             try {
                                 ContentValues values = new ContentValues();
                                 values.put("Arquivo", c.arquivo.trim());

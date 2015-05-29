@@ -32,10 +32,10 @@ public class MainActivity extends Activity {
 
         lerProperties.scheduleAtFixedRate(new TaskLerProperties(context), 0, 10, TimeUnit.SECONDS);
         criarViewExcluirVencidos.scheduleAtFixedRate(new TaskCriarViewExcluirInvalidos(context), 0, 10, TimeUnit.SECONDS);
-        //threadComunicacaoNormal.scheduleAtFixedRate(new TarefaComunicao(context,false), 2, 60, TimeUnit.SECONDS);
-        //threadComunicacaoEmergencia.scheduleAtFixedRate(new TarefaComunicao(context,true), 10, 1800, TimeUnit.SECONDS);
-        criarPlayListDeterminados.scheduleAtFixedRate(new TaskComerciaisDeterminados(context), 4, 30, TimeUnit.SECONDS);
-        criarPlayListNormal.scheduleAtFixedRate(new TaskVideoAndComerciais(context), 4, 30, TimeUnit.SECONDS);
+        threadComunicacaoNormal.scheduleAtFixedRate(new TarefaComunicao(context,false), 2, 120, TimeUnit.SECONDS);
+        threadComunicacaoEmergencia.scheduleAtFixedRate(new TarefaComunicao(context,true), 10, 1800, TimeUnit.SECONDS);
+        criarPlayListDeterminados.scheduleAtFixedRate(new TaskComerciaisDeterminados(context), 4, 60, TimeUnit.SECONDS);
+        criarPlayListNormal.scheduleAtFixedRate(new TaskVideoAndComerciais(context), 4, 60, TimeUnit.SECONDS);
 	}
 
 }

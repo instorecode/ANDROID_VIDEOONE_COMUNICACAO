@@ -60,9 +60,8 @@ public class TarefaComunicao implements Runnable {
 
     @Override
     public void run() {
-        RegistrarLog.imprimirMsg("Log", "------------------------------------------------------------------------------------------------------------------------------------------------");
+        LogUtils.registrar(20, ConfiguaracaoUtils.diretorio.isLogCompleto(), " 20 Começou comunicação");
         File properties = new File(caminho.concat(barraDoSistema).concat("videoOne").concat(barraDoSistema).concat("config"));
-        RegistrarLog.imprimirMsg("Log", "INICIOU A COMUNICAÇÃO ");
 
         try {
             validarHoraAndDia = new ValidarDiaAndHora(caminho.concat("/videoOne/config/configuracoes.properties"));
@@ -70,10 +69,6 @@ public class TarefaComunicao implements Runnable {
             if (properties.exists()) {
                 informacoesConexao();
                 validarHoraAndDia.procurarHorarioValido();
-
-                RegistrarLog.imprimirMsg("Log", "TENTATIVAS REALIZADAS " + tentativasRealizadas);
-                LogUtils.registrar(10,ConfiguaracaoUtils.diretorio.isLogCompleto(), " 10 " + tentativasRealizadas);
-                RegistrarLog.imprimirMsg("Log", "MAXIMAS DE TENTATIVAS " + maximoTentativas);
 
                 if (!ftp.isConnected()) {
                     if (validarHoraAndDia.isValid()) {
@@ -83,18 +78,16 @@ public class TarefaComunicao implements Runnable {
                         }
 
                         if (tentativasRealizadas <= maximoTentativas) {
-                            RegistrarLog.imprimirMsg("Log", "COMUNICACAO");
                             conectarEnderecoFtp(false);
                             popularBanco();
                             bancoDAO.close();
                             hashId = validarHoraAndDia.hashId();
                         }
-                    }//8
+                    }
                 }
 
                 if(isEmergencia && null != ftp && !ftp.isConnected()) {
                     // executar o emergencia
-                    RegistrarLog.imprimirMsg("Log", "RODANDO EMERGENCIA");
                     conectarEnderecoFtp(true);
                     popularBanco();
                     bancoDAO.close();
@@ -187,6 +180,16 @@ public class TarefaComunicao implements Runnable {
         } catch (Exception e) {
             diretorioConfig = caminho.concat(barraDoSistema).concat("videoOne").concat(barraDoSistema).concat("config");
             boolean diretorioCriado = Arquivo.criarDiretorio(diretorioConfig);
+        }
+
+        try {
+            maximoTentativas = Integer.parseInt(ConfiguaracaoUtils.ftp.getTentativasConexao());
+        } catch (NullPointerException e) {
+            maximoTentativas = 10;
+        } catch (InvalidParameterException e) {
+            maximoTentativas = 10;
+        } catch (Exception e) {
+            maximoTentativas = 10;
         }
 
         try {
@@ -559,7 +562,6 @@ public class TarefaComunicao implements Runnable {
                 if (!file.getName().endsWith(".@@@")) {
                     if (file.getName().contains(".mov") || file.getName().contains(".md5") || file.getName().contains(".db") || file.getName().contains(".exp")) {
                         try {
-                            RegistrarLog.imprimirMsg("Log", " Arquivos no servidor FTP " + file.getName());
                             RegistrarLog.imprimirMsg("Log", new File(salvar_importes.concat(barraDoSistema).concat(file.getName())).getAbsolutePath());
                             ftp.download(file.getName(), new FileOutputStream(new File(salvar_importes.concat(barraDoSistema).concat(file.getName()))), 0, new TransferCustom());
                             LogUtils.registrar(90, ConfiguaracaoUtils.diretorio.isLogCompleto(), " 90 Arquivos no servidor FTP " + file.getName() + " baixado com sucesso");
@@ -652,7 +654,6 @@ public class TarefaComunicao implements Runnable {
         List<File> arquivosValidos = md5Utils.getArquivosValidos();
         if (null != arquivosValidos && !arquivosValidos.isEmpty()) {
             for (File file : arquivosValidos) {
-                RegistrarLog.imprimirMsg("Log", file.getAbsolutePath());
                 boolean moveuArquivo = Arquivo.moverArquivo(file, new File(diretorioDeVideos.concat(barraDoSistema).concat(file.getName())));
 
                 if (moveuArquivo) {
@@ -828,7 +829,6 @@ public class TarefaComunicao implements Runnable {
     }
 
     private void desconectarFtp(boolean incrementarTentativasRealizadas) {
-        RegistrarLog.imprimirMsg("Log", "Metodo Desconectar ftp");
         if (ftp.isConnected()) {
             try {
                 ftp.disconnect(true);
@@ -863,7 +863,6 @@ public class TarefaComunicao implements Runnable {
             }
         }
 
-        RegistrarLog.imprimirMsg("Log", "Desconectou-se do ftp");
         LogUtils.registrar(20, ConfiguaracaoUtils.diretorio.isLogCompleto(), " 20 Desconectou-se do ftp");
     }
 
@@ -953,6 +952,5 @@ public class TarefaComunicao implements Runnable {
                 AndroidImprimirUtils.imprimirErro(TarefaComunicao.class, e, 90);
             }
         }
-        RegistrarLog.imprimirMsg("Log", "Banco Populado ");
     }
 }
