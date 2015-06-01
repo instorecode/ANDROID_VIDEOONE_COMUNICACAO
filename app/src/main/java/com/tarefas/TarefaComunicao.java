@@ -88,6 +88,7 @@ public class TarefaComunicao implements Runnable {
 
                 if(isEmergencia && null != ftp && !ftp.isConnected()) {
                     // executar o emergencia
+                    RegistrarLog.imprimirMsg("Log","RODANDO EMERGENCIA");
                     conectarEnderecoFtp(true);
                     popularBanco();
                     bancoDAO.close();
@@ -128,6 +129,8 @@ public class TarefaComunicao implements Runnable {
             AndroidImprimirUtils.imprimirErro(TarefaComunicao.class, e);
             AndroidImprimirUtils.imprimirErro(TarefaComunicao.class, e, 90);
         }
+
+        RegistrarLog.imprimirMsg("Log", "TaskComunicacao");
     }
 
     private void informacoesConexao() {

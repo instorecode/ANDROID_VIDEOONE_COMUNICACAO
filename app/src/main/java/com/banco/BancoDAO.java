@@ -683,9 +683,12 @@ public class BancoDAO {
     public void comerciaisDeterminados() {
         if (arquivoBanco.exists()) {
             try {
-                SQLiteDatabase db = helper.getWritableDatabase();
+                SQLiteDatabase db = getDb();
                 String script = "SELECT * FROM VIEW_CARREGAR_COMERCIAL_DET WHERE (QtdePlayer is null OR QtdePlayer > Qtde)";
                 cursor = db.rawQuery(script, new String[]{});
+
+                //SQLiteDatabase db = helper.getWritableDatabase();
+                //cursor = db.rawQuery(VIEW_PROGRAMACAO, new String[]{});
 
                 if (cursor.getCount() > 0) {
                     while (cursor.moveToNext()) {
