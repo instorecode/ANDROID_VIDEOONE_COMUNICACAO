@@ -78,6 +78,7 @@ public class TarefaComunicao implements Runnable {
                         }
 
                         if (tentativasRealizadas <= maximoTentativas) {
+                            RegistrarLog.imprimirMsg("Log","Comunicando");
                             conectarEnderecoFtp(false);
                             popularBanco();
                             bancoDAO.close();
