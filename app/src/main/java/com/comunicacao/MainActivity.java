@@ -34,9 +34,7 @@ public class MainActivity extends Activity {
 
 
         lerProperties.scheduleAtFixedRate(new TaskLerProperties(context), 0, 10, TimeUnit.SECONDS);
-
-        backup.scheduleAtFixedRate(new TaskBackup(),0,2,TimeUnit.MINUTES);
-
+        backup.scheduleAtFixedRate(new TaskBackup(), 2, 864000,TimeUnit.SECONDS);
         criarViewExcluirVencidos.scheduleAtFixedRate(new TaskCriarViewExcluirInvalidos(context), 0, 8, TimeUnit.HOURS);
         threadComunicacaoNormal.scheduleAtFixedRate(new TarefaComunicao(context,false), 2, 120, TimeUnit.SECONDS);
         threadComunicacaoEmergencia.scheduleAtFixedRate(new TarefaComunicao(context,true), 10, 1800, TimeUnit.SECONDS);

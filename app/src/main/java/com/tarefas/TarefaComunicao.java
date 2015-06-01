@@ -361,8 +361,8 @@ public class TarefaComunicao implements Runnable {
         if (arquivoZip.exists()) {
             arquivoZip.delete();
         }
-        ZipFile zip = null;
 
+        ZipFile zip = null;
         try {
             zip = new ZipFile(arquivoZip);
         } catch (NullPointerException e) {
@@ -380,7 +380,6 @@ public class TarefaComunicao implements Runnable {
         }
 
         List<File> arquivos = new ArrayList<File>();
-
         try {
             File arquivoDeBanco = new File(caminho.concat(barraDoSistema).concat("videoOne").concat(barraDoSistema).concat("videoOneDs.db"));
             if (arquivoDeBanco.exists()) {

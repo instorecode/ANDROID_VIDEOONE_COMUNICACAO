@@ -4,15 +4,12 @@ import android.os.Environment;
 
 import com.br.instore.utils.ConfiguaracaoUtils;
 import com.utils.AndroidImprimirUtils;
-
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
 import net.lingala.zip4j.model.ZipParameters;
 import net.lingala.zip4j.util.Zip4jConstants;
 
 import java.io.File;
-import java.io.IOException;
-import java.net.CookieHandler;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,8 +27,8 @@ public class TaskBackup implements Runnable {
         List<File> listaDeArquivos = new ArrayList<File>();
         String caminhoBackup = caminho.concat(barraDoSistema).concat("videoOne").concat(barraDoSistema).concat("backup");
         String caminhoBanco = caminho.concat(barraDoSistema).concat("videoOne").concat(barraDoSistema).concat("videoOneDs.db");
+        String caminhoProperties = caminho.concat(barraDoSistema).concat("videoOne").concat(barraDoSistema).concat("config").concat(barraDoSistema).concat("configuracoes.properties");
         String caminhoImport = caminho.concat(barraDoSistema).concat(ConfiguaracaoUtils.diretorio.getDiretorioImportacao());
-        String caminhoExport = caminho.concat(barraDoSistema).concat(ConfiguaracaoUtils.diretorio.getDiretorioExportacao());
         String caminhoLog = caminho.concat(barraDoSistema).concat(ConfiguaracaoUtils.diretorio.getDiretorioLog());
         String caminhoPlaylist = caminho.concat(barraDoSistema).concat(ConfiguaracaoUtils.diretorio.getDiretorioPlaylist());
         String caminhoZip = caminho.concat(barraDoSistema).concat("videoOne").concat(barraDoSistema).concat("backup").concat(barraDoSistema).concat("backup1.zip");
@@ -57,9 +54,10 @@ public class TaskBackup implements Runnable {
             return;
         }
 
-        File arquivoBanco = null;
+
+        File arquivoProperties = null;
         try {
-            arquivoBanco = new File(caminhoBanco);
+            arquivoProperties = new File(caminhoProperties);
         } catch (NullPointerException e) {
             AndroidImprimirUtils.imprimirErro(TaskBackup.class, e);
             AndroidImprimirUtils.imprimirErro(TaskBackup.class, e, 90);
@@ -71,9 +69,9 @@ public class TaskBackup implements Runnable {
             AndroidImprimirUtils.imprimirErro(TaskBackup.class, e, 90);
         }
 
-        File diretorioExport = null;
+        File arquivoBanco = null;
         try {
-            diretorioExport = new File(caminhoExport);
+            arquivoBanco = new File(caminhoBanco);
         } catch (NullPointerException e) {
             AndroidImprimirUtils.imprimirErro(TaskBackup.class, e);
             AndroidImprimirUtils.imprimirErro(TaskBackup.class, e, 90);
@@ -128,37 +126,6 @@ public class TaskBackup implements Runnable {
         }
 
         try {
-            if (null != diretorioExport) {
-                for (File file : diretorioExport.listFiles()) {
-                    try {
-                        if (file.exists()) {
-                            listaDeArquivos.add(file);
-                        }
-                    } catch (NullPointerException e) {
-                        AndroidImprimirUtils.imprimirErro(TaskBackup.class, e);
-                        AndroidImprimirUtils.imprimirErro(TaskBackup.class, e, 90);
-                    } catch (InvalidParameterException e) {
-                        AndroidImprimirUtils.imprimirErro(TaskBackup.class, e);
-                        AndroidImprimirUtils.imprimirErro(TaskBackup.class, e, 90);
-                    } catch (Exception e) {
-                        AndroidImprimirUtils.imprimirErro(TaskBackup.class, e);
-                        AndroidImprimirUtils.imprimirErro(TaskBackup.class, e, 90);
-                    }
-                }
-            }
-        } catch (NullPointerException e) {
-            AndroidImprimirUtils.imprimirErro(TaskBackup.class, e);
-            AndroidImprimirUtils.imprimirErro(TaskBackup.class, e, 90);
-        } catch (InvalidParameterException e) {
-            AndroidImprimirUtils.imprimirErro(TaskBackup.class, e);
-            AndroidImprimirUtils.imprimirErro(TaskBackup.class, e, 90);
-        } catch (Exception e) {
-            AndroidImprimirUtils.imprimirErro(TaskBackup.class, e);
-            AndroidImprimirUtils.imprimirErro(TaskBackup.class, e, 90);
-        }
-
-
-        try {
             if (null != diretorioImport) {
                 for (File file : diretorioImport.listFiles()) {
                     try {
@@ -187,7 +154,6 @@ public class TaskBackup implements Runnable {
             AndroidImprimirUtils.imprimirErro(TaskBackup.class, e);
             AndroidImprimirUtils.imprimirErro(TaskBackup.class, e, 90);
         }
-
 
         try {
             if (null != diretorioLog) {
@@ -249,6 +215,19 @@ public class TaskBackup implements Runnable {
             AndroidImprimirUtils.imprimirErro(TaskBackup.class, e, 90);
         }
 
+        try {
+            listaDeArquivos.add(arquivoProperties);
+        } catch (NullPointerException e) {
+            AndroidImprimirUtils.imprimirErro(TaskBackup.class, e);
+            AndroidImprimirUtils.imprimirErro(TaskBackup.class, e, 90);
+        } catch (InvalidParameterException e) {
+            AndroidImprimirUtils.imprimirErro(TaskBackup.class, e);
+            AndroidImprimirUtils.imprimirErro(TaskBackup.class, e, 90);
+        } catch (Exception e) {
+            AndroidImprimirUtils.imprimirErro(TaskBackup.class, e);
+            AndroidImprimirUtils.imprimirErro(TaskBackup.class, e, 90);
+        }
+
 
         try {
             listaDeArquivos.add(arquivoBanco);
@@ -263,34 +242,17 @@ public class TaskBackup implements Runnable {
             AndroidImprimirUtils.imprimirErro(TaskBackup.class, e, 90);
         }
 
+
         try {
             if (null != listaDeArquivos && !listaDeArquivos.isEmpty()) {
                 File arquivoZip = new File(caminhoZip);
 
-                if (!arquivoZip.exists()) {
-                    try {
-                        arquivoZip.createNewFile();
-                        compactar(listaDeArquivos, arquivoZip);
-                    } catch (IOException e) {
-                        AndroidImprimirUtils.imprimirErro(TaskBackup.class, e);
-                        AndroidImprimirUtils.imprimirErro(TaskBackup.class, e, 90);
-                    } catch (NullPointerException e) {
-                        AndroidImprimirUtils.imprimirErro(TaskBackup.class, e);
-                        AndroidImprimirUtils.imprimirErro(TaskBackup.class, e, 90);
-                    } catch (InvalidParameterException e) {
-                        AndroidImprimirUtils.imprimirErro(TaskBackup.class, e);
-                        AndroidImprimirUtils.imprimirErro(TaskBackup.class, e, 90);
-                    } catch (Exception e) {
-                        AndroidImprimirUtils.imprimirErro(TaskBackup.class, e);
-                        AndroidImprimirUtils.imprimirErro(TaskBackup.class, e, 90);
-                    }
-
-                } else {
-
+                if (arquivoZip.exists()) {
                     File fileZip3 = new File(caminhoZip3);
                     if (fileZip3.exists()) {
                         fileZip3.delete();
                     }
+
 
                     File fileZip2 = new File(caminhoZip2);
                     if (fileZip2.exists()) {
@@ -298,24 +260,10 @@ public class TaskBackup implements Runnable {
                     }
 
                     arquivoZip.renameTo(fileZip2);
+                    compactar(listaDeArquivos, arquivoZip);
 
-                    try {
-                        arquivoZip.createNewFile();
-                        compactar(listaDeArquivos, arquivoZip);
-                    } catch (IOException e) {
-                        AndroidImprimirUtils.imprimirErro(TaskBackup.class, e);
-                        AndroidImprimirUtils.imprimirErro(TaskBackup.class, e, 90);
-                    } catch (NullPointerException e) {
-                        AndroidImprimirUtils.imprimirErro(TaskBackup.class, e);
-                        AndroidImprimirUtils.imprimirErro(TaskBackup.class, e, 90);
-                    } catch (InvalidParameterException e) {
-                        AndroidImprimirUtils.imprimirErro(TaskBackup.class, e);
-                        AndroidImprimirUtils.imprimirErro(TaskBackup.class, e, 90);
-                    } catch (Exception e) {
-                        AndroidImprimirUtils.imprimirErro(TaskBackup.class, e);
-                        AndroidImprimirUtils.imprimirErro(TaskBackup.class, e, 90);
-                    }
-
+                } else {
+                    compactar(listaDeArquivos, arquivoZip);
                 }
             }
         } catch (NullPointerException e) {
@@ -350,9 +298,10 @@ public class TaskBackup implements Runnable {
         }
 
         for (File files : arquivos) {
-            if (file.exists()) {
+            if (files.exists()) {
+
                 try {
-                    zip.createZipFile(files, parameters);
+                   zip.addFile(files, parameters);
                 } catch (ZipException e) {
                     AndroidImprimirUtils.imprimirErro(TaskBackup.class, e);
                     AndroidImprimirUtils.imprimirErro(TaskBackup.class, e, 90);
