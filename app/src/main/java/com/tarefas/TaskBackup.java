@@ -14,9 +14,6 @@ import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by usuario on 01/06/2015.
- */
 public class TaskBackup implements Runnable {
 
     String caminho = Environment.getExternalStorageDirectory().toString();
