@@ -126,7 +126,7 @@ public class TaskBackup implements Runnable {
             if (null != diretorioImport) {
                 for (File file : diretorioImport.listFiles()) {
                     try {
-                        if (file.exists()) {
+                        if (file.exists() && (file.getName().endsWith(".exp") || file.getName().endsWith(".old") ))  {
                             listaDeArquivos.add(file);
                         }
                     } catch (NullPointerException e) {

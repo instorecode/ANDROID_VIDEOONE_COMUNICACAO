@@ -40,45 +40,57 @@ import java.util.TimeZone;
 
 public class BancoDAO {
 
-    private final File arquivoBanco = new File(Environment.getExternalStorageDirectory().getAbsolutePath().concat("/videoOne/").concat("videoOneDs.db"));
+
+    private static final File arquivoBanco = new File(Environment.getExternalStorageDirectory().getAbsolutePath().concat("/videoOne/").concat("videoOneDs.db"));
 
     private List<ProgramacaoExp> listaProgramacao = new ArrayList<ProgramacaoExp>();
     private List<String> listaDeArquivos = new ArrayList<String>();
     private List<ComercialDet> listaComercialDeterminados = new ArrayList<ComercialDet>();
     private List<String> linhasPlaylistDet = new ArrayList<String>();
 
-    private Banco banco = new Banco();
-    private ExpUtils expUtils = new ExpUtils();
-    private Cursor cursor;
-    private DatabaseHelper helper;
-    private SQLiteDatabase db;
-
+    private static ExpUtils expUtils = new ExpUtils();
     private static final String VIEW_PROGRAMACAO = "SELECT * FROM VIEW_CARREGAR_PROGRAMACAO";
     private final String barraDoSistema = System.getProperty("file.separator");
     private String caminho = Environment.getExternalStorageDirectory().toString();
     private int valorRandom = 0;
 
+    private Banco banco = new Banco();
+    private static DatabaseHelper helper;
+    private static SQLiteDatabase db;
+    private static Cursor cursor;
 
-    public BancoDAO(Context context) {
+    private static BancoDAO bancoDAO;
+
+    /*public BancoDAO(Context context) {
+        this.helper = new DatabaseHelper(context);
+    }*/
+
+
+    private BancoDAO(Context context){
         this.helper = new DatabaseHelper(context);
     }
 
-    public SQLiteDatabase getDb() {
+    public static void getInstance(Context context){
+        if(null == bancoDAO){
+            bancoDAO = new BancoDAO(context);
+        }
+    }
+
+    public static SQLiteDatabase getDb() {
         if (null == db) {
             db = helper.getWritableDatabase();
         }
         return db;
     }
 
-    public void close() {
+    public static void close() {
         helper.close();
     }
 
     ///------------------ VIDEOS COMERCIAIS -------------------///
     public void programacoes() {
         if (arquivoBanco.exists()) {
-
-            SQLiteDatabase db = helper.getWritableDatabase();
+            SQLiteDatabase db = getDb();
             cursor = db.rawQuery(VIEW_PROGRAMACAO, new String[]{});
             if (cursor.getCount() > 0) {
                 while (cursor.moveToNext()) {
@@ -120,6 +132,8 @@ public class BancoDAO {
                         programacaoExp.categoria24 = cursor.getString(cursor.getColumnIndex("Categoria24"));
                         programacaoExp.conteudo = cursor.getString(cursor.getColumnIndex("Conteudo"));
 
+                        RegistrarLog.imprimirMsg("Log", programacaoExp.toString());
+
                         listaProgramacao.add(programacaoExp);
                     } catch (SQLiteCantOpenDatabaseException e) {
                         AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
@@ -152,16 +166,17 @@ public class BancoDAO {
                     }
 
                 }
-                categorias();
+                //categorias();
+                close();
             } else {
                 LogUtils.registrar(90, ConfiguaracaoUtils.diretorio.isLogCompleto(), " 90 Não a programação válida para o horario");
                 RegistrarLog.imprimirMsg("Log", " 90 Não a programação válida para o horario");
                 listaProgramacao.clear();
                 listaDeArquivos.add("semVideo");
+                close();
                 return;
             }
         } else {
-            RegistrarLog.imprimirMsg("Log", "Banco não foi encontrado : programacoes()");
             LogUtils.registrar(21, ConfiguaracaoUtils.diretorio.isLogCompleto(), " 21 Banco não foi encontrado : programacoes()");
         }
     }
@@ -293,7 +308,7 @@ public class BancoDAO {
                                 listaDeArquivos.add("normal|" + horaInicial + "|" + horaFinal + "|" + caminhoDoArquivoDeVideo + "|0|0|" + caminhoDoArquivoDeVideo + "|" + titulo + "|" + codigoCategoria + "|" + velocidade + "|1");
                                 return;
                             } else {
-                                LogUtils.registrar(99, ConfiguaracaoUtils.diretorio.isLogCompleto(), " Desprezada com tipo 99. O video " + arquivo + " não foi encontrado em nenhum diretório");
+                                LogUtils.registrar(99, ConfiguaracaoUtils.diretorio.isLogCompleto(), " 99 Desprezada com tipo 99. O video " + arquivo + " não foi encontrado em nenhum diretório");
                             }
 
                         } catch (SQLiteCantOpenDatabaseException e) {
@@ -437,7 +452,7 @@ public class BancoDAO {
                 }
             } else {
                 if (diaQueTocou.get(Calendar.DAY_OF_MONTH) == diaAtual.get(Calendar.DAY_OF_MONTH)) {
-                    LogUtils.registrar(99, ConfiguaracaoUtils.diretorio.isLogCompleto(), " Desprezada com tipo 99. O comercial " + arquivo + " não pode ser tocado devido ter sido cadastrado como dias alternados");
+                    LogUtils.registrar(99, ConfiguaracaoUtils.diretorio.isLogCompleto(), " 99 Desprezada com tipo 99. O comercial " + arquivo + " não pode ser tocado devido ter sido cadastrado como dias alternados");
                     return false;
                 } else {
                     boolean comercialEDependenciasExistemNosDiretoriosEBanco = validarDependenciasComercial(arquivo, titulo, dependencia1, dependencia2, dependencia3, horaInicial, horaFinal, codigoCategoria);
@@ -454,11 +469,11 @@ public class BancoDAO {
         if (!dependencia1.trim().toLowerCase().contains("nenhuma")) {
             String caminhoDoArquivo = validarExistenciaDoVideo(dependencia1);
             if (caminhoDoArquivo == null) {
-                LogUtils.registrar(99, ConfiguaracaoUtils.diretorio.isLogCompleto(), " Desprezada com tipo 99. A Dependência " + dependencia1 + " do arquivo " + arquivo + " não foi encontrado em nenhum diretório");
+                LogUtils.registrar(99, ConfiguaracaoUtils.diretorio.isLogCompleto(), " 99 Desprezada com tipo 99. A Dependência " + dependencia1 + " do arquivo " + arquivo + " não foi encontrado em nenhum diretório");
             } else {
                 ComercialDependencia cd = validarDependenciaNoBanco(dependencia1);
                 if (cd == null) {
-                    LogUtils.registrar(99, ConfiguaracaoUtils.diretorio.isLogCompleto(), " Desprezada com tipo 99. A dependência " + dependencia1 + " do arquivo " + arquivo + " não foi encontrada no banco");
+                    LogUtils.registrar(99, ConfiguaracaoUtils.diretorio.isLogCompleto(), " 99 Desprezada com tipo 99. A dependência " + dependencia1 + " do arquivo " + arquivo + " não foi encontrada no banco");
                 } else {
                     listaDeArquivos.add("normal|" + horaInicial + "|" + horaFinal + "|" + caminhoDoArquivo + "|1|0|" + arquivo + "|" + cd.titulo + "|" + cd.categoria + "|0|2");
                 }
@@ -468,11 +483,11 @@ public class BancoDAO {
         if (!dependencia2.trim().toLowerCase().contains("nenhuma")) {
             String caminhoDoArquivo = validarExistenciaDoVideo(dependencia2);
             if (caminhoDoArquivo == null) {
-                LogUtils.registrar(99, ConfiguaracaoUtils.diretorio.isLogCompleto(), " Desprezada com tipo 99. A Dependência " + dependencia2 + " do arquivo " + arquivo + " não foi encontrado em nenhum diretório");
+                LogUtils.registrar(99, ConfiguaracaoUtils.diretorio.isLogCompleto(), " 99 Desprezada com tipo 99. A Dependência " + dependencia2 + " do arquivo " + arquivo + " não foi encontrado em nenhum diretório");
             } else {
                 ComercialDependencia cd = validarDependenciaNoBanco(dependencia2);
                 if (cd == null) {
-                    LogUtils.registrar(99, ConfiguaracaoUtils.diretorio.isLogCompleto(), " Desprezada com tipo 99. A dependência " + dependencia2 + " do arquivo " + arquivo + " não foi encontrada no banco");
+                    LogUtils.registrar(99, ConfiguaracaoUtils.diretorio.isLogCompleto(), " 99 Desprezada com tipo 99. A dependência " + dependencia2 + " do arquivo " + arquivo + " não foi encontrada no banco");
                 } else {
                     listaDeArquivos.add("normal|" + horaInicial + "|" + horaFinal + "|" + caminhoDoArquivo + "|1|0|" + arquivo + "|" + cd.titulo + "|" + cd.categoria + "|0|2");
                 }
@@ -482,11 +497,11 @@ public class BancoDAO {
         if (!dependencia3.trim().toLowerCase().contains("nenhuma")) {
             String caminhoDoArquivo = validarExistenciaDoVideo(dependencia2);
             if (caminhoDoArquivo == null) {
-                LogUtils.registrar(99, ConfiguaracaoUtils.diretorio.isLogCompleto(), " Desprezada com tipo 99. A Dependência " + dependencia3 + " do arquivo " + arquivo + " não foi encontrado em nenhum diretório");
+                LogUtils.registrar(99, ConfiguaracaoUtils.diretorio.isLogCompleto(), " 99 Desprezada com tipo 99. A Dependência " + dependencia3 + " do arquivo " + arquivo + " não foi encontrado em nenhum diretório");
             } else {
                 ComercialDependencia cd = validarDependenciaNoBanco(dependencia3);
                 if (cd == null) {
-                    LogUtils.registrar(99, ConfiguaracaoUtils.diretorio.isLogCompleto(), " Desprezada com tipo 99. A dependência " + dependencia3 + " do arquivo " + arquivo + " não foi encontrada no banco");
+                    LogUtils.registrar(99, ConfiguaracaoUtils.diretorio.isLogCompleto(), " 99 Desprezada com tipo 99. A dependência " + dependencia3 + " do arquivo " + arquivo + " não foi encontrada no banco");
                 } else {
                     listaDeArquivos.add("normal|" + horaInicial + "|" + horaFinal + "|" + caminhoDoArquivo + "|1|0|" + arquivo + "|" + cd.titulo + "|" + cd.categoria + "|0|2");
                 }
@@ -495,7 +510,7 @@ public class BancoDAO {
 
         String caminhoDoArquivo = validarExistenciaDoVideo(arquivo);
         if (caminhoDoArquivo == null) {
-            LogUtils.registrar(99, ConfiguaracaoUtils.diretorio.isLogCompleto(), " Desprezada com tipo 99. O arquivo " + arquivo + " não foi encontrado em nenhum diretório");
+            LogUtils.registrar(99, ConfiguaracaoUtils.diretorio.isLogCompleto(), " 99 Desprezada com tipo 99. O arquivo " + arquivo + " não foi encontrado em nenhum diretório");
         } else {
             listaDeArquivos.add("normal|" + horaInicial + "|" + horaFinal + "|" + caminhoDoArquivo + "|0|0|" + arquivo + "|" + titulo + "|" + codigoCategoria + "|0|2");
             return true;
@@ -864,10 +879,10 @@ public class BancoDAO {
                             resultadoExisteNoBanco.arquivo = resultadoDependencia1;
                             comercialDet.listaDependencias.add(resultadoExisteNoBanco);
                         } else {
-                            LogUtils.registrar(99, ConfiguaracaoUtils.diretorio.isLogCompleto(), " Desprezada com tipo 99. A Dependência " + dependencia1 + " do arquivo " + nomeComercial + " não foi encontrada no banco");
+                            LogUtils.registrar(99, ConfiguaracaoUtils.diretorio.isLogCompleto(), " 99 Desprezada com tipo 99. A Dependência " + dependencia1 + " do arquivo " + nomeComercial + " não foi encontrada no banco");
                         }
                     } else {
-                        LogUtils.registrar(99, ConfiguaracaoUtils.diretorio.isLogCompleto(), " Desprezada com tipo 99. A Dependência " + dependencia1 + " do arquivo " + nomeComercial + " não foi encontrada em nenhum diretório");
+                        LogUtils.registrar(99, ConfiguaracaoUtils.diretorio.isLogCompleto(), " 99 Desprezada com tipo 99. A Dependência " + dependencia1 + " do arquivo " + nomeComercial + " não foi encontrada em nenhum diretório");
                     }
                 }
             } catch (NullPointerException e) {
@@ -890,10 +905,10 @@ public class BancoDAO {
                             resultadoExisteNoBanco.arquivo = resultadoDependencia2;
                             comercialDet.listaDependencias.add(resultadoExisteNoBanco);
                         } else {
-                            LogUtils.registrar(99, ConfiguaracaoUtils.diretorio.isLogCompleto(), " Desprezada com tipo 99. A Dependência " + dependencia2 + " do arquivo " + nomeComercial + " não foi encontrada no banco");
+                            LogUtils.registrar(99, ConfiguaracaoUtils.diretorio.isLogCompleto(), " 99 Desprezada com tipo 99. A Dependência " + dependencia2 + " do arquivo " + nomeComercial + " não foi encontrada no banco");
                         }
                     } else {
-                        LogUtils.registrar(99, ConfiguaracaoUtils.diretorio.isLogCompleto(), " Desprezada com tipo 99. A Dependência " + dependencia2 + " do arquivo " + nomeComercial + " não foi encontrada em nenhum diretório");
+                        LogUtils.registrar(99, ConfiguaracaoUtils.diretorio.isLogCompleto(), " 99 Desprezada com tipo 99. A Dependência " + dependencia2 + " do arquivo " + nomeComercial + " não foi encontrada em nenhum diretório");
                     }
                 }
             } catch (NullPointerException e) {
@@ -916,10 +931,10 @@ public class BancoDAO {
                             resultadoExisteNoBanco.arquivo = resultadoDependencia3;
                             comercialDet.listaDependencias.add(resultadoExisteNoBanco);
                         } else {
-                            LogUtils.registrar(99, ConfiguaracaoUtils.diretorio.isLogCompleto(), " Desprezada com tipo 99. A Dependência " + dependencia3 + " do arquivo " + nomeComercial + " não foi encontrada no banco");
+                            LogUtils.registrar(99, ConfiguaracaoUtils.diretorio.isLogCompleto(), " 99 Desprezada com tipo 99. A Dependência " + dependencia3 + " do arquivo " + nomeComercial + " não foi encontrada no banco");
                         }
                     } else {
-                        LogUtils.registrar(99, ConfiguaracaoUtils.diretorio.isLogCompleto(), " Desprezada com tipo 99. A Dependência " + dependencia3 + " do arquivo " + nomeComercial + " não foi encontrada em nenhum diretório");
+                        LogUtils.registrar(99, ConfiguaracaoUtils.diretorio.isLogCompleto(), " 99 Desprezada com tipo 99. A Dependência " + dependencia3 + " do arquivo " + nomeComercial + " não foi encontrada em nenhum diretório");
                     }
                 }
             } catch (NullPointerException e) {
@@ -933,7 +948,7 @@ public class BancoDAO {
                 AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
             }
         } else {
-            LogUtils.registrar(99, ConfiguaracaoUtils.diretorio.isLogCompleto(), " Desprezada com tipo 99. O comercial " + nomeComercial + " não foi encontrado em nenhum diretório");
+            LogUtils.registrar(99, ConfiguaracaoUtils.diretorio.isLogCompleto(), " 99 Desprezada com tipo 99. O comercial " + nomeComercial + " não foi encontrado em nenhum diretório");
             return null;
         }
         return comercialDet;
@@ -1574,11 +1589,11 @@ public class BancoDAO {
     }
 
     //---- QUANTIDADE DE COMERCIAIS E VIDEOS NO BANCO ----------------------------------------------------------------------------------///
-    public String quantidadeComerciaisNoBanco() {
+    public static String quantidadeComerciaisNoBanco() {
         String comerciaisNoBanco = "";
         if (arquivoBanco.exists()) {
             try {
-                SQLiteDatabase db = helper.getWritableDatabase();
+                SQLiteDatabase db = getDb();
                 cursor = db.rawQuery("SELECT Arquivo FROM Comercial", new String[]{});
                 comerciaisNoBanco = String.valueOf(cursor.getCount());
             } catch (SQLiteCantOpenDatabaseException e) {
@@ -1602,15 +1617,16 @@ public class BancoDAO {
             } catch (Exception e) {
                 AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
                 return comerciaisNoBanco;
+            } finally {
+                close();
             }
             return comerciaisNoBanco;
         } else {
-            RegistrarLog.imprimirMsg("Log", "Banco não foi encontrado : quantidadeComerciaisNoBanco()");
             return comerciaisNoBanco;
         }
     }
 
-    public String quantidadeVideoNoBanco() {
+    public static String quantidadeVideoNoBanco() {
         String videoNoBanco = "";
         if (arquivoBanco.exists()) {
             try {
@@ -1638,11 +1654,11 @@ public class BancoDAO {
             } catch (Exception e) {
                 AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
                 return videoNoBanco;
+            } finally {
+                close();
             }
-
             return videoNoBanco;
         } else {
-            RegistrarLog.imprimirMsg("Log", " Banco não foi encontrado : quantidadeVideoNoBanco()");
             return videoNoBanco;
         }
     }
@@ -1822,7 +1838,7 @@ public class BancoDAO {
     }
 
     //---------------------------POPULAR O BANCO APOS COMUNICACAO ---------------------------------------------------------------------//
-    public boolean insertCategoria(String caminho) {
+    public static boolean insertCategoria(String caminho) {
         if (arquivoBanco.exists()) {
             db = helper.getWritableDatabase();
             db.beginTransaction();

@@ -24,11 +24,12 @@ public class TaskComerciaisDeterminados implements Runnable {
     @Override
     public void run() {
         if(arquivoBanco.exists()){
+            /*
             bancoDAO = new BancoDAO(context);
             bancoDAO.comerciaisDeterminados();
             bancoDAO.controladorComercialDependencia();
             bancoDAO.criarPlaylistDeterminados();
-            bancoDAO.close();
+            bancoDAO.close();*/
         } else {
             RegistrarLog.imprimirMsg("Log", "Banco não foi encontrado : TaskComerciaisDeterminados");
             LogUtils.registrar(21, ConfiguaracaoUtils.diretorio.isLogCompleto(), " 21 Banco não foi encontrado : TaskComerciaisDeterminados");

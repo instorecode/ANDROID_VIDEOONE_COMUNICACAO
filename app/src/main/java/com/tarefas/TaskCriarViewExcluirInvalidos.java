@@ -23,14 +23,14 @@ public class TaskCriarViewExcluirInvalidos implements Runnable {
     @Override
     public void run() {
         if(arquivoBanco.exists()) {
-            bancoDAO = new BancoDAO(context);
+            /*bancoDAO = new BancoDAO(context);
             bancoDAO.criarViewComercial();
             bancoDAO.criarViewComercialDetermidos();
             bancoDAO.criarViewProgramacao();
             bancoDAO.criarViewVideo();
             bancoDAO.excluirComercialDoBanco();
             bancoDAO.excluirVideosDoBanco();
-            bancoDAO.close();
+            bancoDAO.close();*/
         } else {
             RegistrarLog.imprimirMsg("Log", "Banco não foi encontrado : TaskCriarViewExcluirInvalidos");
             LogUtils.registrar(21, ConfiguaracaoUtils.diretorio.isLogCompleto(), " 21 Banco não foi encontrado : TaskCriarViewExcluirInvalidos");

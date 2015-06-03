@@ -28,13 +28,11 @@ public class RegistrarLog {
     private String diretorioLogs = caminho.concat(barraDoSistema).concat("videoOne").concat(barraDoSistema).concat("log");
     private String caminhoArquivoDiasLogCompleto = caminho.concat(barraDoSistema).concat("videoOne").concat(barraDoSistema).concat("config").concat(barraDoSistema);
 
-    private BancoDAO bancoDAO;
     private Context context;
     private static RegistrarLog registrarLog;
 
     private RegistrarLog(Context context){
         this.context = context;
-        this.bancoDAO = new BancoDAO(context);
     }
 
     public static RegistrarLog getInstance() throws Exception{
@@ -58,7 +56,7 @@ public class RegistrarLog {
         if(null == registrarLog){
             registrarLog = new RegistrarLog(context);
         }
-        LogUtils.getInstance(registrarLog.caminhoArquivoDiasLogCompleto, "dias.exp", registrarLog.nomeVersaoOs(registrarLog.context), registrarLog.nomeDispositivo(), registrarLog.ip(), registrarLog.dia, registrarLog.nomeDispositivo(), registrarLog.espacoTotal(), registrarLog.espacoDisponivel(), registrarLog.bancoDAO.quantidadeVideoNoBanco(), registrarLog.bancoDAO.quantidadeComerciaisNoBanco(), registrarLog.arquivosDiretorio(), registrarLog.diretorioLogs);
+        LogUtils.getInstance(registrarLog.caminhoArquivoDiasLogCompleto, "dias.exp", registrarLog.nomeVersaoOs(registrarLog.context), registrarLog.nomeDispositivo(), registrarLog.ip(), registrarLog.dia, registrarLog.nomeDispositivo(), registrarLog.espacoTotal(), registrarLog.espacoDisponivel(), BancoDAO.quantidadeVideoNoBanco(), BancoDAO.quantidadeComerciaisNoBanco(), registrarLog.arquivosDiretorio(), registrarLog.diretorioLogs);
         return registrarLog;
     }
 
