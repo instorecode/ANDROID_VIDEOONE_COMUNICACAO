@@ -3,15 +3,11 @@ package com.comunicacao;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
-
 import com.banco.BancoDAO;
 import com.tarefas.TaskBackup;
-import com.tarefas.TaskComerciaisDeterminados;
-import com.tarefas.TaskCriarViewExcluirInvalidos;
+import com.tarefas.TaskBanco;
 import com.tarefas.TaskLerProperties;
 import com.tarefas.TarefaComunicao;
-import com.tarefas.TaskVideoAndComerciais;
-
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -27,21 +23,17 @@ public class MainActivity extends Activity {
         BancoDAO.getInstance(context);
 
         ScheduledExecutorService lerProperties = Executors.newScheduledThreadPool(1);
-        ScheduledExecutorService criarViewExcluirVencidos = Executors.newScheduledThreadPool(1);
         ScheduledExecutorService threadComunicacaoNormal = Executors.newScheduledThreadPool(1);
         ScheduledExecutorService threadComunicacaoEmergencia = Executors.newScheduledThreadPool(1);
-        ScheduledExecutorService criarPlayListDeterminados = Executors.newScheduledThreadPool(1);
-        ScheduledExecutorService criarPlayListNormal = Executors.newScheduledThreadPool(1);
+        ScheduledExecutorService criarPlayList = Executors.newScheduledThreadPool(1);
         ScheduledExecutorService backup = Executors.newScheduledThreadPool(1);
 
 
         lerProperties.scheduleAtFixedRate(new TaskLerProperties(context), 0, 10, TimeUnit.SECONDS);
         backup.scheduleAtFixedRate(new TaskBackup(), 2, 864000,TimeUnit.SECONDS);
-        criarViewExcluirVencidos.scheduleAtFixedRate(new TaskCriarViewExcluirInvalidos(), 2, 28800, TimeUnit.SECONDS);
         threadComunicacaoNormal.scheduleAtFixedRate(new TarefaComunicao(context,false,this), 2, 60, TimeUnit.SECONDS);
-        //threadComunicacaoEmergencia.scheduleAtFixedRate(new TarefaComunicao(context,true, this), 10, 1800, TimeUnit.SECONDS);
-        criarPlayListDeterminados.scheduleAtFixedRate(new TaskComerciaisDeterminados(), 4, 120, TimeUnit.SECONDS);
-        criarPlayListNormal.scheduleAtFixedRate(new TaskVideoAndComerciais(), 4, 120, TimeUnit.SECONDS);
+        threadComunicacaoEmergencia.scheduleAtFixedRate(new TarefaComunicao(context,true, this), 10, 1800, TimeUnit.SECONDS);
+        criarPlayList.scheduleAtFixedRate(new TaskBanco(), 3, 120, TimeUnit.SECONDS);
 	}
 
 }

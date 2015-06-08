@@ -109,24 +109,6 @@ public class TarefaComunicao implements Runnable {
 
             } else {
                 LogUtils.registrar(01, true, " Arquivo de configurações não existe, não é possível se comunicar");
-                try {
-                    Thread.sleep(20000);
-                } catch (InterruptedException e) {
-                    AndroidImprimirUtils.imprimirErro(TarefaComunicao.class, e);
-                    AndroidImprimirUtils.imprimirErro(TarefaComunicao.class, e, 90);
-                } catch (NullPointerException e) {
-                    AndroidImprimirUtils.imprimirErro(TarefaComunicao.class, e);
-                    AndroidImprimirUtils.imprimirErro(TarefaComunicao.class, e, 90);
-                } catch (InstantiationError e) {
-                    AndroidImprimirUtils.imprimirErro(TarefaComunicao.class, e);
-                    AndroidImprimirUtils.imprimirErro(TarefaComunicao.class, e, 90);
-                } catch (InvalidParameterException e) {
-                    AndroidImprimirUtils.imprimirErro(TarefaComunicao.class, e);
-                    AndroidImprimirUtils.imprimirErro(TarefaComunicao.class, e, 90);
-                } catch (Exception e) {
-                    AndroidImprimirUtils.imprimirErro(TarefaComunicao.class, e);
-                    AndroidImprimirUtils.imprimirErro(TarefaComunicao.class, e, 90);
-                }
             }
 
         } catch (NullPointerException e) {
@@ -764,6 +746,7 @@ public class TarefaComunicao implements Runnable {
 
     private void validarMd5() {
         LogUtils.registrar(90, ConfiguaracaoUtils.diretorio.isLogCompleto(), " 90 Inicio do metodo validarMd5");
+        RegistrarLog.imprimirMsg("Log", "Inicio validarM5");
         activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -775,10 +758,11 @@ public class TarefaComunicao implements Runnable {
         List<File> arquivosValidos = md5Utils.getArquivosValidos();
         if (null != arquivosValidos && !arquivosValidos.isEmpty()) {
             for (File file : arquivosValidos) {
+                RegistrarLog.imprimirMsg("Log", file.getAbsolutePath());
                 boolean moveuArquivo = Arquivo.moverArquivo(file, new File(diretorioDeVideos.concat(barraDoSistema).concat(file.getName())));
 
                 if (moveuArquivo) {
-                    file.delete();
+                    deletarArquivosValidosMovidos(file.getName());
                 } else {
                     RegistrarLog.imprimirMsg("Log", "Arquivo não movido " + file.getAbsolutePath());
                     LogUtils.registrar(90, ConfiguaracaoUtils.diretorio.isLogCompleto(), " 90 Arquivo não movido " + file.getAbsolutePath());
@@ -788,11 +772,26 @@ public class TarefaComunicao implements Runnable {
         md5Utils.getArquivosValidos().clear();
         arquivosValidos.clear();
         LogUtils.registrar(90, ConfiguaracaoUtils.diretorio.isLogCompleto(), " 90 Fim do metodo validarMd5");
+        RegistrarLog.imprimirMsg("Log", "Fim validarM5");
         validarDescompactarVideoOneExp();
+    }
+
+    private void deletarArquivosValidosMovidos(String nomeArquivo){
+        String nomeDoArquivoSemExtencao = nomeArquivo.substring(0,(nomeArquivo.length() - 4));
+        String diretorioImport = caminho.concat(barraDoSistema).concat(ConfiguaracaoUtils.diretorio.getDiretorioImportacao());
+        File arquivos = new File(diretorioImport);
+
+        for(File arquivo : arquivos.listFiles()){
+            if(arquivo.getName().startsWith(nomeDoArquivoSemExtencao)){
+                RegistrarLog.imprimirMsg("Log", arquivo.getAbsolutePath());
+                arquivo.delete();
+            }
+        }
     }
 
     public void validarDescompactarVideoOneExp() {
         LogUtils.registrar(90, ConfiguaracaoUtils.diretorio.isLogCompleto(), " 90 Inicio do metodo validarDescompactarVideoOneExp");
+        RegistrarLog.imprimirMsg("Log", "Inicio validarDescompactarVideoOneExp");
         activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -870,6 +869,7 @@ public class TarefaComunicao implements Runnable {
             RegistrarLog.imprimirMsg("Log", "Nenhum arquivo videoOne.exp foi encontrado");
         }
         LogUtils.registrar(90, ConfiguaracaoUtils.diretorio.isLogCompleto(), " 90 Fim do metodo validarDescompactarVideoOneExp");
+        RegistrarLog.imprimirMsg("Log", "Fim validarDescompactarVideoOneExp");
     }
 
     private void deletarArquivoVideoOneExp(File arquivo){

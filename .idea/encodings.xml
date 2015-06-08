@@ -7,9 +7,9 @@
     <file url="file://$PROJECT_DIR$/app/src/main/java/com/bean/ComercialDet.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/com/bean/Playlist.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/com/comunicacao/TransferCustom.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/com/tarefas/TaskBanco.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/com/tarefas/TaskComerciaisDeterminados.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/com/tarefas/TaskCriarViewExcluirInvalidos.java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/app/src/main/java/com/tarefas/TaskVideoAndComerciais.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/com/utils/RegistrarLog.java" charset="UTF-8" />
   </component>
 </project>

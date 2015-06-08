@@ -160,13 +160,11 @@ public class BancoDAO {
 
                 }
                 categorias();
-                close();
             } else {
                 LogUtils.registrar(90, ConfiguaracaoUtils.diretorio.isLogCompleto(), " 90 Não a programação válida para o horario");
                 RegistrarLog.imprimirMsg("Log", " 90 Não a programação válida para o horario");
                 listaProgramacao.clear();
                 listaDeArquivos.add("semVideo");
-                close();
                 return;
             }
         } else {
@@ -222,12 +220,12 @@ public class BancoDAO {
                 if (null != codigo && null != horaFinalProgramacao && null != horaInicialProgramacao && !codigo.equals("0")) {
                     SQLiteDatabase db = getDb();
                     String scriptCategoria = "SELECT * FROM Categoria WHERE Codigo = '" + codigo + "' AND date('now') >= dataInicio AND date('now') < dataFinal";
-                    Cursor cursor2 = db.rawQuery(scriptCategoria, new String[]{});
-                    if (cursor2.getCount() > 0) {
-                        while (cursor2.moveToNext()) {
+                    Cursor cursorCodigosCategoria = db.rawQuery(scriptCategoria, new String[]{});
+                    if (cursorCodigosCategoria.getCount() > 0) {
+                        while (cursorCodigosCategoria.moveToNext()) {
                             try {
-                                String codigoCategoria = cursor2.getString(cursor2.getColumnIndex("Codigo"));
-                                String tipoCategoria = cursor2.getString(cursor2.getColumnIndex("Tipo"));
+                                String codigoCategoria = cursorCodigosCategoria.getString(cursorCodigosCategoria.getColumnIndex("Codigo"));
+                                String tipoCategoria = cursorCodigosCategoria.getString(cursorCodigosCategoria.getColumnIndex("Tipo"));
                                 if (tipoCategoria.equals("1")) {
                                     video(codigoCategoria, horaInicialProgramacao, horaFinalProgramacao);
                                 } else if (tipoCategoria.equals("2")) {
@@ -263,8 +261,9 @@ public class BancoDAO {
                                 continue;
                             }
                         }
+                        cursorCodigosCategoria.close();
                     }
-                    db.close();
+
                 }
             } catch (NullPointerException e) {
                 AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
@@ -341,8 +340,6 @@ public class BancoDAO {
             } catch (Exception e) {
                 AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
                 AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
-            } finally {
-                close();
             }
         } else {
             LogUtils.registrar(21, ConfiguaracaoUtils.diretorio.isLogCompleto(), " 21 Banco não foi encontrado : video()");
@@ -355,17 +352,17 @@ public class BancoDAO {
                 if (null != codigoCategoria && null != horaInicial && null != horaFinal) {
                     SQLiteDatabase db = getDb();
                     String scriptCategoria = "SELECT * FROM VIEW_CARREGAR_COMERCIAL WHERE (QtdePlayer is null OR QtdePlayer > Qtde) AND  Categoria = " + codigoCategoria;
-                    cursor = db.rawQuery(scriptCategoria, new String[]{});
-                    if (cursor.getCount() > 0) {
-                        while (cursor.moveToNext()) {
+                    Cursor cursorComercial = db.rawQuery(scriptCategoria, new String[]{});
+                    if (cursorComercial.getCount() > 0) {
+                        while (cursorComercial.moveToNext()) {
                             try {
-                                String arquivo = cursor.getString(cursor.getColumnIndex("Arquivo"));
-                                String diasAlternados = cursor.getString(cursor.getColumnIndex("DiasAlternados"));
-                                String dataStr = cursor.getString(cursor.getColumnIndex("Data"));
-                                String titulo = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Titulo")));
-                                String dependencia1 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Dependencia1")));
-                                String dependencia2 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Dependencia2")));
-                                String dependencia3 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Dependencia3")));
+                                String arquivo = cursorComercial.getString(cursorComercial.getColumnIndex("Arquivo"));
+                                String diasAlternados = cursorComercial.getString(cursorComercial.getColumnIndex("DiasAlternados"));
+                                String dataStr = cursorComercial.getString(cursorComercial.getColumnIndex("Data"));
+                                String titulo = StringUtils.nuloParaVazio(cursorComercial.getString(cursorComercial.getColumnIndex("Titulo")));
+                                String dependencia1 = StringUtils.nuloParaVazio(cursorComercial.getString(cursorComercial.getColumnIndex("Dependencia1")));
+                                String dependencia2 = StringUtils.nuloParaVazio(cursorComercial.getString(cursorComercial.getColumnIndex("Dependencia2")));
+                                String dependencia3 = StringUtils.nuloParaVazio(cursorComercial.getString(cursorComercial.getColumnIndex("Dependencia3")));
                                 boolean comercialEvalido = validarDiasComercial(arquivo, titulo, dependencia1, dependencia2, dependencia3, horaInicial, horaFinal, codigoCategoria, dataStr, diasAlternados);
                                 if (comercialEvalido) {
                                     break;
@@ -402,7 +399,6 @@ public class BancoDAO {
                             }
                         }
                     }
-                    close();
                 }
             } catch (NullPointerException e) {
                 AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
@@ -517,11 +513,11 @@ public class BancoDAO {
                     try {
                         SQLiteDatabase db = getDb();
                         String script = "SELECT * FROM VIEW_CARREGAR_COMERCIAL WHERE Arquivo = '" + nome + "'";
-                        cursor = db.rawQuery(script, new String[]{});
-                        if (cursor.moveToFirst()) {
-                            String arquivo = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Arquivo")));
-                            String titulo = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Titulo")));
-                            String categoria = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Categoria")));
+                        Cursor cursorComercialDependencia = db.rawQuery(script, new String[]{});
+                        if (cursorComercialDependencia.moveToFirst()) {
+                            String arquivo = StringUtils.nuloParaVazio(cursorComercialDependencia.getString(cursorComercialDependencia.getColumnIndex("Arquivo")));
+                            String titulo = StringUtils.nuloParaVazio(cursorComercialDependencia.getString(cursorComercialDependencia.getColumnIndex("Titulo")));
+                            String categoria = StringUtils.nuloParaVazio(cursorComercialDependencia.getString(cursorComercialDependencia.getColumnIndex("Categoria")));
 
                             ComercialDependencia cd = new ComercialDependencia();
                             cd.arquivo = arquivo;
@@ -550,8 +546,6 @@ public class BancoDAO {
                     } catch (Exception e) {
                         AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
                         AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
-                    } finally {
-                        close();
                     }
                 }
             } catch (NullPointerException e) {
@@ -692,78 +686,78 @@ public class BancoDAO {
             try {
                 SQLiteDatabase db = getDb();
                 String script = "SELECT * FROM VIEW_CARREGAR_COMERCIAL_DET WHERE (QtdePlayer is null OR QtdePlayer > Qtde)";
-                cursor = db.rawQuery(script, new String[]{});
-
-                if (cursor.getCount() > 0) {
-                    while (cursor.moveToNext()) {
+                Cursor cursorDet = db.rawQuery(script, new String[]{});
+                cursorDet.moveToFirst();
+                if (cursorDet.getCount() > 0) {
+                    while (cursorDet.moveToNext()) {
                         try {
                             ComercialDet comercialDet = new ComercialDet();
-                            comercialDet.arquivo = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Arquivo")));
-                            comercialDet.cliente = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Cliente")));
-                            comercialDet.titulo = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Titulo")));
-                            comercialDet.categoria = cursor.getString(cursor.getColumnIndex("Categoria"));
-                            comercialDet.dataInicial = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("PeriodoInicial")));
-                            comercialDet.dataFinal = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("PeriodoFinal")));
-                            comercialDet.horario1 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Horario1")));
-                            comercialDet.horario2 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Horario2")));
-                            comercialDet.horario3 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Horario3")));
-                            comercialDet.horario4 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Horario4")));
-                            comercialDet.horario5 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Horario5")));
-                            comercialDet.horario6 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Horario6")));
-                            comercialDet.horario7 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Horario7")));
-                            comercialDet.horario8 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Horario8")));
-                            comercialDet.horario9 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Horario9")));
-                            comercialDet.horario10 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Horario10")));
-                            comercialDet.horario11 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Horario11")));
-                            comercialDet.horario12 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Horario12")));
-                            comercialDet.horario13 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Horario13")));
-                            comercialDet.horario14 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Horario14")));
-                            comercialDet.horario15 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Horario15")));
-                            comercialDet.horario16 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Horario16")));
-                            comercialDet.horario17 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Horario17")));
-                            comercialDet.horario18 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Horario18")));
-                            comercialDet.horario19 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Horario19")));
-                            comercialDet.horario20 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Horario20")));
-                            comercialDet.horario21 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Horario21")));
-                            comercialDet.horario22 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Horario22")));
-                            comercialDet.horario23 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Horario23")));
-                            comercialDet.horario24 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Horario24")));
-                            comercialDet.semana1 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Semana1")));
-                            comercialDet.semana2 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Semana2")));
-                            comercialDet.semana3 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Semana2")));
-                            comercialDet.semana4 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Semana4")));
-                            comercialDet.semana5 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Semana5")));
-                            comercialDet.semana6 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Semana6")));
-                            comercialDet.semana7 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Semana7")));
-                            comercialDet.semana8 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Semana8")));
-                            comercialDet.semana9 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Semana9")));
-                            comercialDet.semana10 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Semana10")));
-                            comercialDet.semana11 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Semana11")));
-                            comercialDet.semana12 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Semana12")));
-                            comercialDet.semana13 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Semana13")));
-                            comercialDet.semana14 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Semana14")));
-                            comercialDet.semana15 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Semana15")));
-                            comercialDet.semana16 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Semana16")));
-                            comercialDet.semana17 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Semana17")));
-                            comercialDet.semana18 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Semana18")));
-                            comercialDet.semana19 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Semana19")));
-                            comercialDet.semana20 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Semana20")));
-                            comercialDet.semana21 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Semana21")));
-                            comercialDet.semana22 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Semana22")));
-                            comercialDet.semana23 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Semana23")));
-                            comercialDet.semana24 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Semana24")));
-                            comercialDet.diaSemana = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("DiaSemana")));
-                            comercialDet.diasAlternados = (cursor.getString(cursor.getColumnIndex("DiasAlternados")) == "1") ? true : false;
-                            comercialDet.data = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Data")));
-                            comercialDet.ultimaExecucao = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("UltimaExecucao")));
-                            comercialDet.tempoTotal = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("TempoTotal")));
-                            comercialDet.random = cursor.getInt(cursor.getColumnIndex("Random"));
-                            comercialDet.qtdePlayer = cursor.getInt(cursor.getColumnIndex("QtdePlayer"));
-                            comercialDet.qtdePlayer = cursor.getInt(cursor.getColumnIndex("Qtde"));
-                            comercialDet.dataVencimento = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("DataVencto")));
-                            comercialDet.dependencia1 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Dependencia1")));
-                            comercialDet.dependencia2 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Dependencia2")));
-                            comercialDet.dependencia3 = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Dependencia3")));
+                            comercialDet.arquivo = StringUtils.nuloParaVazio(cursorDet.getString(cursorDet.getColumnIndex("Arquivo")));
+                            comercialDet.cliente = StringUtils.nuloParaVazio(cursorDet.getString(cursorDet.getColumnIndex("Cliente")));
+                            comercialDet.titulo = StringUtils.nuloParaVazio(cursorDet.getString(cursorDet.getColumnIndex("Titulo")));
+                            comercialDet.categoria = StringUtils.nuloParaVazio(cursorDet.getString(cursorDet.getColumnIndex("Categoria")));
+                            comercialDet.dataInicial = StringUtils.nuloParaVazio(cursorDet.getString(cursorDet.getColumnIndex("PeriodoInicial")));
+                            comercialDet.dataFinal = StringUtils.nuloParaVazio(cursorDet.getString(cursorDet.getColumnIndex("PeriodoFinal")));
+                            comercialDet.horario1 = StringUtils.nuloParaVazio(cursorDet.getString(cursorDet.getColumnIndex("Horario1")));
+                            comercialDet.horario2 = StringUtils.nuloParaVazio(cursorDet.getString(cursorDet.getColumnIndex("Horario2")));
+                            comercialDet.horario3 = StringUtils.nuloParaVazio(cursorDet.getString(cursorDet.getColumnIndex("Horario3")));
+                            comercialDet.horario4 = StringUtils.nuloParaVazio(cursorDet.getString(cursorDet.getColumnIndex("Horario4")));
+                            comercialDet.horario5 = StringUtils.nuloParaVazio(cursorDet.getString(cursorDet.getColumnIndex("Horario5")));
+                            comercialDet.horario6 = StringUtils.nuloParaVazio(cursorDet.getString(cursorDet.getColumnIndex("Horario6")));
+                            comercialDet.horario7 = StringUtils.nuloParaVazio(cursorDet.getString(cursorDet.getColumnIndex("Horario7")));
+                            comercialDet.horario8 = StringUtils.nuloParaVazio(cursorDet.getString(cursorDet.getColumnIndex("Horario8")));
+                            comercialDet.horario9 = StringUtils.nuloParaVazio(cursorDet.getString(cursorDet.getColumnIndex("Horario9")));
+                            comercialDet.horario10 = StringUtils.nuloParaVazio(cursorDet.getString(cursorDet.getColumnIndex("Horario10")));
+                            comercialDet.horario11 = StringUtils.nuloParaVazio(cursorDet.getString(cursorDet.getColumnIndex("Horario11")));
+                            comercialDet.horario12 = StringUtils.nuloParaVazio(cursorDet.getString(cursorDet.getColumnIndex("Horario12")));
+                            comercialDet.horario13 = StringUtils.nuloParaVazio(cursorDet.getString(cursorDet.getColumnIndex("Horario13")));
+                            comercialDet.horario14 = StringUtils.nuloParaVazio(cursorDet.getString(cursorDet.getColumnIndex("Horario14")));
+                            comercialDet.horario15 = StringUtils.nuloParaVazio(cursorDet.getString(cursorDet.getColumnIndex("Horario15")));
+                            comercialDet.horario16 = StringUtils.nuloParaVazio(cursorDet.getString(cursorDet.getColumnIndex("Horario16")));
+                            comercialDet.horario17 = StringUtils.nuloParaVazio(cursorDet.getString(cursorDet.getColumnIndex("Horario17")));
+                            comercialDet.horario18 = StringUtils.nuloParaVazio(cursorDet.getString(cursorDet.getColumnIndex("Horario18")));
+                            comercialDet.horario19 = StringUtils.nuloParaVazio(cursorDet.getString(cursorDet.getColumnIndex("Horario19")));
+                            comercialDet.horario20 = StringUtils.nuloParaVazio(cursorDet.getString(cursorDet.getColumnIndex("Horario20")));
+                            comercialDet.horario21 = StringUtils.nuloParaVazio(cursorDet.getString(cursorDet.getColumnIndex("Horario21")));
+                            comercialDet.horario22 = StringUtils.nuloParaVazio(cursorDet.getString(cursorDet.getColumnIndex("Horario22")));
+                            comercialDet.horario23 = StringUtils.nuloParaVazio(cursorDet.getString(cursorDet.getColumnIndex("Horario23")));
+                            comercialDet.horario24 = StringUtils.nuloParaVazio(cursorDet.getString(cursorDet.getColumnIndex("Horario24")));
+                            comercialDet.semana1 = StringUtils.nuloParaVazio(cursorDet.getString(cursorDet.getColumnIndex("Semana1")));
+                            comercialDet.semana2 = StringUtils.nuloParaVazio(cursorDet.getString(cursorDet.getColumnIndex("Semana2")));
+                            comercialDet.semana3 = StringUtils.nuloParaVazio(cursorDet.getString(cursorDet.getColumnIndex("Semana2")));
+                            comercialDet.semana4 = StringUtils.nuloParaVazio(cursorDet.getString(cursorDet.getColumnIndex("Semana4")));
+                            comercialDet.semana5 = StringUtils.nuloParaVazio(cursorDet.getString(cursorDet.getColumnIndex("Semana5")));
+                            comercialDet.semana6 = StringUtils.nuloParaVazio(cursorDet.getString(cursorDet.getColumnIndex("Semana6")));
+                            comercialDet.semana7 = StringUtils.nuloParaVazio(cursorDet.getString(cursorDet.getColumnIndex("Semana7")));
+                            comercialDet.semana8 = StringUtils.nuloParaVazio(cursorDet.getString(cursorDet.getColumnIndex("Semana8")));
+                            comercialDet.semana9 = StringUtils.nuloParaVazio(cursorDet.getString(cursorDet.getColumnIndex("Semana9")));
+                            comercialDet.semana10 = StringUtils.nuloParaVazio(cursorDet.getString(cursorDet.getColumnIndex("Semana10")));
+                            comercialDet.semana11 = StringUtils.nuloParaVazio(cursorDet.getString(cursorDet.getColumnIndex("Semana11")));
+                            comercialDet.semana12 = StringUtils.nuloParaVazio(cursorDet.getString(cursorDet.getColumnIndex("Semana12")));
+                            comercialDet.semana13 = StringUtils.nuloParaVazio(cursorDet.getString(cursorDet.getColumnIndex("Semana13")));
+                            comercialDet.semana14 = StringUtils.nuloParaVazio(cursorDet.getString(cursorDet.getColumnIndex("Semana14")));
+                            comercialDet.semana15 = StringUtils.nuloParaVazio(cursorDet.getString(cursorDet.getColumnIndex("Semana15")));
+                            comercialDet.semana16 = StringUtils.nuloParaVazio(cursorDet.getString(cursorDet.getColumnIndex("Semana16")));
+                            comercialDet.semana17 = StringUtils.nuloParaVazio(cursorDet.getString(cursorDet.getColumnIndex("Semana17")));
+                            comercialDet.semana18 = StringUtils.nuloParaVazio(cursorDet.getString(cursorDet.getColumnIndex("Semana18")));
+                            comercialDet.semana19 = StringUtils.nuloParaVazio(cursorDet.getString(cursorDet.getColumnIndex("Semana19")));
+                            comercialDet.semana20 = StringUtils.nuloParaVazio(cursorDet.getString(cursorDet.getColumnIndex("Semana20")));
+                            comercialDet.semana21 = StringUtils.nuloParaVazio(cursorDet.getString(cursorDet.getColumnIndex("Semana21")));
+                            comercialDet.semana22 = StringUtils.nuloParaVazio(cursorDet.getString(cursorDet.getColumnIndex("Semana22")));
+                            comercialDet.semana23 = StringUtils.nuloParaVazio(cursorDet.getString(cursorDet.getColumnIndex("Semana23")));
+                            comercialDet.semana24 = StringUtils.nuloParaVazio(cursorDet.getString(cursorDet.getColumnIndex("Semana24")));
+                            comercialDet.diaSemana = StringUtils.nuloParaVazio(cursorDet.getString(cursorDet.getColumnIndex("DiaSemana")));
+                            comercialDet.diasAlternados = (cursorDet.getString(cursorDet.getColumnIndex("DiasAlternados")) == "1") ? true : false;
+                            comercialDet.data = StringUtils.nuloParaVazio(cursorDet.getString(cursorDet.getColumnIndex("Data")));
+                            comercialDet.ultimaExecucao = StringUtils.nuloParaVazio(cursorDet.getString(cursorDet.getColumnIndex("UltimaExecucao")));
+                            comercialDet.tempoTotal = StringUtils.nuloParaVazio(cursorDet.getString(cursorDet.getColumnIndex("TempoTotal")));
+                            comercialDet.random = cursorDet.getInt(cursorDet.getColumnIndex("Random"));
+                            comercialDet.qtdePlayer = cursorDet.getInt(cursorDet.getColumnIndex("QtdePlayer"));
+                            comercialDet.qtdePlayer = cursorDet.getInt(cursorDet.getColumnIndex("Qtde"));
+                            comercialDet.dataVencimento = StringUtils.nuloParaVazio(cursorDet.getString(cursorDet.getColumnIndex("DataVencto")));
+                            comercialDet.dependencia1 = StringUtils.nuloParaVazio(cursorDet.getString(cursorDet.getColumnIndex("Dependencia1")));
+                            comercialDet.dependencia2 = StringUtils.nuloParaVazio(cursorDet.getString(cursorDet.getColumnIndex("Dependencia2")));
+                            comercialDet.dependencia3 = StringUtils.nuloParaVazio(cursorDet.getString(cursorDet.getColumnIndex("Dependencia3")));
                             listaComercialDeterminados.add(comercialDet);
                         } catch (SQLiteCantOpenDatabaseException e) {
                             AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
@@ -796,6 +790,7 @@ public class BancoDAO {
                         }
                     }
                 }
+                cursorDet.close();
             } catch (NullPointerException e) {
                 AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
                 AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
@@ -805,8 +800,6 @@ public class BancoDAO {
             } catch (Exception e) {
                 AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
                 AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
-            } finally {
-                close();
             }
         } else {
             LogUtils.registrar(21, ConfiguaracaoUtils.diretorio.isLogCompleto(), " 21 Banco não foi encontrado : comerciaisDeterminados()");
@@ -996,6 +989,7 @@ public class BancoDAO {
                         cursorDependencia.close();
                         return comercialDependencia;
                     }
+                    cursorDependencia.close();
                 }
             } catch (NullPointerException e) {
                 AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
@@ -1011,7 +1005,6 @@ public class BancoDAO {
                 return null;
             }
         } else {
-            RegistrarLog.imprimirMsg("Log", "Banco não foi encontrado : validarDependenciaDeUmDeterminadoNoBanco()");
             LogUtils.registrar(21, ConfiguaracaoUtils.diretorio.isLogCompleto(), " 21 Banco não foi encontrado : validarDependenciaDeUmDeterminadoNoBanco()");
         }
         return null;
@@ -1366,8 +1359,6 @@ public class BancoDAO {
             } catch (Exception e) {
                 AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
                 AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
-            } finally {
-                close();
             }
         } else {
             LogUtils.registrar(21, ConfiguaracaoUtils.diretorio.isLogCompleto(), " 21 Banco não foi encontrado : excluirComercialDoBanco()");
@@ -1434,8 +1425,6 @@ public class BancoDAO {
             } catch (Exception e) {
                 AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
                 AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
-            } finally {
-                close();
             }
         } else {
             LogUtils.registrar(21, ConfiguaracaoUtils.diretorio.isLogCompleto(), " 21 Banco não foi encontrado : excluirVideosDoBanco()");
@@ -1470,8 +1459,6 @@ public class BancoDAO {
             } catch (Exception e) {
                 AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
                 AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
-            } finally {
-                close();
             }
         } else {
             LogUtils.registrar(21, ConfiguaracaoUtils.diretorio.isLogCompleto(), " 21 Banco não foi encontrado : criarViewProgramacao()");
@@ -1505,8 +1492,6 @@ public class BancoDAO {
             } catch (Exception e) {
                 AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
                 AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
-            } finally {
-                close();
             }
         } else {
             LogUtils.registrar(21, ConfiguaracaoUtils.diretorio.isLogCompleto(), " 21 Banco não foi encontrado : criarViewComercial()");
@@ -1540,8 +1525,6 @@ public class BancoDAO {
             } catch (Exception e) {
                 AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
                 AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
-            } finally {
-                close();
             }
         } else {
             LogUtils.registrar(21, ConfiguaracaoUtils.diretorio.isLogCompleto(), " 21 Banco não foi encontrado : criarViewComercialDeterminado()");
@@ -1610,8 +1593,6 @@ public class BancoDAO {
             } catch (Exception e) {
                 AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
                 return comerciaisNoBanco;
-            } finally {
-                close();
             }
             return comerciaisNoBanco;
         } else {
@@ -1647,8 +1628,6 @@ public class BancoDAO {
             } catch (Exception e) {
                 AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
                 return videoNoBanco;
-            } finally {
-                close();
             }
             return videoNoBanco;
         } else {
