@@ -11,7 +11,9 @@ import net.lingala.zip4j.util.Zip4jConstants;
 
 import java.io.File;
 import java.security.InvalidParameterException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class TaskBackup implements Runnable {
@@ -244,21 +246,26 @@ public class TaskBackup implements Runnable {
             if (null != listaDeArquivos && !listaDeArquivos.isEmpty()) {
                 File arquivoZip = new File(caminhoZip);
 
+                Date dataAtualFormatada = new SimpleDateFormat("dd/MM/yyyy").parse(new SimpleDateFormat("dd/MM/yyyy").format(new Date()));
+                Date dataDeCriacao = new SimpleDateFormat("dd/MM/yyyy").parse(new SimpleDateFormat("dd/MM/yyyy").format(new Date(arquivoZip.lastModified())));
+
                 if (arquivoZip.exists()) {
-                    File fileZip3 = new File(caminhoZip3);
-                    if (fileZip3.exists()) {
-                        fileZip3.delete();
+
+                    if(dataDeCriacao.before(dataAtualFormatada)){
+                        File fileZip3 = new File(caminhoZip3);
+                        if (fileZip3.exists()) {
+                            fileZip3.delete();
+                        }
+
+
+                        File fileZip2 = new File(caminhoZip2);
+                        if (fileZip2.exists()) {
+                            fileZip2.renameTo(fileZip3);
+                        }
+
+                        arquivoZip.renameTo(fileZip2);
+                        compactar(listaDeArquivos, arquivoZip);
                     }
-
-
-                    File fileZip2 = new File(caminhoZip2);
-                    if (fileZip2.exists()) {
-                        fileZip2.renameTo(fileZip3);
-                    }
-
-                    arquivoZip.renameTo(fileZip2);
-                    compactar(listaDeArquivos, arquivoZip);
-
                 } else {
                     compactar(listaDeArquivos, arquivoZip);
                 }

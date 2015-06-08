@@ -22,15 +22,15 @@ public class TaskVideoAndComerciais implements Runnable {
 
     @Override
     public void run() {
+        RegistrarLog.imprimirMsg("Log", "INICIO TaskVideoAndComerciais");
         if(arquivoBanco.exists()) {
-            /*bancoDAO = new BancoDAO(context);
-            bancoDAO.programacoes();
-            bancoDAO.criarArquivoPlaylist();
-            bancoDAO.close();*/
+            BancoDAO.programacoes();
+            BancoDAO.criarArquivoPlaylist();
+
         } else {
             RegistrarLog.imprimirMsg("Log", "Banco não foi encontrado : TaskVideoAndComerciais");
             LogUtils.registrar(21, ConfiguaracaoUtils.diretorio.isLogCompleto(), " 21 Banco não foi encontrado : TaskVideoAndComerciais");
         }
-        RegistrarLog.imprimirMsg("Log", "TaskVideoAndComerciais");
+        RegistrarLog.imprimirMsg("Log", "FIM TaskVideoAndComerciais");
     }
 }

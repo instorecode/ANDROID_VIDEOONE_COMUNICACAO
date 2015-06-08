@@ -36,12 +36,12 @@ public class MainActivity extends Activity {
 
 
         lerProperties.scheduleAtFixedRate(new TaskLerProperties(context), 0, 10, TimeUnit.SECONDS);
-        //backup.scheduleAtFixedRate(new TaskBackup(), 2, 864000,TimeUnit.SECONDS);
+        backup.scheduleAtFixedRate(new TaskBackup(), 5, 864000,TimeUnit.SECONDS);
         //criarViewExcluirVencidos.scheduleAtFixedRate(new TaskCriarViewExcluirInvalidos(context), 0, 8, TimeUnit.HOURS);
-        //threadComunicacaoNormal.scheduleAtFixedRate(new TarefaComunicao(context,false,this), 2, 60, TimeUnit.SECONDS);
-        //threadComunicacaoEmergencia.scheduleAtFixedRate(new TarefaComunicao(context,true, this), 10, 1800, TimeUnit.SECONDS);
-        criarPlayListDeterminados.scheduleAtFixedRate(new TaskComerciaisDeterminados(context), 4, 120, TimeUnit.SECONDS);
-        //criarPlayListNormal.scheduleAtFixedRate(new TaskVideoAndComerciais(context), 4, 120, TimeUnit.SECONDS);
+        threadComunicacaoNormal.scheduleAtFixedRate(new TarefaComunicao(context,false,this), 2, 60, TimeUnit.SECONDS);
+        threadComunicacaoEmergencia.scheduleAtFixedRate(new TarefaComunicao(context,true, this), 10, 1800, TimeUnit.SECONDS);
+        //criarPlayListDeterminados.scheduleAtFixedRate(new TaskComerciaisDeterminados(context), 4, 120, TimeUnit.SECONDS);
+        criarPlayListNormal.scheduleAtFixedRate(new TaskVideoAndComerciais(context), 4, 120, TimeUnit.SECONDS);
 	}
 
 }
