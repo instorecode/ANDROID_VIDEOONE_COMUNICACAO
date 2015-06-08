@@ -45,8 +45,8 @@ public class BancoDAO {
 
     private static List<ProgramacaoExp> listaProgramacao = new ArrayList<ProgramacaoExp>();
     private static List<String> listaDeArquivos = new ArrayList<String>();
-    private List<ComercialDet> listaComercialDeterminados = new ArrayList<ComercialDet>();
-    private List<String> linhasPlaylistDet = new ArrayList<String>();
+    private static List<ComercialDet> listaComercialDeterminados = new ArrayList<ComercialDet>();
+    private static List<String> linhasPlaylistDet = new ArrayList<String>();
 
     private static ExpUtils expUtils = new ExpUtils();
     private static final String VIEW_PROGRAMACAO = "SELECT * FROM VIEW_CARREGAR_PROGRAMACAO";
@@ -54,7 +54,7 @@ public class BancoDAO {
     private static String caminho = Environment.getExternalStorageDirectory().toString();
     private int valorRandom = 0;
 
-    private Banco banco = new Banco();
+    private static Banco banco = new Banco();
     private static DatabaseHelper helper;
     private static SQLiteDatabase db;
     private static Cursor cursor;
@@ -687,15 +687,12 @@ public class BancoDAO {
     }
 
     ///----------------- COMERCIAL DETERMINADO ----------///
-    public void comerciaisDeterminados() {
+    public static void comerciaisDeterminados() {
         if (arquivoBanco.exists()) {
             try {
                 SQLiteDatabase db = getDb();
                 String script = "SELECT * FROM VIEW_CARREGAR_COMERCIAL_DET WHERE (QtdePlayer is null OR QtdePlayer > Qtde)";
                 cursor = db.rawQuery(script, new String[]{});
-
-                //SQLiteDatabase db = helper.getWritableDatabase();
-                //cursor = db.rawQuery(VIEW_PROGRAMACAO, new String[]{});
 
                 if (cursor.getCount() > 0) {
                     while (cursor.moveToNext()) {
@@ -808,14 +805,15 @@ public class BancoDAO {
             } catch (Exception e) {
                 AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
                 AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+            } finally {
+                close();
             }
         } else {
-            RegistrarLog.imprimirMsg("Log", "Banco não foi encontrado : comerciaisDeterminados()");
             LogUtils.registrar(21, ConfiguaracaoUtils.diretorio.isLogCompleto(), " 21 Banco não foi encontrado : comerciaisDeterminados()");
         }
     }
 
-    public void controladorComercialDependencia() {
+    public static void controladorComercialDependencia() {
         if (null != listaComercialDeterminados && listaComercialDeterminados.size() > 0 && !listaComercialDeterminados.isEmpty()) {
             for (ComercialDet comercialDet : listaComercialDeterminados) {
                 ComercialDet comercialDetComDepencias = dependenciaDeterminados(comercialDet);
@@ -852,7 +850,7 @@ public class BancoDAO {
 
     }
 
-    private ComercialDet dependenciaDeterminados(ComercialDet comercialDet) {
+    private static ComercialDet dependenciaDeterminados(ComercialDet comercialDet) {
         String nomeComercial = comercialDet.arquivo;
         String dependencia1 = comercialDet.dependencia1;
         String dependencia2 = comercialDet.dependencia2;
@@ -946,7 +944,7 @@ public class BancoDAO {
         return comercialDet;
     }
 
-    private ComercialDependencia validarDependenciaDeUmDeterminadoNoBanco(String nome) {
+    private static ComercialDependencia validarDependenciaDeUmDeterminadoNoBanco(String nome) {
         if (arquivoBanco.exists()) {
             try {
                 if (null != nome && !nome.replaceAll("\\s", "").trim().isEmpty()) {
@@ -1019,7 +1017,7 @@ public class BancoDAO {
         return null;
     }
 
-    private void semanaAndHorario(String semana, String horario, String arquivo, String titulo, String categoria, List<ComercialDependencia> listaDependenciasComercialDeterminado, String dataUltimaExecucao) {
+    private static void semanaAndHorario(String semana, String horario, String arquivo, String titulo, String categoria, List<ComercialDependencia> listaDependenciasComercialDeterminado, String dataUltimaExecucao) {
         if (!semana.equals("") && !horario.equals("")) {
             if (dataUltimaExecucao.isEmpty() || dataUltimaExecucao.replaceAll("\\s", "").trim().equals("")) {
                 popularListaDeLinhasPlaylistDet(listaDependenciasComercialDeterminado, horario, semana, arquivo, titulo, categoria);
@@ -1096,7 +1094,7 @@ public class BancoDAO {
         }
     }
 
-    private void popularListaDeLinhasPlaylistDet(List<ComercialDependencia> listaDependenciasComercialDeterminado, String horario, String semana, String arquivo, String titulo, String categoria) {
+    private static void popularListaDeLinhasPlaylistDet(List<ComercialDependencia> listaDependenciasComercialDeterminado, String horario, String semana, String arquivo, String titulo, String categoria) {
         try {
             if (("" + semana.charAt(DataUtils.diaDaSemana())).trim().toLowerCase().equals("n") || ("" + semana.charAt(DataUtils.diaDaSemana())).trim().toLowerCase().contains("n")) {
                 semana = "0";
@@ -1162,7 +1160,7 @@ public class BancoDAO {
         }
     }
 
-    public void criarPlaylistDeterminados() {
+    public static void criarPlaylistDeterminados() {
         File playlistAntiga = new File(caminho.concat(barraDoSistema).concat(ConfiguaracaoUtils.diretorio.getDiretorioPlaylist()).concat(barraDoSistema).concat("playlistDet.exp"));
         if (playlistAntiga.exists()) {
             playlistAntiga.delete();
@@ -1308,17 +1306,16 @@ public class BancoDAO {
         }
     }
 
-    public void excluirComercialDoBanco() {
+    public static void excluirComercialDoBanco() {
         if (arquivoBanco.exists()) {
             try {
-                SQLiteDatabase db = helper.getWritableDatabase();
+                SQLiteDatabase db = getDb();
                 String script = "SELECT * FROM Comercial WHERE DataVencto <= date('now')";
                 cursor = db.rawQuery(script, new String[]{});
 
                 if (cursor.getCount() > 0) {
                     while (cursor.moveToNext()) {
                         try {
-
                             String arquivo = cursor.getString(cursor.getColumnIndex("Arquivo"));
                             String titulo = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Titulo")));
                             String dataVencto = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("DataVencto")));
@@ -1369,17 +1366,18 @@ public class BancoDAO {
             } catch (Exception e) {
                 AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
                 AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+            } finally {
+                close();
             }
         } else {
-            RegistrarLog.imprimirMsg("Log", "Banco não foi encontrado : excluirComercialDoBanco()");
             LogUtils.registrar(21, ConfiguaracaoUtils.diretorio.isLogCompleto(), " 21 Banco não foi encontrado : excluirComercialDoBanco()");
         }
     }
 
-    public void excluirVideosDoBanco() {
+    public static void excluirVideosDoBanco() {
         if (arquivoBanco.exists()) {
             try {
-                SQLiteDatabase db = helper.getWritableDatabase();
+                SQLiteDatabase db = getDb();
                 String script = "SELECT * FROM Video WHERE DataVencto <= date('now')";
                 cursor = db.rawQuery(script, new String[]{});
                 if (cursor.getCount() > 0) {
@@ -1436,18 +1434,19 @@ public class BancoDAO {
             } catch (Exception e) {
                 AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
                 AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+            } finally {
+                close();
             }
         } else {
-            RegistrarLog.imprimirMsg("Log", "Banco não foi encontrado : excluirVideosDoBanco()");
             LogUtils.registrar(21, ConfiguaracaoUtils.diretorio.isLogCompleto(), " 21 Banco não foi encontrado : excluirVideosDoBanco()");
         }
     }
 
     //------- CRIAR AS VIEW ---////
-    public void criarViewProgramacao() {
+    public static void criarViewProgramacao() {
         if (arquivoBanco.exists()) {
             try {
-                SQLiteDatabase db = helper.getWritableDatabase();
+                SQLiteDatabase db = getDb();
                 banco.criarViewProgramacao();
                 db.execSQL(banco.scriptProgramacaoView);
             } catch (SQLiteCantOpenDatabaseException e) {
@@ -1471,17 +1470,18 @@ public class BancoDAO {
             } catch (Exception e) {
                 AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
                 AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+            } finally {
+                close();
             }
         } else {
-            RegistrarLog.imprimirMsg("Log", "Banco não foi encontrado : criarViewProgramacao()");
             LogUtils.registrar(21, ConfiguaracaoUtils.diretorio.isLogCompleto(), " 21 Banco não foi encontrado : criarViewProgramacao()");
         }
     }
 
-    public void criarViewComercial() {
+    public static void criarViewComercial() {
         if (arquivoBanco.exists()) {
             try {
-                SQLiteDatabase db = helper.getWritableDatabase();
+                SQLiteDatabase db = getDb();
                 banco.criarViewComercial();
                 db.execSQL(banco.scriptComercialView);
             } catch (SQLiteCantOpenDatabaseException e) {
@@ -1505,17 +1505,18 @@ public class BancoDAO {
             } catch (Exception e) {
                 AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
                 AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+            } finally {
+                close();
             }
         } else {
-            RegistrarLog.imprimirMsg("Log", "Banco não foi encontrado : criarViewComercial()");
             LogUtils.registrar(21, ConfiguaracaoUtils.diretorio.isLogCompleto(), " 21 Banco não foi encontrado : criarViewComercial()");
         }
     }
 
-    public void criarViewComercialDetermidos() {
+    public static void criarViewComercialDetermidos() {
         if (arquivoBanco.exists()) {
             try {
-                SQLiteDatabase db = helper.getWritableDatabase();
+                SQLiteDatabase db = getDb();
                 banco.criarViewComercialDet();
                 db.execSQL(banco.scriptComercialDetView);
             } catch (SQLiteCantOpenDatabaseException e) {
@@ -1539,17 +1540,18 @@ public class BancoDAO {
             } catch (Exception e) {
                 AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
                 AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
+            } finally {
+                close();
             }
         } else {
-            RegistrarLog.imprimirMsg("Log", "Banco não foi encontrado : criarViewComercialDeterminado()");
             LogUtils.registrar(21, ConfiguaracaoUtils.diretorio.isLogCompleto(), " 21 Banco não foi encontrado : criarViewComercialDeterminado()");
         }
     }
 
-    public void criarViewVideo() {
+    public static void criarViewVideo() {
         if (arquivoBanco.exists()) {
             try {
-                SQLiteDatabase db = helper.getWritableDatabase();
+                SQLiteDatabase db = getDb();
                 banco.criarViewVideo();
                 db.execSQL(banco.scriptVideoView);
             } catch (SQLiteCantOpenDatabaseException e) {
@@ -1575,7 +1577,6 @@ public class BancoDAO {
                 AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
             }
         } else {
-            RegistrarLog.imprimirMsg("Log", "Banco não foi encontrado : criarViewVideo()");
             LogUtils.registrar(21, ConfiguaracaoUtils.diretorio.isLogCompleto(), " 21 Banco não foi encontrado : criarViewVideo()");
         }
     }
