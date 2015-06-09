@@ -34,10 +34,12 @@ import it.sauronsoftware.ftp4j.FTPFile;
 import it.sauronsoftware.ftp4j.FTPIllegalReplyException;
 import it.sauronsoftware.ftp4j.FTPListParseException;
 
-public class TarefaComunicao implements Runnable {
+public class TarefaComunicao {
 
     private final Context context;
+
     private FTPClient ftp = new FTPClient();
+
     private Md5Utils md5Utils = new Md5Utils();
     private final String barraDoSistema = System.getProperty("file.separator");
     private final String caminho = Environment.getExternalStorageDirectory().toString();
@@ -58,14 +60,15 @@ public class TarefaComunicao implements Runnable {
 
     private boolean erro = false;
     private boolean conecta = true;
-    public TarefaComunicao(Context context, boolean isEmergencia, Activity activity) {
+    public TarefaComunicao(Context context, Activity activity) {
         this.context = context;
         this.isEmergencia = isEmergencia;
         this.activity = activity;
     }
 
-    @Override
-    public void run() {
+    //@Override
+    public void run(boolean emergencia) {
+        isEmergencia = emergencia;
         RegistrarLog.imprimirMsg("Log", "INICIO TaskComunicacao");
         controlador();
         RegistrarLog.imprimirMsg("Log", "FIM TaskComunicacao");
@@ -79,10 +82,10 @@ public class TarefaComunicao implements Runnable {
             }
         });
         if (properties.exists()) {
+            informacoesConexao();
             zipArquivos();
             try {
                 validarHoraAndDia = new ValidarDiaAndHora(caminho.concat("/videoOne/config/configuracoes.properties"));
-                informacoesConexao();
                 validarHoraAndDia.procurarHorarioValido();
                 RegistrarLog.imprimirMsg("Log", ftp.isConnected() + " ESTA CONECTADO");
                 if (isEmergencia && !ftp.isConnected() ){
@@ -100,7 +103,7 @@ public class TarefaComunicao implements Runnable {
 
                         RegistrarLog.imprimirMsg("Log", tentativasRealizadas + " Tentativas realizadas");
 
-                        if (tentativasRealizadas <= 5) {
+                        if (tentativasRealizadas <= maximoTentativas) {
                             LogUtils.registrar(20, ConfiguaracaoUtils.diretorio.isLogCompleto(), " 20 Começou comunicação");
                             if(!ftp.isConnected()) {
                                 erro = false;
@@ -158,14 +161,12 @@ public class TarefaComunicao implements Runnable {
             }
 
             desconectarFtp();
+            validarMd5();
+            validarDescompactarVideoOneExp();
+            popularBanco();
         } else {
             RegistrarLog.imprimirMsg("Log","Nao pode se conectar");
         }
-
-        /*    validarMd5();
-            validarDescompactarVideoOneExp();
-            popularBanco();*/
-
     }
 
     public void zipArquivos() {
@@ -495,8 +496,8 @@ public class TarefaComunicao implements Runnable {
 
         try {
             if (emergencia) {
-                //ftp.changeDirectory(ConfiguaracaoUtils.ftp.getDiretorioRemoto().concat(barraDoSistema).concat("emergencia"));
-                ftp.changeDirectory(ConfiguaracaoUtils.ftp.getDiretorioRemoto().concat(barraDoSistema).concat("emeragencia"));
+                ftp.changeDirectory(ConfiguaracaoUtils.ftp.getDiretorioRemoto().concat(barraDoSistema).concat("emergencia"));
+                //ftp.changeDirectory(ConfiguaracaoUtils.ftp.getDiretorioRemoto().concat(barraDoSistema).concat("emeragencia"));
                 LogUtils.registrar(90, ConfiguaracaoUtils.diretorio.isLogCompleto(), " 90 Entrou no diretório " + ConfiguaracaoUtils.ftp.getDiretorioRemoto() + " com sucesso");
             } else {
                 ftp.changeDirectory(ConfiguaracaoUtils.ftp.getDiretorioRemoto());
@@ -583,10 +584,6 @@ public class TarefaComunicao implements Runnable {
             LogUtils.registrar(90, ConfiguaracaoUtils.diretorio.isLogCompleto(), " 90 O upload foi abortado por outra thread. Não foi possível enviar o zip" + " " + e.getMessage());
         }
         LogUtils.registrar(90, ConfiguaracaoUtils.diretorio.isLogCompleto(), " 90 Fim do metodo uploadZip");
-    }
-
-    public void teste (boolean variavel){
-        RegistrarLog.imprimirMsg("Log","TESTE");
     }
 
     private void download() {
@@ -1073,10 +1070,10 @@ public class TarefaComunicao implements Runnable {
         File arquivoProgramacao = new File(programacao);
         File arquivoVideo = new File(video);
 
-        /*
+
         if (arquivoCategoria.exists()) {
             try {
-                boolean atualizou = bancoDAO.insertCategoria(arquivoCategoria.getAbsolutePath());
+                boolean atualizou = BancoDAO.insertCategoria(arquivoCategoria.getAbsolutePath());
                 if(atualizou) {
                     File renomearExpCategoria = new File(salvar_importes.concat(barraDoSistema).concat("Categoria.old"));
                     arquivoCategoria.renameTo(renomearExpCategoria);
@@ -1095,7 +1092,7 @@ public class TarefaComunicao implements Runnable {
 
         if (arquivoComercial.exists()) {
             try {
-                boolean atualizou = bancoDAO.insertComercial(arquivoComercial.getAbsolutePath());
+                boolean atualizou = BancoDAO.insertComercial(arquivoComercial.getAbsolutePath());
                 if(atualizou) {
                     File renomearExpComercial = new File(salvar_importes.concat(barraDoSistema).concat("Comercial.old"));
                     arquivoComercial.renameTo(renomearExpComercial);
@@ -1114,7 +1111,7 @@ public class TarefaComunicao implements Runnable {
 
         if (arquivoProgramacao.exists()) {
             try {
-                boolean atualizou = bancoDAO.insertProgramacao(arquivoProgramacao.getAbsolutePath());
+                boolean atualizou = BancoDAO.insertProgramacao(arquivoProgramacao.getAbsolutePath());
                 if(atualizou) {
                     File renomearExpProgramacao = new File(salvar_importes.concat(barraDoSistema).concat("Programacao.old"));
                     arquivoProgramacao.renameTo(renomearExpProgramacao);
@@ -1133,7 +1130,7 @@ public class TarefaComunicao implements Runnable {
 
         if (arquivoVideo.exists()) {
             try {
-                boolean atualizou = bancoDAO.insertVideo(arquivoVideo.getAbsolutePath());
+                boolean atualizou = BancoDAO.insertVideo(arquivoVideo.getAbsolutePath());
                 if(atualizou) {
                     File renomearExpVideo = new File(salvar_importes.concat(barraDoSistema).concat("Video.old"));
                     arquivoVideo.renameTo(renomearExpVideo);
@@ -1148,7 +1145,7 @@ public class TarefaComunicao implements Runnable {
                 AndroidImprimirUtils.imprimirErro(TarefaComunicao.class, e);
                 AndroidImprimirUtils.imprimirErro(TarefaComunicao.class, e, 90);
             }
-        }*/
+        }
         LogUtils.registrar(90, ConfiguaracaoUtils.diretorio.isLogCompleto(), " 90 Fim do metodo popularBanco");
     }
 }

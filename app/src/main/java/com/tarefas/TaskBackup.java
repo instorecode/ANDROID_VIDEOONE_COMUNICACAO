@@ -4,6 +4,8 @@ import android.os.Environment;
 
 import com.br.instore.utils.ConfiguaracaoUtils;
 import com.utils.AndroidImprimirUtils;
+import com.utils.RegistrarLog;
+
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
 import net.lingala.zip4j.model.ZipParameters;
@@ -16,12 +18,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class TaskBackup implements Runnable {
+public class TaskBackup {
 
     String caminho = Environment.getExternalStorageDirectory().toString();
     String barraDoSistema = System.getProperty("file.separator");
 
-    @Override
+
     public void run() {
         List<File> listaDeArquivos = new ArrayList<File>();
         String caminhoBackup = caminho.concat(barraDoSistema).concat("videoOne").concat(barraDoSistema).concat("backup");
@@ -252,6 +254,7 @@ public class TaskBackup implements Runnable {
                 if (arquivoZip.exists()) {
 
                     if(dataDeCriacao.before(dataAtualFormatada)){
+
                         File fileZip3 = new File(caminhoZip3);
                         if (fileZip3.exists()) {
                             fileZip3.delete();
@@ -280,6 +283,7 @@ public class TaskBackup implements Runnable {
             AndroidImprimirUtils.imprimirErro(TaskBackup.class, e);
             AndroidImprimirUtils.imprimirErro(TaskBackup.class, e, 90);
         }
+        //RegistrarLog.imprimirMsg("Log", "Fim TaskBackup");
     }
 
     private void compactar(List<File> arquivos, File file) {

@@ -1879,6 +1879,7 @@ public class BancoDAO {
                 } finally {
                     db.endTransaction();
                 }
+
             } else {
                 return false;
             }
@@ -1889,7 +1890,7 @@ public class BancoDAO {
         }
     }
 
-    public boolean insertComercial(String caminho) {
+    public static boolean insertComercial(String caminho) {
         if (arquivoBanco.exists()) {
             db = helper.getWritableDatabase();
             db.beginTransaction();
@@ -2028,7 +2029,7 @@ public class BancoDAO {
         }
     }
 
-    public boolean insertProgramacao(String caminho) {
+    public static boolean insertProgramacao(String caminho) {
         if (arquivoBanco.exists()) {
             db = helper.getWritableDatabase();
             db.beginTransaction();
@@ -2136,7 +2137,7 @@ public class BancoDAO {
         }
     }
 
-    public boolean insertVideo(String caminho) {
+    public static boolean insertVideo(String caminho) {
         if (arquivoBanco.exists()) {
             db = helper.getWritableDatabase();
             db.beginTransaction();

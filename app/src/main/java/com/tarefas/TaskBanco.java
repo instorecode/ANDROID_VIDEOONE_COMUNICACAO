@@ -8,11 +8,10 @@ import com.utils.RegistrarLog;
 
 import java.io.File;
 
-public class TaskBanco implements Runnable {
+public class TaskBanco {
 
     private final File arquivoBanco = new File(Environment.getExternalStorageDirectory().getAbsolutePath().concat("/videoOne/").concat("videoOneDs.db"));
 
-    @Override
     public void run() {
         RegistrarLog.imprimirMsg("Log", "INICIO TaskBanco");
         if(arquivoBanco.exists()) {
