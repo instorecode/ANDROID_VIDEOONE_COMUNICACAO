@@ -15,6 +15,8 @@ import java.util.concurrent.TimeUnit;
 public class MainActivity extends Activity {
     static Context context;
 
+    TarefaComunicao t;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -28,12 +30,17 @@ public class MainActivity extends Activity {
         ScheduledExecutorService criarPlayList = Executors.newScheduledThreadPool(1);
         ScheduledExecutorService backup = Executors.newScheduledThreadPool(1);
 
+        t = new TarefaComunicao(context,false,this);
+
+        t.teste(false);
 
         lerProperties.scheduleAtFixedRate(new TaskLerProperties(context), 0, 10, TimeUnit.SECONDS);
         backup.scheduleAtFixedRate(new TaskBackup(), 2, 864000,TimeUnit.SECONDS);
-        threadComunicacaoNormal.scheduleAtFixedRate(new TarefaComunicao(context,false,this), 2, 60, TimeUnit.SECONDS);
-        threadComunicacaoEmergencia.scheduleAtFixedRate(new TarefaComunicao(context,true, this), 10, 1800, TimeUnit.SECONDS);
+        //threadComunicacaoNormal.scheduleAtFixedRate(new TarefaComunicao(context,false,this), 2, 60, TimeUnit.SECONDS);
+        threadComunicacaoNormal.scheduleAtFixedRate(t, 2, 60, TimeUnit.SECONDS);
         criarPlayList.scheduleAtFixedRate(new TaskBanco(), 3, 120, TimeUnit.SECONDS);
+        //threadComunicacaoEmergencia.scheduleAtFixedRate(new TarefaComunicao(context,true, this), 10, 1800, TimeUnit.SECONDS);
+
 	}
 
 }

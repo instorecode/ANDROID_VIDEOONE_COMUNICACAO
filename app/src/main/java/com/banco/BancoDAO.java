@@ -1304,14 +1304,14 @@ public class BancoDAO {
             try {
                 SQLiteDatabase db = getDb();
                 String script = "SELECT * FROM Comercial WHERE DataVencto <= date('now')";
-                cursor = db.rawQuery(script, new String[]{});
+                Cursor cursorExcluirComercialDoBanco = db.rawQuery(script, new String[]{});
 
-                if (cursor.getCount() > 0) {
-                    while (cursor.moveToNext()) {
+                if (cursorExcluirComercialDoBanco.getCount() > 0) {
+                    while (cursorExcluirComercialDoBanco.moveToNext()) {
                         try {
-                            String arquivo = cursor.getString(cursor.getColumnIndex("Arquivo"));
-                            String titulo = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Titulo")));
-                            String dataVencto = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("DataVencto")));
+                            String arquivo = cursorExcluirComercialDoBanco.getString(cursorExcluirComercialDoBanco.getColumnIndex("Arquivo"));
+                            String titulo = StringUtils.nuloParaVazio(cursorExcluirComercialDoBanco.getString(cursorExcluirComercialDoBanco.getColumnIndex("Titulo")));
+                            String dataVencto = StringUtils.nuloParaVazio(cursorExcluirComercialDoBanco.getString(cursorExcluirComercialDoBanco.getColumnIndex("DataVencto")));
                             String resuldado = validarExistenciaDoVideo(arquivo);
                             if (resuldado != null) {
                                 File file = new File(resuldado);
@@ -1350,6 +1350,7 @@ public class BancoDAO {
                         }
                     }
                 }
+
             } catch (NullPointerException e) {
                 AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
                 AndroidImprimirUtils.imprimirErro(BancoDAO.class, e, 90);
@@ -1370,13 +1371,13 @@ public class BancoDAO {
             try {
                 SQLiteDatabase db = getDb();
                 String script = "SELECT * FROM Video WHERE DataVencto <= date('now')";
-                cursor = db.rawQuery(script, new String[]{});
-                if (cursor.getCount() > 0) {
-                    while (cursor.moveToNext()) {
+                Cursor cursorExcluirVideosDoBanco = db.rawQuery(script, new String[]{});
+                if (cursorExcluirVideosDoBanco.getCount() > 0) {
+                    while (cursorExcluirVideosDoBanco.moveToNext()) {
                         try {
-                            String arquivo = cursor.getString(cursor.getColumnIndex("Arquivo"));
-                            String titulo = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("Titulo")));
-                            String dataVencto = StringUtils.nuloParaVazio(cursor.getString(cursor.getColumnIndex("DataVencto")));
+                            String arquivo = cursorExcluirVideosDoBanco.getString(cursorExcluirVideosDoBanco.getColumnIndex("Arquivo"));
+                            String titulo = StringUtils.nuloParaVazio(cursorExcluirVideosDoBanco.getString(cursorExcluirVideosDoBanco.getColumnIndex("Titulo")));
+                            String dataVencto = StringUtils.nuloParaVazio(cursorExcluirVideosDoBanco.getString(cursorExcluirVideosDoBanco.getColumnIndex("DataVencto")));
                             String resuldado = validarExistenciaDoVideo(arquivo);
 
                             if (resuldado != null) {
@@ -1570,8 +1571,8 @@ public class BancoDAO {
         if (arquivoBanco.exists()) {
             try {
                 SQLiteDatabase db = getDb();
-                cursor = db.rawQuery("SELECT Arquivo FROM Comercial", new String[]{});
-                comerciaisNoBanco = String.valueOf(cursor.getCount());
+                Cursor cursorQuantidadeComerciaisNoBanco = db.rawQuery("SELECT Arquivo FROM Comercial", new String[]{});
+                comerciaisNoBanco = String.valueOf(cursorQuantidadeComerciaisNoBanco.getCount());
             } catch (SQLiteCantOpenDatabaseException e) {
                 AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
                 return comerciaisNoBanco;
@@ -1605,8 +1606,8 @@ public class BancoDAO {
         if (arquivoBanco.exists()) {
             try {
                 SQLiteDatabase db = getDb();
-                cursor = db.rawQuery("SELECT Arquivo FROM Video", new String[]{});
-                videoNoBanco = String.valueOf(cursor.getCount());
+                Cursor cursorQuantidadeComerciaisNoBanco = db.rawQuery("SELECT Arquivo FROM Video", new String[]{});
+                videoNoBanco = String.valueOf(cursorQuantidadeComerciaisNoBanco.getCount());
             } catch (SQLiteCantOpenDatabaseException e) {
                 AndroidImprimirUtils.imprimirErro(BancoDAO.class, e);
                 return videoNoBanco;
