@@ -62,33 +62,31 @@ public class TarefaComunicao {
     private boolean conecta = true;
     public TarefaComunicao(Context context, Activity activity) {
         this.context = context;
-        this.isEmergencia = isEmergencia;
         this.activity = activity;
     }
 
     //@Override
     public void run(boolean emergencia) {
         isEmergencia = emergencia;
-        RegistrarLog.imprimirMsg("Log", "INICIO TaskComunicacao");
+        RegistrarLog.imprimirMsg("Log", "INICIO TaskComunicacao " + isEmergencia + " É EMERGENCIA");
         controlador();
-        RegistrarLog.imprimirMsg("Log", "FIM TaskComunicacao");
+        RegistrarLog.imprimirMsg("Log", "FIM TaskComunicacao " + isEmergencia + " É EMERGENCIA");
     }
 
     private void controlador() {
         activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Toast.makeText(activity, "controlador()", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(activity, "controlador()", Toast.LENGTH_SHORT).show();
             }
         });
         if (properties.exists()) {
             informacoesConexao();
-            zipArquivos();
             try {
                 validarHoraAndDia = new ValidarDiaAndHora(caminho.concat("/videoOne/config/configuracoes.properties"));
                 validarHoraAndDia.procurarHorarioValido();
                 RegistrarLog.imprimirMsg("Log", ftp.isConnected() + " ESTA CONECTADO");
-
+                RegistrarLog.imprimirMsg("Log", isEmergencia + " É EMERGENCIA");
                 if (isEmergencia && !ftp.isConnected() ){
                     LogUtils.registrar(20, ConfiguaracaoUtils.diretorio.isLogCompleto(), " 20 Começou emergencia");
                     RegistrarLog.imprimirMsg("Log","RODANDO EMERGENCIA");
@@ -138,6 +136,7 @@ public class TarefaComunicao {
     private void conectar () {
         if(conecta) {
             RegistrarLog.imprimirMsg("Log","Pode se conectar");
+            zipArquivos();
             conectarEnderecoFtp();
             if (!erro) {
                 conectarLoginFtp();
@@ -175,7 +174,7 @@ public class TarefaComunicao {
         activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Toast.makeText(activity, "Metodo zipArquivos", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(activity, "Metodo zipArquivos", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -289,7 +288,7 @@ public class TarefaComunicao {
         activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Toast.makeText(activity, "Metodo informacoesConexao", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(activity, "Metodo informacoesConexao", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -401,7 +400,7 @@ public class TarefaComunicao {
         activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Toast.makeText(activity, "Metodo conectarEnderecoFtp", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(activity, "Metodo conectarEnderecoFtp", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -446,7 +445,7 @@ public class TarefaComunicao {
         activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Toast.makeText(activity, "Metodo conectarLoginFtp", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(activity, "Metodo conectarLoginFtp", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -491,7 +490,7 @@ public class TarefaComunicao {
         activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Toast.makeText(activity, "Metodo conectarDiretorioFtp", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(activity, "Metodo conectarDiretorioFtp", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -542,7 +541,7 @@ public class TarefaComunicao {
         activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Toast.makeText(activity, "Metodo uploadZip", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(activity, "Metodo uploadZip", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -592,7 +591,7 @@ public class TarefaComunicao {
         activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Toast.makeText(activity, "Metodo download", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(activity, "Metodo download", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -761,7 +760,7 @@ public class TarefaComunicao {
         activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Toast.makeText(activity, "Metodo desconectarFtp", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(activity, "Metodo desconectarFtp", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -814,7 +813,7 @@ public class TarefaComunicao {
         activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Toast.makeText(activity, "Metodo validarMd5", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(activity, "Metodo validarMd5", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -858,7 +857,7 @@ public class TarefaComunicao {
         activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Toast.makeText(activity, "Metodo validarDescompactarVideoOneExp", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(activity, "Metodo validarDescompactarVideoOneExp", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -940,7 +939,7 @@ public class TarefaComunicao {
         activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Toast.makeText(activity, "Metodo deletarArquivoVideoOneExp", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(activity, "Metodo deletarArquivoVideoOneExp", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -969,7 +968,7 @@ public class TarefaComunicao {
         activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Toast.makeText(activity, "Metodo moverOsArquivosDOImport", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(activity, "Metodo moverOsArquivosDOImport", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -1025,7 +1024,7 @@ public class TarefaComunicao {
         activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Toast.makeText(activity, "Metodo popularBanco", Toast.LENGTH_SHORT ).show();
+                //Toast.makeText(activity, "Metodo popularBanco", Toast.LENGTH_SHORT ).show();
             }
         });
 

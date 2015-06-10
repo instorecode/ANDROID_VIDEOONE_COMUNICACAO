@@ -13,7 +13,7 @@ public class TaskBanco {
     private final File arquivoBanco = new File(Environment.getExternalStorageDirectory().getAbsolutePath().concat("/videoOne/").concat("videoOneDs.db"));
 
     public void run() {
-        RegistrarLog.imprimirMsg("Log", "INICIO TaskBanco");
+        //RegistrarLog.imprimirMsg("Log", "INICIO TaskBanco");
         if(arquivoBanco.exists()) {
             BancoDAO.criarViewComercial();
             BancoDAO.criarViewComercialDetermidos();
@@ -31,6 +31,6 @@ public class TaskBanco {
             RegistrarLog.imprimirMsg("Log", "Banco não foi encontrado : TaskVideoAndComerciais");
             LogUtils.registrar(21, ConfiguaracaoUtils.diretorio.isLogCompleto(), " 21 Banco não foi encontrado : TaskVideoAndComerciais");
         }
-        RegistrarLog.imprimirMsg("Log", "FIM TaskBanco");
+        //RegistrarLog.imprimirMsg("Log", "FIM TaskBanco");
     }
 }

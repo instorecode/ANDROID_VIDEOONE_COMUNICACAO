@@ -52,14 +52,14 @@ public class MainActivity extends Activity {
             public void run() {
                 tarefaComunicao.run(false);
             }
-        }, 1000l, 10000 );
+        }, 1000l, 120000l );
 
         timer.sched(new TimerTask() {
             @Override
             public void run() {
                 tarefaComunicao.run(true);
             }
-        }, 3000l, (30 * (60 * (1 * 1000))));
+       }, 10000l, (30 * (60 * (1 * 1000))));
 
 
         final TaskBanco taskBanco = new TaskBanco();
