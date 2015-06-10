@@ -18,6 +18,6 @@ public class TaskLerProperties  {
     public void run() {
         ConfiguaracaoUtils.lerProperties(caminho.concat(barraDoSistema).concat("videoOne").concat(barraDoSistema).concat("config").concat(barraDoSistema).concat("configuracoes.properties"));
         RegistrarLog.getInstance(context);
-        //RegistrarLog.imprimirMsg("Log", "Fim TaskLerProperties");
+        RegistrarLog.imprimirMsg("Log", "Fim TaskLerProperties");
     }
 }

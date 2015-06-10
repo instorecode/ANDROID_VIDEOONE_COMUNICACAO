@@ -88,6 +88,7 @@ public class TarefaComunicao {
                 validarHoraAndDia = new ValidarDiaAndHora(caminho.concat("/videoOne/config/configuracoes.properties"));
                 validarHoraAndDia.procurarHorarioValido();
                 RegistrarLog.imprimirMsg("Log", ftp.isConnected() + " ESTA CONECTADO");
+
                 if (isEmergencia && !ftp.isConnected() ){
                     LogUtils.registrar(20, ConfiguaracaoUtils.diretorio.isLogCompleto(), " 20 Começou emergencia");
                     RegistrarLog.imprimirMsg("Log","RODANDO EMERGENCIA");
@@ -602,80 +603,48 @@ public class TarefaComunicao {
             RegistrarLog.imprimirMsg("Log","1");
             AndroidImprimirUtils.imprimirErro(TarefaComunicao.class, e);
             AndroidImprimirUtils.imprimirErro(TarefaComunicao.class, e, 90);
+            erro = true;
         } catch (FTPIllegalReplyException e) {
             RegistrarLog.imprimirMsg("Log","2");
             AndroidImprimirUtils.imprimirErro(TarefaComunicao.class, e);
             AndroidImprimirUtils.imprimirErro(TarefaComunicao.class, e, 90);
+            erro = true;
         } catch (FTPException e) {
             RegistrarLog.imprimirMsg("Log","3");
             AndroidImprimirUtils.imprimirErro(TarefaComunicao.class, e);
             AndroidImprimirUtils.imprimirErro(TarefaComunicao.class, e, 90);
+            erro = true;
         } catch (FTPDataTransferException e) {
             RegistrarLog.imprimirMsg("Log","4");
             AndroidImprimirUtils.imprimirErro(TarefaComunicao.class, e);
             AndroidImprimirUtils.imprimirErro(TarefaComunicao.class, e, 90);
+            erro = true;
         } catch (FTPAbortedException e) {
             RegistrarLog.imprimirMsg("Log","5");
             AndroidImprimirUtils.imprimirErro(TarefaComunicao.class, e);
             AndroidImprimirUtils.imprimirErro(TarefaComunicao.class, e, 90);
+            erro = true;
         } catch (FTPListParseException e) {
             RegistrarLog.imprimirMsg("Log","6");
             AndroidImprimirUtils.imprimirErro(TarefaComunicao.class, e);
             AndroidImprimirUtils.imprimirErro(TarefaComunicao.class, e, 90);
+            erro = true;
         } catch (NullPointerException e) {
             RegistrarLog.imprimirMsg("Log","7");
             AndroidImprimirUtils.imprimirErro(TarefaComunicao.class, e);
             AndroidImprimirUtils.imprimirErro(TarefaComunicao.class, e, 90);
+            erro = true;
         } catch (InvalidParameterException e) {
             RegistrarLog.imprimirMsg("Log","8");
             AndroidImprimirUtils.imprimirErro(TarefaComunicao.class, e);
             AndroidImprimirUtils.imprimirErro(TarefaComunicao.class, e, 90);
+            erro = true;
         } catch (Exception e) {
             RegistrarLog.imprimirMsg("Log","9");
             AndroidImprimirUtils.imprimirErro(TarefaComunicao.class, e);
             AndroidImprimirUtils.imprimirErro(TarefaComunicao.class, e, 90);
+            erro = true;
         }
-
-
-        /*try {
-            files = ftp.list();
-        } catch (IOException e) {
-            AndroidImprimirUtils.imprimirErro(TarefaComunicao.class, e);
-            AndroidImprimirUtils.imprimirErro(TarefaComunicao.class, e, 90);
-            erro = true;
-        } catch (FTPIllegalReplyException e) {
-            AndroidImprimirUtils.imprimirErro(TarefaComunicao.class, e);
-            AndroidImprimirUtils.imprimirErro(TarefaComunicao.class, e, 90);
-            erro = true;
-        } catch (FTPException e) {
-            AndroidImprimirUtils.imprimirErro(TarefaComunicao.class, e);
-            AndroidImprimirUtils.imprimirErro(TarefaComunicao.class, e, 90);
-            erro = true;
-        } catch (FTPDataTransferException e) {
-            AndroidImprimirUtils.imprimirErro(TarefaComunicao.class, e);
-            AndroidImprimirUtils.imprimirErro(TarefaComunicao.class, e, 90);
-            erro = true;
-        } catch (FTPAbortedException e) {
-            AndroidImprimirUtils.imprimirErro(TarefaComunicao.class, e);
-            AndroidImprimirUtils.imprimirErro(TarefaComunicao.class, e, 90);
-            erro = true;
-        } catch (FTPListParseException e) {
-            AndroidImprimirUtils.imprimirErro(TarefaComunicao.class, e);
-            AndroidImprimirUtils.imprimirErro(TarefaComunicao.class, e, 90);
-            erro = true;
-        } catch (NullPointerException e) {
-            AndroidImprimirUtils.imprimirErro(TarefaComunicao.class, e);
-            AndroidImprimirUtils.imprimirErro(TarefaComunicao.class, e, 90);
-            erro = true;
-        } catch (InvalidParameterException e) {
-            AndroidImprimirUtils.imprimirErro(TarefaComunicao.class, e);
-            AndroidImprimirUtils.imprimirErro(TarefaComunicao.class, e, 90);
-            erro = true;
-        } catch (Exception e) {
-            AndroidImprimirUtils.imprimirErro(TarefaComunicao.class, e);
-            AndroidImprimirUtils.imprimirErro(TarefaComunicao.class, e, 90);
-            erro = true;
-        }*/
 
         if (files.length > 0) {
             for (final FTPFile file : files) {
@@ -841,7 +810,7 @@ public class TarefaComunicao {
     //-------- MD5 --------//
     private void validarMd5() {
         LogUtils.registrar(90, ConfiguaracaoUtils.diretorio.isLogCompleto(), " 90 Inicio do metodo validarMd5");
-        RegistrarLog.imprimirMsg("Log", "Inicio validarM5");
+        //RegistrarLog.imprimirMsg("Log", "Inicio validarM5");
         activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -866,7 +835,7 @@ public class TarefaComunicao {
         md5Utils.getArquivosValidos().clear();
         arquivosValidos.clear();
         LogUtils.registrar(90, ConfiguaracaoUtils.diretorio.isLogCompleto(), " 90 Fim do metodo validarMd5");
-        RegistrarLog.imprimirMsg("Log", "Fim validarM5");
+        //RegistrarLog.imprimirMsg("Log", "Fim validarM5");
     }
 
     private void deletarArquivosValidosMovidos(String nomeArquivo){
@@ -885,7 +854,7 @@ public class TarefaComunicao {
     //--------- VideoOneExp -----------------//
     public void validarDescompactarVideoOneExp() {
         LogUtils.registrar(90, ConfiguaracaoUtils.diretorio.isLogCompleto(), " 90 Inicio do metodo validarDescompactarVideoOneExp");
-        RegistrarLog.imprimirMsg("Log", "Inicio validarDescompactarVideoOneExp");
+        //RegistrarLog.imprimirMsg("Log", "Inicio validarDescompactarVideoOneExp");
         activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -960,10 +929,10 @@ public class TarefaComunicao {
             }
         } else {
             moverOsArquivosDOImport();
-            RegistrarLog.imprimirMsg("Log", "Nenhum arquivo videoOne.exp foi encontrado");
+            //RegistrarLog.imprimirMsg("Log", "Nenhum arquivo videoOne.exp foi encontrado");
         }
         LogUtils.registrar(90, ConfiguaracaoUtils.diretorio.isLogCompleto(), " 90 Fim do metodo validarDescompactarVideoOneExp");
-        RegistrarLog.imprimirMsg("Log", "Fim validarDescompactarVideoOneExp");
+        //RegistrarLog.imprimirMsg("Log", "Fim validarDescompactarVideoOneExp");
     }
 
     private void deletarArquivoVideoOneExp(File arquivo){
@@ -1052,7 +1021,7 @@ public class TarefaComunicao {
     //------- Popular Banco -----------//
     private void popularBanco() {
         LogUtils.registrar(90, ConfiguaracaoUtils.diretorio.isLogCompleto(), " 90 Inicio do metodo validarDescompactarVideoOneExp");
-        RegistrarLog.imprimirMsg("Log","popularOBanco");
+       // RegistrarLog.imprimirMsg("Log","popularOBanco");
         activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -1146,6 +1115,6 @@ public class TarefaComunicao {
                 AndroidImprimirUtils.imprimirErro(TarefaComunicao.class, e, 90);
             }
         }
-        LogUtils.registrar(90, ConfiguaracaoUtils.diretorio.isLogCompleto(), " 90 Fim do metodo popularBanco");
+        //LogUtils.registrar(90, ConfiguaracaoUtils.diretorio.isLogCompleto(), " 90 Fim do metodo popularBanco");
     }
 }
