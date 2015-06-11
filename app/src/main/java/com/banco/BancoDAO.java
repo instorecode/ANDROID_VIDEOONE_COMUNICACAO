@@ -39,26 +39,20 @@ import java.util.Random;
 import java.util.TimeZone;
 
 public class BancoDAO {
-
-
     private static final File arquivoBanco = new File(Environment.getExternalStorageDirectory().getAbsolutePath().concat("/videoOne/").concat("videoOneDs.db"));
-
     private static List<ProgramacaoExp> listaProgramacao = new ArrayList<ProgramacaoExp>();
     private static List<String> listaDeArquivos = new ArrayList<String>();
     private static List<ComercialDet> listaComercialDeterminados = new ArrayList<ComercialDet>();
     private static List<String> linhasPlaylistDet = new ArrayList<String>();
-
     private static ExpUtils expUtils = new ExpUtils();
     private static final String VIEW_PROGRAMACAO = "SELECT * FROM VIEW_CARREGAR_PROGRAMACAO";
     private static final String barraDoSistema = System.getProperty("file.separator");
     private static String caminho = Environment.getExternalStorageDirectory().toString();
     private int valorRandom = 0;
-
     private static Banco banco = new Banco();
     private static DatabaseHelper helper;
     private static SQLiteDatabase db;
     private static Cursor cursor;
-
     private static BancoDAO bancoDAO;
 
     private BancoDAO(Context context){
@@ -1860,7 +1854,6 @@ public class BancoDAO {
                             }
                         }
                         db.setTransactionSuccessful();
-                        return true;
                     } else {
                         return false;
                     }
@@ -1879,12 +1872,12 @@ public class BancoDAO {
                 } finally {
                     db.endTransaction();
                 }
+                return true;
 
             } else {
                 return false;
             }
         } else {
-            RegistrarLog.imprimirMsg("Log", "Banco não foi encontrado : insertCategoria()");
             LogUtils.registrar(90, ConfiguaracaoUtils.diretorio.isLogCompleto(), " 90 Banco não foi encontrado : insertCategoria()");
             return false;
         }
@@ -2000,7 +1993,6 @@ public class BancoDAO {
                             }
                         }
                         db.setTransactionSuccessful();
-                        return true;
                     } else {
                         return false;
                     }
@@ -2019,6 +2011,7 @@ public class BancoDAO {
                 } finally {
                     db.endTransaction();
                 }
+                return true;
             } else {
                 return false;
             }
@@ -2108,7 +2101,6 @@ public class BancoDAO {
                             }
                         }
                         db.setTransactionSuccessful();
-                        return true;
                     } else {
                         return false;
                     }
@@ -2127,6 +2119,7 @@ public class BancoDAO {
                 } finally {
                     db.endTransaction();
                 }
+                return true;
             } else {
                 return false;
             }
@@ -2207,7 +2200,6 @@ public class BancoDAO {
                             }
                         }
                         db.setTransactionSuccessful();
-                        return false;
                     } else {
                         return false;
                     }
@@ -2226,6 +2218,7 @@ public class BancoDAO {
                 } finally {
                     db.endTransaction();
                 }
+                return true;
             } else {
                 return false;
             }
