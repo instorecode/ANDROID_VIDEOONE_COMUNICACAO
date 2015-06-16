@@ -21,7 +21,6 @@ import com.br.instore.utils.DataUtils;
 import com.br.instore.utils.ExpUtils;
 import com.br.instore.utils.LogUtils;
 import com.br.instore.utils.StringUtils;
-import com.comunicacao.R;
 import com.utils.AndroidImprimirUtils;
 import com.utils.RegistrarLog;
 import java.io.File;

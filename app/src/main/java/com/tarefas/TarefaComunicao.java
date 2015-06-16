@@ -1,10 +1,6 @@
 package com.tarefas;
 
-import android.app.Activity;
-import android.content.Context;
 import android.os.Environment;
-import android.widget.Toast;
-
 import com.banco.BancoDAO;
 import com.br.instore.utils.Arquivo;
 import com.br.instore.utils.ConfiguaracaoUtils;
@@ -14,14 +10,12 @@ import com.comunicacao.TransferCustom;
 import com.comunicacao.ValidarDiaAndHora;
 import com.utils.AndroidImprimirUtils;
 import com.utils.RegistrarLog;
-
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
 import net.lingala.zip4j.model.ZipParameters;
 import net.lingala.zip4j.util.Zip4jConstants;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
